@@ -130,12 +130,17 @@
 
   import { useState, useEffect } from 'react';
   import axiosClient from '../utils/axiosClient';
+  import Pagination from './Pagination';
 
   const SubmissionHistory = ({ problemid }) => {
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedSubmission, setSelectedSubmission] = useState(null);
+    
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const [submissionsPerPage] = useState(10); // Show 10 submissions per page
 
     useEffect(() => {
       const fetchSubmissions = async () => {
@@ -153,6 +158,7 @@
       };
 
       fetchSubmissions();
+      setCurrentPage(1); // Reset to first page when problem changes
     }, [problemid]);
 
     const getStatusColor = (status) => {
@@ -172,6 +178,15 @@
 
     const formatDate = (dateString) => {
       return new Date(dateString).toLocaleString();
+    };
+
+    // Pagination logic
+    const indexOfLastSubmission = currentPage * submissionsPerPage;
+    const indexOfFirstSubmission = indexOfLastSubmission - submissionsPerPage;
+    const currentSubmissions = submissions.slice(indexOfFirstSubmission, indexOfLastSubmission);
+
+    const paginate = (pageNumber) => {
+      setCurrentPage(pageNumber);
     };
 
     if (loading) {
@@ -225,9 +240,9 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {submissions.map((sub, index) => (
+                  {currentSubmissions.map((sub, index) => (
                     <tr key={sub.id}>
-                      <td>{index + 1}</td>
+                      <td>{indexOfFirstSubmission + index + 1}</td>
                       <td className="font-mono">{sub.language}</td>
                       <td>
                         <span className={`badge ${getStatusColor(sub.status)}`}>
@@ -253,9 +268,19 @@
               </table>
             </div>
 
-            <p className="mt-4 text-sm text-gray-500">
-              Showing {submissions.length} submissions
-            </p>
+            <div className="mt-4 flex justify-between items-center">
+              <p className="text-sm text-slate-400">
+                Showing {indexOfFirstSubmission + 1} to {Math.min(indexOfLastSubmission, submissions.length)} of {submissions.length} submissions
+              </p>
+            </div>
+
+            {/* Pagination Component */}
+            <Pagination 
+              itemsPerPage={submissionsPerPage}
+              totalItems={submissions.length}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
           </>
         )}
 

@@ -173,6 +173,7 @@ const cors = require('cors');
 
 // Import Routers
 const authrouter = require("./routes/userauth");
+const userRoutes = require('./routes/userRoutes');
 const problemrouter = require("./routes/probcreator");
 const submitrouter = require("./routes/submit");
 const aiRouter = require("./routes/aiChatting");
@@ -193,6 +194,7 @@ app.use(cookieparser());
 
 // API Routes
 app.use('/user', authrouter);
+app.use('/user', userRoutes);
 app.use('/problem', problemrouter);
 app.use('/submission', submitrouter);
 app.use('/ai', aiRouter);
@@ -208,14 +210,20 @@ app.use("/profile", profileRouter);
 // Initialize Connections and Start Server
 const initialiseConnection = async () => {
     try {
-        await main(); // Connect to MongoDB
-        console.log("Connected to DB"); 
+        // Connect to MongoDB
+        await main(); 
+        console.log("✅ Connected to MongoDB"); 
   
+        // Start the server
         app.listen(process.env.PORT || 5000, () => {
-          console.log("Server listening at port no " + (process.env.PORT || 5000));
+          console.log("🚀 Server listening at port " + (process.env.PORT || 5000));
+          console.log("📡 Frontend URL: http://localhost:5173");
+          console.log("🔗 Backend URL: http://localhost:" + (process.env.PORT || 5000));
         });
     } catch(err) {
-      console.error("Failed to initialize server:", err.message);
+      console.error("❌ Failed to initialize server:", err.message);
+      console.log("💡 Make sure MongoDB is running on your system");
+      console.log("💡 You can start MongoDB with: mongod");
       process.exit(1); // Exit process with failure
     }
 };

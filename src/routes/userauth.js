@@ -350,9 +350,7 @@ authrouter.get('/check',usermiddleware,(req,res)=>{
            user:reply,
            message:"Valid User"
        });
-    })
-
-
+    });
 module.exports=authrouter;
 // const express=require('express');
 // const authrouter=express.Router();

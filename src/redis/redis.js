@@ -23,9 +23,9 @@ const redisClient = createClient({
     username: 'default', // Your Redis Cloud username
     password: process.env.REDIS_PASS, // Your Redis Cloud password from .env
     socket: {
-        host: 'redis-12572.crce206.ap-south-1-1.ec2.redns.redis-cloud.com', // Your Redis Cloud host
-        port: 12572 // Your Redis Cloud port
-    },
+        host: 'redis-13069.c212.ap-south-1-1.ec2.redns.redis-cloud.com',
+        port: 13069
+    }
     // Optional: Add a connection timeout for cloud instances
     // connectTimeout: 10000 // 10 seconds timeout for initial connection
 });
@@ -60,11 +60,17 @@ redisClient.on('reconnecting', () => {
 // ensuring the client is ready before it's used elsewhere.
 (async () => {
     try {
-        await redisClient.connect();
+        // Only try to connect if Redis password is provided
+        if (process.env.REDIS_PASS && process.env.REDIS_PASS !== 'your_redis_password_here') {
+            await redisClient.connect();
+        } else {
+            console.log('⚠️  Redis: Skipping connection (no valid password provided)');
+            console.log('💡 Redis is optional for basic functionality');
+        }
     } catch (err) {
-        console.error('Redis: Initial connection failed during startup:', err.message);
-        // If Redis is critical for your application, you might want to exit
-        // process.exit(1); 
+        console.error('❌ Redis: Connection failed:', err.message);
+        console.log('💡 Redis is optional - server will continue without it');
+        // Don't exit the process - Redis is optional
     }
 })();
 

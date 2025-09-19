@@ -678,12 +678,38 @@ function LeaderboardPage() {
                 <span className="text-lg font-bold">{user?.firstname?.charAt(0).toUpperCase() || '?'}</span>
               </div>
             </div>
-            <ul tabIndex={0} className="dropdown-content mt-3 p-2 shadow-xl menu bg-gray-800 rounded-box w-52 z-[60] border border-gray-700 backdrop-blur-md">
-              <li><NavLink to="/profile" className="hover:bg-indigo-500/20 py-2">Profile</NavLink></li>
-              {user?.role === 'admin' && <li><NavLink to="/admin" className="hover:bg-indigo-500/20 py-2">Admin Panel</NavLink></li>}
-              <div className="divider my-1 h-px bg-gray-700" />
-              <li><button onClick={handleLogout} className="text-red-400 hover:bg-red-400/20 py-2">Logout</button></li>
-            </ul>
+            <div tabIndex={0} className="dropdown-content mt-4 z-[60] w-64 overflow-hidden rounded-2xl bg-gray-800/80 backdrop-blur-md border border-gray-700 shadow-2xl shadow-black/30 animate-scale-in">
+              <div className="p-4 bg-white/5">
+                <p className="font-bold text-white text-lg truncate">
+                  {user?.firstname || 'Valued'} {user?.lastname}
+                </p>
+                <p className="text-sm text-gray-400 truncate">
+                  {user?.email || 'Welcome!'}
+                </p>
+              </div>
+              <div className="h-px bg-gray-700" />
+              <div className="p-2 space-y-1">
+                <NavLink to="/profile" className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-lg text-gray-300 hover:bg-indigo-500/20 hover:text-white transition-colors duration-200">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" /></svg>
+                  <span>Profile</span>
+                </NavLink>
+                {user?.role === 'admin' && (
+                  <NavLink to="/admin" className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-lg text-gray-300 hover:bg-indigo-500/20 hover:text-white transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 8a1 1 0 00-1 1v1h14V9a1 1 0 00-1-1H5z" /><path fillRule="evenodd" d="M3 11v5a2 2 0 002 2h10a2 2 0 002-2v-5H3zm3 2a1 1 0 100 2h8a1 1 0 100-2H6z" clipRule="evenodd" /></svg>
+                    <span>Admin Panel</span>
+                  </NavLink>
+                )}
+                                <NavLink to="/dashboard" className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-lg text-gray-300 hover:bg-indigo-500/20 hover:text-white transition-colors duration-200">
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg>
+                                  <span>Dashboard</span>
+                                </NavLink>
+                <div className="h-px bg-gray-700/50 my-1" />
+                <button onClick={handleLogout} className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-lg text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-colors duration-200">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" /></svg>
+                  <span>Logout</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </nav>

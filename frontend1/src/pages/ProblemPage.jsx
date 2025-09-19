@@ -3960,44 +3960,123 @@ function ProblemPage() {
   }, [selectedLanguage]);
 
   const handleRun = async () => {
+    // Validate code before running
+    if (!code.trim()) {
+      setRunResult([{ error: "❌ Please write some code before running!" }]);
+      setShowModal(true);
+      return;
+    }
+
     setShowModal(true);
     setLoadingModalText("💻 Running your code...");
     setRunResult(null);
     setSubmitResult(null);
+    
     try {
       const { data } = await axiosClient.post(`/submission/run/${problemid}`, {
         code,
         language: selectedLanguage === "cpp" ? "c++" : selectedLanguage
       });
+      
+      if (data && Array.isArray(data)) {
       const results = data.map((res, i) => ({
         input: problem.visibletestcases[i]?.input || "",
         expected: problem.visibletestcases[i]?.output || "",
         output: res.stdout || res.stderr || res.compile_output || "No output",
-        passed: res.status.id === 3
+          passed: res.status?.id === 3,
+          status: res.status?.description || "Unknown"
       }));
       setRunResult(results);
-    } catch {
-      setRunResult([{ error: "Run failed. Please try again." }]);
+        setLoadingModalText("✅ Code executed successfully!");
+      } else {
+        setRunResult([{ error: "❌ Invalid response from server. Please try again." }]);
+      }
+    } catch (error) {
+      console.error('Run error:', error);
+      let errorMessage = "❌ Run failed. Please try again.";
+      
+      if (error.response?.status === 400) {
+        errorMessage = "❌ Invalid code or missing parameters.";
+      } else if (error.response?.status === 401) {
+        errorMessage = "❌ Please login to run code.";
+      } else if (error.response?.status === 500) {
+        errorMessage = "❌ Server error. Please try again later.";
+      }
+      
+      setRunResult([{ error: errorMessage }]);
     } finally {
-      setLoadingModalText("");
+      setTimeout(() => setLoadingModalText(""), 2000);
     }
   };
 
   const handleSubmit = async () => {
+    // Validate code before submitting
+    if (!code.trim()) {
+      setSubmitResult({ status: "error", message: "❌ Please write some code before submitting!" });
     setShowModal(true);
-    setLoadingModalText("🚀 Submitting...");
+      return;
+    }
+
+    setShowModal(true);
+    setLoadingModalText("🚀 Submitting your solution...");
     setRunResult(null);
     setSubmitResult(null);
+    
     try {
       const { data } = await axiosClient.post(`/submission/submit/${problemid}`, {
         code,
         language: selectedLanguage === "cpp" ? "c++" : selectedLanguage
       });
-      setSubmitResult(data);
-    } catch {
-      setSubmitResult({ status: "error", message: "Submission failed." });
+      
+      if (data) {
+        // Format the response for better display
+        const formattedResult = {
+          status: data.status || "unknown",
+          testCasesPassed: data.testCasesPassed || 0,
+          testCasesTotal: data.testCasesTotal || 0,
+          runtime: data.runtime || 0,
+          memory: data.memory || 0,
+          errorMessage: data.errorMessage || null,
+          message: getSubmissionMessage(data.status, data.testCasesPassed, data.testCasesTotal)
+        };
+        setSubmitResult(formattedResult);
+        setLoadingModalText("✅ Submission completed!");
+      } else {
+        setSubmitResult({ status: "error", message: "❌ Invalid response from server." });
+      }
+    } catch (error) {
+      console.error('Submit error:', error);
+      let errorMessage = "❌ Submission failed. Please try again.";
+      
+      if (error.response?.status === 400) {
+        errorMessage = "❌ Invalid code or missing parameters.";
+      } else if (error.response?.status === 401) {
+        errorMessage = "❌ Please login to submit code.";
+      } else if (error.response?.status === 500) {
+        errorMessage = "❌ Server error. Please try again later.";
+      }
+      
+      setSubmitResult({ status: "error", message: errorMessage });
     } finally {
-      setLoadingModalText("");
+      setTimeout(() => setLoadingModalText(""), 2000);
+    }
+  };
+
+  // Helper function to generate user-friendly submission messages
+  const getSubmissionMessage = (status, passed, total) => {
+    switch (status) {
+      case 'accepted':
+        return `🎉 Congratulations! All ${total} test cases passed!`;
+      case 'wrong answer':
+        return `❌ Wrong Answer. ${passed}/${total} test cases passed.`;
+      case 'error':
+        return `❌ Runtime Error. ${passed}/${total} test cases passed.`;
+      case 'time limit exceeded':
+        return `⏰ Time Limit Exceeded. ${passed}/${total} test cases passed.`;
+      case 'memory limit exceeded':
+        return `💾 Memory Limit Exceeded. ${passed}/${total} test cases passed.`;
+      default:
+        return `❓ Unknown status. ${passed}/${total} test cases passed.`;
     }
   };
 

@@ -1096,7 +1096,7 @@ function AdminPanel() {
           </div>
         </div>
 
-        {/* Code Templates */}
+
         <div className="card bg-base-100 shadow-xl border border-base-300 p-6 md:p-8 animate-fade-in-up delay-200">
           <h2 className="text-2xl font-bold mb-6 text-secondary-content flex items-center">
             <Code className="w-6 h-6 mr-3 text-success" /> Code Templates & Solutions
