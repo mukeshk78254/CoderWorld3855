@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { motion } from 'framer-motion';
 import Editor from "@monaco-editor/react";
 import axiosClient from "../utils/axiosClient";
 import SubmissionHistory from "../components/SubmissionHistory";
@@ -325,16 +326,90 @@ function LeetCodeStylePage() {
                 {/* Left Panel - Problem Description */}
                 <div className="w-1/2 p-4 space-y-3 overflow-y-auto relative">
                     <div className="flex justify-between items-center">
-                        <div onClick={handleBack} className="text-3xl font-bold cursor-pointer">🧠 CoderWorld</div>
-                        <div onClick={fetchAllProblems} className="cursor-pointer text-cyan-300 text-sm">📘 Problems</div>
+                        {/* Enhanced CoderWorld Logo with Icon and Hover Effects */}
+                        <motion.div 
+                            whileHover={{ scale: 1.05, rotate: 2 }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                            onClick={handleBack} 
+                            className="flex items-center gap-3 cursor-pointer group"
+                        >
+                            {/* Logo Icon */}
+                            <motion.div
+                                whileHover={{ rotate: 360 }}
+                                transition={{ duration: 0.6, ease: "easeInOut" }}
+                                className="w-14 h-14 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/25 border border-cyan-400/20 group-hover:shadow-cyan-500/40 transition-all duration-300"
+                            >
+                                <motion.div
+                                    animate={{ 
+                                        scale: [1, 1.1, 1],
+                                        rotate: [0, 5, -5, 0]
+                                    }}
+                                    transition={{ 
+                                        duration: 2, 
+                                        repeat: Infinity, 
+                                        ease: "easeInOut" 
+                                    }}
+                                    className="w-12 h-12"
+                                >
+                                    <img 
+                                        src="/src/pages/2896418.png" 
+                                        alt="CoderWorld Logo" 
+                                        className="w-full h-full object-contain"
+                                    />
+                                </motion.div>
+                            </motion.div>
+                            
+                            {/* Logo Text */}
+                            <div className="flex flex-col">
+                                <motion.span 
+                                    whileHover={{ scale: 1.02 }}
+                                    className="text-3xl font-bold text-white group-hover:text-cyan-300 transition-colors duration-300"
+                                    style={{ fontFamily: "'Orbitron', sans-serif" }}
+                                >
+                                    CoderWorld
+                                </motion.span>
+                                <motion.span 
+                                    initial={{ opacity: 0.7 }}
+                                    whileHover={{ opacity: 1 }}
+                                    className="text-sm text-slate-400 group-hover:text-cyan-400 transition-colors duration-300"
+                                    style={{ fontFamily: "'Source Code Pro', monospace" }}
+                                >
+                                    Code • Learn • Solve
+                                </motion.span>
+                            </div>
+                        </motion.div>
+                        
+                        {/* Enhanced Problems Button with Hover Effect */}
+                        <motion.div 
+                            whileHover={{ scale: 1.05, y: -2 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={fetchAllProblems} 
+                            className="cursor-pointer text-cyan-300 hover:text-cyan-200 hover:underline transition-all duration-300 px-4 py-3 rounded-lg hover:bg-slate-800/50 flex items-center gap-2"
+                            style={{ fontFamily: "'Source Code Pro', monospace" }}
+                        >
+                              <img src="/src/pages/3240846.png" alt="Problems" className="w-10 h-10 justify-align-start padding-10" /> 
+                              <span className="text-xl font-bold w-20 justify-align-start padding-10">Problems</span>
+                        </motion.div>
                     </div>
 
                     {showProblemList && (
                         <div className="bg-gray-900 border border-gray-700 p-3 rounded max-h-60 overflow-y-auto">
-                            <h3 className="text-lg font-semibold mb-2">All Problems</h3>
+                            <h3 className="text-xl font-bold mb-2">All Problems</h3>
                             <ul className="space-y-1">
-                                {allProblems.map(p => (
-                                    <li key={p._id} onClick={() => navigate(`/problem/${p._id}`)} className="problem-list-item text-cyan-300 cursor-pointer hover:underline">➤ {p.title}</li>
+                                {allProblems.map((p, index) => (
+                                    <motion.li 
+                                        key={p._id} 
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: index * 0.05 }}
+                                        whileHover={{ scale: 1.02, x: 5 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        onClick={() => navigate(`/problem/${p._id}`)} 
+                                        className="problem-list-item text-cyan-300 cursor-pointer hover:text-cyan-200 hover:underline transition-all duration-300 py-1 px-2 rounded hover:bg-gray-800/50 text-base font-medium"
+                                    >
+                                        ➤ {p.title}
+                                    </motion.li>
                                 ))}
                             </ul>
                         </div>
@@ -342,22 +417,48 @@ function LeetCodeStylePage() {
 
                     <div className="flex space-x-6 border-b border-gray-600 text-gray-300 mt-2">
                         {["description", "editorial", "solution", "discuss", "submissions", "chatAi"].map(tab => (
-                            <div key={tab} onClick={() => setActiveTab(tab)} className={`py-2 cursor-pointer ${activeTab === tab ? "tab-active text-cyan-400" : ""}`}>{tab.toUpperCase()}</div>
+                            <motion.div 
+                                key={tab} 
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => setActiveTab(tab)} 
+                                className={`py-2 cursor-pointer transition-all duration-300 text-base font-medium ${
+                                    activeTab === tab 
+                                        ? "text-cyan-400 border-b-2 border-cyan-400" 
+                                        : "hover:text-white hover:border-b-2 hover:border-gray-400"
+                                }`}
+                                style={{ fontFamily: "'Source Code Pro', monospace" }}
+                            >
+                                {tab.toUpperCase()}
+                            </motion.div>
                         ))}
                     </div>
 
                     <div className="fade-in">
                         {activeTab === "description" && (
                             <>
-                                <h2 className="text-xl font-bold mt-3">{problem?.title}</h2>
+                                <motion.h2 
+                                    whileHover={{ scale: 1.02 }}
+                                    className="text-2xl font-bold mt-3 text-white"
+                                    style={{ fontFamily: "'Orbitron', sans-serif" }}
+                                >
+                                    {problem?.title}
+                                </motion.h2>
                                 <div className="prose prose-invert mt-4" dangerouslySetInnerHTML={{ __html: problem?.description }} />
                                 <div className="mt-4 space-y-2">
                                     {problem?.visibletestcases?.map((ex, i) => (
-                                        <div key={i} className="bg-gray-800 p-3 rounded border border-gray-700">
+                                        <motion.div 
+                                            key={i} 
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ delay: i * 0.1 }}
+                                            whileHover={{ scale: 1.02, y: -2 }}
+                                            className="bg-gray-800 p-3 rounded border border-gray-700 hover:border-gray-600 transition-all duration-300"
+                                        >
                                             <p><strong>Input:</strong> {ex.input}</p>
                                             <p><strong>Output:</strong> {ex.output}</p>
                                             {ex.explanation && <p><strong>Explanation:</strong> {ex.explanation}</p>}
-                                        </div>
+                                        </motion.div>
                                     ))}
                                 </div>
                             </>
@@ -487,17 +588,57 @@ function LeetCodeStylePage() {
                             
                             {/* Zoom Controls */}
                             <div className="flex items-center gap-1 bg-gray-800 border border-gray-600 rounded">
-                                <button onClick={handleZoomOut} className="px-2 py-1 text-white hover:bg-gray-700 rounded-l" title="Zoom Out">-</button>
+                                <motion.button 
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={handleZoomOut} 
+                                    className="px-2 py-1 text-white hover:bg-gray-700 rounded-l transition-colors duration-200" 
+                                    title="Zoom Out"
+                                >
+                                    -
+                                </motion.button>
                                 <span className="px-2 py-1 text-white text-sm border-x border-gray-600">{editorZoom}px</span>
-                                <button onClick={handleZoomIn} className="px-2 py-1 text-white hover:bg-gray-700 rounded-r" title="Zoom In">+</button>
-                                <button onClick={handleResetZoom} className="px-2 py-1 text-white hover:bg-gray-700 ml-1 rounded" title="Reset Zoom">⌂</button>
+                                <motion.button 
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={handleZoomIn} 
+                                    className="px-2 py-1 text-white hover:bg-gray-700 rounded-r transition-colors duration-200" 
+                                    title="Zoom In"
+                                >
+                                    +
+                                </motion.button>
+                                <motion.button 
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={handleResetZoom} 
+                                    className="px-2 py-1 text-white hover:bg-gray-700 ml-1 rounded transition-colors duration-200" 
+                                    title="Reset Zoom"
+                                >
+                                    ⌂
+                                </motion.button>
                             </div>
                         </div>
 
                         <div className="flex flex-wrap gap-2">
-                            <button onClick={handleRun} className="btn btn-info btn-sm">Run</button>
-                            <button onClick={handleSubmit} className="btn btn-success btn-sm">Submit</button>
-                            <button 
+                            <motion.button 
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={handleRun} 
+                                className="btn btn-info btn-sm transition-all duration-200 font-bold"
+                            >
+                                Run
+                            </motion.button>
+                            <motion.button 
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={handleSubmit} 
+                                className="btn btn-success btn-sm transition-all duration-200 font-bold"
+                            >
+                                Submit
+                            </motion.button>
+                            <motion.button 
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={() => {
                                     console.log("Test navigation to write solution page");
                                     const encodedCode = encodeURIComponent(code);
@@ -506,20 +647,45 @@ function LeetCodeStylePage() {
                                     console.log("Test URL:", url);
                                     navigate(url);
                                 }}
-                                className="btn btn-warning btn-sm"
+                                className="btn btn-warning btn-sm transition-all duration-200 font-bold"
                             >
                                 Test Write Solution
-                            </button>
-                            <button
+                            </motion.button>
+                            <motion.button
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={() => {
                                     navigator.clipboard.writeText(code);
                                     alert("Code copied to clipboard!");
                                 }}
-                                className="btn btn-primary btn-sm"
-                            >Copy</button>
-                            <button onClick={handleResetCode} className="btn btn-warning btn-sm">Reset</button>
-                            <button onClick={handleFormatCode} className="btn btn-secondary btn-sm">Format</button>
-                            <button onClick={toggleFullScreen} className="btn btn-outline btn-sm">{isFullScreen ? "Exit Fullscreen" : "Fullscreen"}</button>
+                                className="btn btn-primary btn-sm transition-all duration-200 font-bold"
+                            >
+                                Copy
+                            </motion.button>
+                            <motion.button 
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={handleResetCode} 
+                                className="btn btn-warning btn-sm transition-all duration-200 font-bold"
+                            >
+                                Reset
+                            </motion.button>
+                            <motion.button 
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={handleFormatCode} 
+                                className="btn btn-secondary btn-sm transition-all duration-200 font-bold"
+                            >
+                                Format
+                            </motion.button>
+                            <motion.button 
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={toggleFullScreen} 
+                                className="btn btn-outline btn-sm transition-all duration-200 font-bold"
+                            >
+                                {isFullScreen ? "Exit Fullscreen" : "Fullscreen"}
+                            </motion.button>
                         </div>
                     </div>
 

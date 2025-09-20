@@ -17,7 +17,14 @@ import {
     Shield,
     Eye,
     MessageCircle,
-    Users
+    Users,
+    Trash2,
+    Edit3,
+    MoreVertical,
+    Flag,
+    CheckCircle,
+    XCircle,
+    AlertTriangle
 } from 'lucide-react';
 
 const ProblemDiscussion = ({ problemId, problemTitle }) => {
@@ -29,6 +36,10 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState('newest');
     const [showReplyForm, setShowReplyForm] = useState(null);
+    const [editingDiscussion, setEditingDiscussion] = useState(null);
+    const [editingReply, setEditingReply] = useState(null);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
+    const [showReplyLikes, setShowReplyLikes] = useState({});
 
     console.log('ProblemDiscussion: Component loaded', { problemId, problemTitle, user });
 
@@ -128,15 +139,17 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
             id: Date.now(),
             content: replyText,
             author: user?.firstname || user?.name || 'Anonymous',
+            authorId: user?.id || user?._id || 'anonymous',
             timestamp: new Date().toISOString(),
-            likes: 0
+            likes: 0,
+            isLiked: false
         };
 
         setDiscussions(prev => prev.map(discussion => {
             if (discussion.id === discussionId) {
                 return {
                     ...discussion,
-                    replies: [...discussion.replies, newReply]
+                    replies: [...(discussion.replies || []), newReply]
                 };
             }
             return discussion;
@@ -147,13 +160,153 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
             if (discussion.id === discussionId) {
                 return {
                     ...discussion,
-                    replies: [...discussion.replies, newReply]
+                    replies: [...(discussion.replies || []), newReply]
                 };
             }
             return discussion;
         });
         localStorage.setItem(`problem_discussions_${problemId}`, JSON.stringify(updatedDiscussions));
         setShowReplyForm(null);
+    };
+
+    // Enhanced delete functionality
+    const handleDeleteDiscussion = (discussionId) => {
+        const updatedDiscussions = discussions.filter(d => d.id !== discussionId);
+        setDiscussions(updatedDiscussions);
+        localStorage.setItem(`problem_discussions_${problemId}`, JSON.stringify(updatedDiscussions));
+        setShowDeleteConfirm(null);
+    };
+
+    const handleDeleteReply = (discussionId, replyId) => {
+        setDiscussions(prev => prev.map(discussion => {
+            if (discussion.id === discussionId) {
+                return {
+                    ...discussion,
+                    replies: discussion.replies.filter(reply => reply.id !== replyId)
+                };
+            }
+            return discussion;
+        }));
+
+        // Update localStorage
+        const updatedDiscussions = discussions.map(discussion => {
+            if (discussion.id === discussionId) {
+                return {
+                    ...discussion,
+                    replies: discussion.replies.filter(reply => reply.id !== replyId)
+                };
+            }
+            return discussion;
+        });
+        localStorage.setItem(`problem_discussions_${problemId}`, JSON.stringify(updatedDiscussions));
+    };
+
+    // Enhanced edit functionality
+    const handleEditDiscussion = (discussionId, newContent) => {
+        setDiscussions(prev => prev.map(discussion => {
+            if (discussion.id === discussionId) {
+                return {
+                    ...discussion,
+                    content: newContent,
+                    edited: true,
+                    editTimestamp: new Date().toISOString()
+                };
+            }
+            return discussion;
+        }));
+
+        // Update localStorage
+        const updatedDiscussions = discussions.map(discussion => {
+            if (discussion.id === discussionId) {
+                return {
+                    ...discussion,
+                    content: newContent,
+                    edited: true,
+                    editTimestamp: new Date().toISOString()
+                };
+            }
+            return discussion;
+        });
+        localStorage.setItem(`problem_discussions_${problemId}`, JSON.stringify(updatedDiscussions));
+        setEditingDiscussion(null);
+    };
+
+    const handleEditReply = (discussionId, replyId, newContent) => {
+        setDiscussions(prev => prev.map(discussion => {
+            if (discussion.id === discussionId) {
+                return {
+                    ...discussion,
+                    replies: discussion.replies.map(reply => 
+                        reply.id === replyId 
+                            ? { ...reply, content: newContent, edited: true, editTimestamp: new Date().toISOString() }
+                            : reply
+                    )
+                };
+            }
+            return discussion;
+        }));
+
+        // Update localStorage
+        const updatedDiscussions = discussions.map(discussion => {
+            if (discussion.id === discussionId) {
+                return {
+                    ...discussion,
+                    replies: discussion.replies.map(reply => 
+                        reply.id === replyId 
+                            ? { ...reply, content: newContent, edited: true, editTimestamp: new Date().toISOString() }
+                            : reply
+                    )
+                };
+            }
+            return discussion;
+        });
+        localStorage.setItem(`problem_discussions_${problemId}`, JSON.stringify(updatedDiscussions));
+        setEditingReply(null);
+    };
+
+    // Enhanced like functionality for replies
+    const handleReplyLike = (discussionId, replyId) => {
+        setDiscussions(prev => prev.map(discussion => {
+            if (discussion.id === discussionId) {
+                return {
+                    ...discussion,
+                    replies: discussion.replies.map(reply => {
+                        if (reply.id === replyId) {
+                            const isLiked = reply.isLiked;
+                            return {
+                                ...reply,
+                                likes: isLiked ? reply.likes - 1 : reply.likes + 1,
+                                isLiked: !isLiked
+                            };
+                        }
+                        return reply;
+                    })
+                };
+            }
+            return discussion;
+        }));
+
+        // Update localStorage
+        const updatedDiscussions = discussions.map(discussion => {
+            if (discussion.id === discussionId) {
+                return {
+                    ...discussion,
+                    replies: discussion.replies.map(reply => {
+                        if (reply.id === replyId) {
+                            const isLiked = reply.isLiked;
+                            return {
+                                ...reply,
+                                likes: isLiked ? reply.likes - 1 : reply.likes + 1,
+                                isLiked: !isLiked
+                            };
+                        }
+                        return reply;
+                    })
+                };
+            }
+            return discussion;
+        });
+        localStorage.setItem(`problem_discussions_${problemId}`, JSON.stringify(updatedDiscussions));
     };
 
     const formatTimeAgo = (timestamp) => {
@@ -272,10 +425,10 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                 ) : (
                     filteredDiscussions.map((discussion) => (
                         <div key={discussion.id} className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-                            {/* Discussion Header */}
+                            {/* Enhanced Discussion Header */}
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-cyan-500 rounded-full flex items-center justify-center text-white font-semibold">
+                                    <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
                                         {discussion.author.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
@@ -283,25 +436,81 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                                         <p className="text-xs text-gray-400 flex items-center gap-1">
                                             <Clock className="w-3 h-3" />
                                             {formatTimeAgo(discussion.timestamp)}
+                                            {discussion.edited && (
+                                                <span className="text-xs text-yellow-400 ml-2">(edited)</span>
+                                            )}
                                         </p>
                                     </div>
                                 </div>
-                                <button
-                                    onClick={() => handleLike(discussion.id)}
-                                    className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm transition-colors ${
-                                        discussion.isLiked
-                                            ? 'bg-cyan-500 text-white'
-                                            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                                    }`}
-                                >
-                                    <ThumbsUp className="w-4 h-4" />
-                                    {discussion.likes}
-                                </button>
+                                
+                                <div className="flex items-center gap-2">
+                                    {/* Like Button */}
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => handleLike(discussion.id)}
+                                        className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm transition-all duration-200 ${
+                                            discussion.isLiked
+                                                ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/25'
+                                                : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'
+                                        }`}
+                                    >
+                                        <ThumbsUp className="w-4 h-4" />
+                                        {discussion.likes}
+                                    </motion.button>
+                                    
+                                    {/* Action Menu */}
+                                    <div className="relative">
+                                        <motion.button
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-all duration-200"
+                                        >
+                                            <MoreVertical className="w-4 h-4" />
+                                        </motion.button>
+                                        
+                                        {/* Dropdown Menu */}
+                                        <div className="absolute right-0 top-full mt-1 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                            <div className="py-1">
+                                                {(user?.id === discussion.authorId || user?._id === discussion.authorId) && (
+                                                    <>
+                                                        <button
+                                                            onClick={() => setEditingDiscussion(discussion.id)}
+                                                            className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2"
+                                                        >
+                                                            <Edit3 className="w-4 h-4" />
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setShowDeleteConfirm(discussion.id)}
+                                                            className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-gray-700 hover:text-red-300 flex items-center gap-2"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                            Delete
+                                                        </button>
+                                                    </>
+                                                )}
+                                                <button className="w-full px-4 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2">
+                                                    <Flag className="w-4 h-4" />
+                                                    Report
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            {/* Discussion Content */}
+                            {/* Enhanced Discussion Content */}
                             <div className="mb-4">
-                                <p className="text-gray-300 leading-relaxed">{discussion.content}</p>
+                                {editingDiscussion === discussion.id ? (
+                                    <EditForm
+                                        initialContent={discussion.content}
+                                        onSubmit={(newContent) => handleEditDiscussion(discussion.id, newContent)}
+                                        onCancel={() => setEditingDiscussion(null)}
+                                    />
+                                ) : (
+                                    <p className="text-gray-300 leading-relaxed">{discussion.content}</p>
+                                )}
                             </div>
 
                             {/* Discussion Actions */}
@@ -325,22 +534,81 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                                 </div>
                             )}
 
-                            {/* Replies */}
+                            {/* Enhanced Replies */}
                             {discussion.replies && discussion.replies.length > 0 && (
                                 <div className="mt-4 space-y-3">
                                     {discussion.replies.map((reply) => (
-                                        <div key={reply.id} className="ml-8 p-4 bg-gray-700 rounded-lg">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <div className="w-6 h-6 bg-gray-500 rounded-full flex items-center justify-center text-white font-semibold text-xs">
-                                                    {reply.author.charAt(0).toUpperCase()}
+                                        <motion.div 
+                                            key={reply.id} 
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            className="ml-8 p-4 bg-gray-700 rounded-lg border border-gray-600 hover:border-gray-500 transition-all duration-200"
+                                        >
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-6 h-6 bg-gradient-to-r from-gray-500 to-gray-600 rounded-full flex items-center justify-center text-white font-semibold text-xs">
+                                                        {reply.author.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <span className="font-semibold text-sm text-white">{reply.author}</span>
+                                                    <span className="text-xs text-gray-400">
+                                                        {formatTimeAgo(reply.timestamp)}
+                                                        {reply.edited && (
+                                                            <span className="text-xs text-yellow-400 ml-1">(edited)</span>
+                                                        )}
+                                                    </span>
                                                 </div>
-                                                <span className="font-semibold text-sm text-white">{reply.author}</span>
-                                                <span className="text-xs text-gray-400">
-                                                    {formatTimeAgo(reply.timestamp)}
-                                                </span>
+                                                
+                                                <div className="flex items-center gap-2">
+                                                    {/* Reply Like Button */}
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        onClick={() => handleReplyLike(discussion.id, reply.id)}
+                                                        className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-all duration-200 ${
+                                                            reply.isLiked
+                                                                ? 'bg-cyan-500 text-white'
+                                                                : 'bg-gray-600 text-gray-300 hover:bg-gray-500'
+                                                        }`}
+                                                    >
+                                                        <ThumbsUp className="w-3 h-3" />
+                                                        {reply.likes || 0}
+                                                    </motion.button>
+                                                    
+                                                    {/* Reply Actions */}
+                                                    {(user?.id === reply.authorId || user?._id === reply.authorId) && (
+                                                        <div className="flex items-center gap-1">
+                                                            <motion.button
+                                                                whileHover={{ scale: 1.05 }}
+                                                                whileTap={{ scale: 0.95 }}
+                                                                onClick={() => setEditingReply({ discussionId: discussion.id, replyId: reply.id })}
+                                                                className="p-1 text-gray-400 hover:text-white hover:bg-gray-600 rounded transition-all duration-200"
+                                                            >
+                                                                <Edit3 className="w-3 h-3" />
+                                                            </motion.button>
+                                                            <motion.button
+                                                                whileHover={{ scale: 1.05 }}
+                                                                whileTap={{ scale: 0.95 }}
+                                                                onClick={() => handleDeleteReply(discussion.id, reply.id)}
+                                                                className="p-1 text-gray-400 hover:text-red-400 hover:bg-gray-600 rounded transition-all duration-200"
+                                                            >
+                                                                <Trash2 className="w-3 h-3" />
+                                                            </motion.button>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <p className="text-gray-300 text-sm">{reply.content}</p>
-                                        </div>
+                                            
+                                            {/* Reply Content */}
+                                            {editingReply?.discussionId === discussion.id && editingReply?.replyId === reply.id ? (
+                                                <EditForm
+                                                    initialContent={reply.content}
+                                                    onSubmit={(newContent) => handleEditReply(discussion.id, reply.id, newContent)}
+                                                    onCancel={() => setEditingReply(null)}
+                                                />
+                                            ) : (
+                                                <p className="text-gray-300 text-sm">{reply.content}</p>
+                                            )}
+                                        </motion.div>
                                     ))}
                                 </div>
                             )}
@@ -348,6 +616,61 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                     ))
                 )}
             </div>
+
+            {/* Delete Confirmation Modal */}
+            <AnimatePresence>
+                {showDeleteConfirm && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+                        onClick={() => setShowDeleteConfirm(null)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="bg-gray-800 p-6 rounded-lg border border-gray-700 max-w-md w-full mx-4"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 bg-red-500/20 rounded-full flex items-center justify-center">
+                                    <AlertTriangle className="w-5 h-5 text-red-400" />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-semibold text-white">Delete Discussion</h3>
+                                    <p className="text-sm text-gray-400">This action cannot be undone</p>
+                                </div>
+                            </div>
+                            
+                            <p className="text-gray-300 mb-6">
+                                Are you sure you want to delete this discussion? All replies will also be deleted.
+                            </p>
+                            
+                            <div className="flex gap-3 justify-end">
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => setShowDeleteConfirm(null)}
+                                    className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-colors"
+                                >
+                                    Cancel
+                                </motion.button>
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => handleDeleteDiscussion(showDeleteConfirm)}
+                                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    Delete
+                                </motion.button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
@@ -373,20 +696,72 @@ const ReplyForm = ({ onSubmit, onCancel }) => {
                 className="w-full h-20 bg-gray-600 border border-gray-500 rounded-lg p-3 text-white resize-none focus:border-cyan-400 focus:outline-none"
             />
             <div className="flex gap-2">
-                <button
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     type="submit"
                     disabled={!replyText.trim()}
                     className="btn btn-primary btn-sm"
                 >
                     Reply
-                </button>
-                <button
+                </motion.button>
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     type="button"
                     onClick={onCancel}
                     className="btn btn-outline btn-sm"
                 >
                     Cancel
-                </button>
+                </motion.button>
+            </div>
+        </form>
+    );
+};
+
+// Edit Form Component
+const EditForm = ({ initialContent, onSubmit, onCancel }) => {
+    const [editText, setEditText] = useState(initialContent);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (editText.trim() && editText !== initialContent) {
+            onSubmit(editText);
+        } else {
+            onCancel();
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-3">
+            <textarea
+                value={editText}
+                onChange={(e) => setEditText(e.target.value)}
+                placeholder="Edit your content..."
+                className="w-full h-24 bg-gray-600 border border-gray-500 rounded-lg p-3 text-white resize-none focus:border-cyan-400 focus:outline-none"
+                autoFocus
+            />
+            <div className="flex gap-2">
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    type="submit"
+                    disabled={!editText.trim() || editText === initialContent}
+                    className="btn btn-primary btn-sm"
+                >
+                    <CheckCircle className="w-4 h-4" />
+                    Save
+                </motion.button>
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    type="button"
+                    onClick={onCancel}
+                    className="btn btn-outline btn-sm"
+                >
+                    <XCircle className="w-4 h-4" />
+                    Cancel
+                </motion.button>
             </div>
         </form>
     );

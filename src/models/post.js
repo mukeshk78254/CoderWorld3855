@@ -12,9 +12,10 @@ const postSchema = new mongoose.Schema({
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
     category: { 
         type: String, 
-        enum: ['For You', 'Career', 'Contest', 'Compensation', 'Feedback', 'Interview'],
+        enum: ['For You', 'Career', 'Contest', 'Compensation', 'Feedback', 'Interview', 'general', 'algorithm', 'data-structure', 'interview', 'contest', 'bug-report', 'feature-request'],
         required: true 
     },
+    tags: [{ type: String, trim: true }], // Array of tags
     upvotes: { type: Number, default: 0 },
     views: { type: Number, default: 0 },
     commentCount: { type: Number, default: 0 } // Denormalized for efficiency

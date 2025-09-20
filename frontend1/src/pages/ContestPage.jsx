@@ -430,9 +430,42 @@ function ContestPage() {
       <nav className="navbar sticky top-0 z-50 backdrop-blur-lg bg-gray-900/70 px-6 border-b border-gray-700 shadow-md animate-fade-in-down">
         {/* Left section (Logo) */}
         <div className="flex-1">
-          <NavLink to="/" className="btn btn-ghost normal-case text-3xl font-bold text-transparent bg-clip-text"
-            style={{ backgroundImage: 'linear-gradient(to right, #6366F1, #EC4899)', textShadow: '0 0 10px rgba(99,102,241,0.5)' }}>
-            CoderWorld<span className="text-xl opacity-70">.dev</span>
+          <NavLink to="/" className="flex items-center gap-3 group">
+            {/* Enhanced Logo Icon */}
+            <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/25 border border-cyan-400/20 group-hover:shadow-cyan-500/40 transition-all duration-300"
+            >
+              <motion.div
+                animate={{ 
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 5, -5, 0]
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+                className="w-9 h-9"
+              >
+                <img 
+                  src="/src/pages/2896418.png" 
+                  alt="CoderWorld Logo" 
+                  className="w-full h-full object-contain"
+                />
+              </motion.div>
+            </motion.div>
+            
+            {/* Logo Text */}
+            <div className="flex flex-col">
+              <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 group-hover:from-cyan-300 group-hover:to-purple-400 transition-all duration-300" style={{ fontFamily: "'Orbitron', sans-serif" }}>
+                CoderWorld
+              </span>
+              <span className="text-xs text-slate-400 group-hover:text-cyan-400 transition-colors duration-300" style={{ fontFamily: "'Source Code Pro', monospace" }}>
+                Code • Learn • Solve
+              </span>
+            </div>
           </NavLink>
         </div>
 

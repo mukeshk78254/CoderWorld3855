@@ -40,17 +40,48 @@ function Header({ user, problem }) {
             <div className="container mx-auto px-4 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center space-x-4 md:space-x-8">
-                        <button 
+                        <motion.button 
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             onClick={handleLogoClick}
-                            className="text-xl md:text-2xl font-bold text-white flex items-center gap-2 min-w-0 hover:text-cyan-400 transition-colors"
+                            className="flex items-center gap-3 min-w-0 group"
                         >
-                            <motion.img 
-                                src="/vite.svg" alt="CoderWorld Logo" className="h-5 w-5 md:h-6 md:w-6 flex-shrink-0"
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-                            />
-                            <span className="truncate">CoderWorld</span>
-                        </button>
+                            {/* Enhanced Logo Icon */}
+                            <motion.div
+                                whileHover={{ rotate: 360 }}
+                                transition={{ duration: 0.6, ease: "easeInOut" }}
+                                className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/25 border border-cyan-400/20 group-hover:shadow-cyan-500/40 transition-all duration-300"
+                            >
+                                <motion.div
+                                    animate={{ 
+                                        scale: [1, 1.1, 1],
+                                        rotate: [0, 5, -5, 0]
+                                    }}
+                                    transition={{ 
+                                        duration: 2, 
+                                        repeat: Infinity, 
+                                        ease: "easeInOut" 
+                                    }}
+                                    className="w-8 h-8 md:w-9 md:h-9"
+                                >
+                                    <img 
+                                        src="/src/pages/2896418.png" 
+                                        alt="CoderWorld Logo" 
+                                        className="w-full h-full object-contain"
+                                    />
+                                </motion.div>
+                            </motion.div>
+                            
+                            {/* Logo Text */}
+                            <div className="flex flex-col">
+                                <span className="text-xl md:text-2xl font-bold text-white group-hover:text-cyan-300 transition-colors duration-300 truncate" style={{ fontFamily: "'Orbitron', sans-serif" }}>
+                                    CoderWorld
+                                </span>
+                                <span className="text-xs text-slate-400 group-hover:text-cyan-400 transition-colors duration-300 hidden md:block" style={{ fontFamily: "'Source Code Pro', monospace" }}>
+                                    Code • Learn • Solve
+                                </span>
+                            </div>
+                        </motion.button>
                         
                         {/* Problem Title Display */}
                         {problem && (

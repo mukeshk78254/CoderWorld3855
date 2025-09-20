@@ -337,7 +337,7 @@ const TabButton = ({ isActive, onClick, children, icon: Icon }) => (
         whileHover={{ scale: 1.15, y: -4 }}
         whileTap={{ scale: 0.85 }}
         transition={{ type: "spring", stiffness: 400, damping: 25 }}
-        onClick={onClick}
+         onClick={onClick}
         className={`group flex items-center gap-4 px-6 py-4 rounded-xl font-semibold transition-all duration-300 cursor-pointer ${
             isActive 
                 ? 'bg-gradient-to-r from-cyan-500/40 to-blue-500/40 text-cyan-200 border-2 border-cyan-400/60 shadow-xl shadow-cyan-500/40' 
@@ -723,84 +723,92 @@ function EnhancedProblemPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 min-h-[80vh] h-full">
                     {/* Left Panel - Problem Description */}
                     <div className="content-section bg-slate-900/60 border border-slate-800 rounded-2xl p-4 lg:p-6 backdrop-blur-sm overflow-y-auto flex flex-col h-full">
-                        {/* Enhanced Header with Better Positioning */}
+                        {/* LeetCode-Style Header with CoderWorld Branding */}
                         <div className="flex items-center justify-between mb-8">
-                            <div className="flex items-center gap-5">
+                            <div className="flex items-center gap-6">
+                                {/* CoderWorld Logo with Hover Effects */}
                                 <motion.div 
-                                    whileHover={{ scale: 1.2, rotate: 10 }}
-                                    whileTap={{ scale: 0.9 }}
-                                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                    className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/25 border border-cyan-400/20 cursor-pointer"
+                                    whileHover={{ scale: 1.05, rotate: 2 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                                    onClick={() => navigate(-1)}
+                                    className="flex items-center gap-3 cursor-pointer group"
                                 >
+                                    {/* Triangle Logo Icon */}
                                     <motion.div
-                                        animate={{ rotate: [0, 5, -5, 0] }}
-                                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                                        whileHover={{ rotate: 360 }}
+                                        transition={{ duration: 0.6, ease: "easeInOut" }}
+                                        className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/25 border border-cyan-400/20 group-hover:shadow-cyan-500/40 transition-all duration-300"
                                     >
-                                        <Code size={32} className="text-white" />
-                                    </motion.div>
-                                </motion.div>
-                                <div>
-                                    <motion.h1 
-                                        animate={{ 
-                                            backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                                        }}
-                                        transition={{ 
-                                            duration: 3, 
-                                            repeat: Infinity, 
-                                            ease: "linear" 
-                                        }}
-                                        className="text-3xl font-bold text-white mb-3 bg-gradient-to-r from-white via-cyan-200 to-blue-200 bg-clip-text text-transparent bg-[length:200%_100%]" 
-                                        style={{ fontFamily: "'Orbitron', sans-serif" }}
-                                    >
-                                        {problem?.title || "Problem"}
-                                    </motion.h1>
-                                    <div className="flex items-center gap-4">
-                                        <motion.span 
-                                            whileHover={{ scale: 1.1, y: -3 }}
+                                        <motion.div
                                             animate={{ 
-                                                y: [0, -2, 0],
-                                                boxShadow: [
-                                                    "0 0 0 rgba(34, 197, 94, 0.25)",
-                                                    "0 4px 20px rgba(34, 197, 94, 0.4)",
-                                                    "0 0 0 rgba(34, 197, 94, 0.25)"
-                                                ]
+                                                scale: [1, 1.1, 1],
+                                                rotate: [0, 5, -5, 0]
                                             }}
                                             transition={{ 
                                                 duration: 2, 
                                                 repeat: Infinity, 
                                                 ease: "easeInOut" 
                                             }}
-                                            className={`px-6 py-3 rounded-full text-lg font-bold flex items-center gap-3 shadow-xl ${
-                                                problem?.difficulty === 'easy' ? 'bg-green-500/30 text-green-300 border-2 border-green-400/50 shadow-green-500/40' :
-                                                problem?.difficulty === 'medium' ? 'bg-yellow-500/30 text-yellow-300 border-2 border-yellow-400/50 shadow-yellow-500/40' :
-                                                'bg-red-500/30 text-red-300 border-2 border-red-400/50 shadow-red-500/40'
-                                            }`}
+                                            className="w-8 h-8"
                                         >
-                                            <motion.div
-                                                animate={{ rotate: [0, 360] }}
-                                                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                                            >
-                                                <Target size={20} />
-                                            </motion.div>
-                                            {problem?.difficulty}
-                                        </motion.span>
-                                        <motion.span 
+                                            <img 
+                                                src="/src/pages/2896418.png" 
+                                                alt="CoderWorld Logo" 
+                                                className="w-full h-full object-contain"
+                                            />
+                                        </motion.div>
+                                    </motion.div>
+                                    
+                                    {/* Logo Text */}
+                                    <span className="text-2xl font-bold text-white group-hover:text-cyan-300 transition-colors duration-300" style={{ fontFamily: "'Orbitron', sans-serif" }}>
+                                        CoderWorld
+                                    </span>
+                                </motion.div>
+                                
+                                {/* Problem Title and Info */}
+                                <div className="flex items-center gap-4">
+                                    <div>
+                                        <motion.h1 
                                             whileHover={{ scale: 1.02 }}
-                                            className="text-slate-300 text-lg flex items-center gap-2 px-4 py-2 bg-slate-800/50 rounded-lg border border-slate-700/50" style={{ fontFamily: "'Source Code Pro', monospace" }}
+                                            className="text-2xl font-bold text-white mb-2" 
+                                            style={{ fontFamily: "'Orbitron', sans-serif" }}
                                         >
-                                            <Layers size={18} />
-                                            {problem?.tags}
-                                        </motion.span>
+                                            {problem?.title || "Problem"}
+                                        </motion.h1>
+                                        <div className="flex items-center gap-3">
+                                            <motion.span 
+                                                whileHover={{ scale: 1.05, y: -2 }}
+                                                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                                    problem?.difficulty === 'easy' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
+                                                    problem?.difficulty === 'medium' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
+                                                    'bg-red-500/20 text-red-400 border border-red-500/30'
+                                                }`}
+                                            >
+                                                {problem?.difficulty}
+                                            </motion.span>
+                                            <motion.span 
+                                                whileHover={{ scale: 1.02 }}
+                                                className="text-slate-400 text-sm px-2 py-1 bg-slate-800/50 rounded border border-slate-700/50" 
+                                                style={{ fontFamily: "'Source Code Pro', monospace" }}
+                                            >
+                                                {problem?.tags}
+                                            </motion.span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <button
+                            
+                            {/* Problems Button with Hover Effect */}
+                            <motion.button
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={fetchAllProblems}
-                                className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors duration-300"
+                                className="cursor-pointer text-cyan-300 text-sm hover:text-cyan-200 hover:underline transition-all duration-300 px-3 py-2 rounded-lg hover:bg-slate-800/50"
+                                style={{ fontFamily: "'Source Code Pro', monospace" }}
                             >
-                                <FileText size={20} />
-                                <span style={{ fontFamily: "'Source Code Pro', monospace" }}>Problems</span>
-                            </button>
+                                📘 Problems
+                            </motion.button>
                         </div>
 
                         {/* Progress Indicator */}
@@ -828,50 +836,24 @@ function EnhancedProblemPage() {
                             </div>
                         </div>
 
-                        {/* Enhanced Tabs with Better Icons and Spacing */}
-                        <div className="flex flex-wrap gap-4 mb-10">
-                            <TabButton 
-                                isActive={activeTab === "description"} 
-                                onClick={() => setActiveTab("description")}
-                                icon={FileText}
-                            >
-                                Description
-                            </TabButton>
-                            <TabButton 
-                                isActive={activeTab === "submissions"} 
-                                onClick={() => setActiveTab("submissions")}
-                                icon={History}
-                            >
-                                Submissions
-                            </TabButton>
-                            <TabButton 
-                                isActive={activeTab === "solutions"} 
-                                onClick={() => setActiveTab("solutions")}
-                                icon={Lightbulb}
-                            >
-                                Solutions
-                            </TabButton>
-                            <TabButton 
-                                isActive={activeTab === "discussions"} 
-                                onClick={() => setActiveTab("discussions")}
-                                icon={MessageSquare}
-                            >
-                                Discussions
-                            </TabButton>
-                            <TabButton 
-                                isActive={activeTab === "editorial"} 
-                                onClick={() => setActiveTab("editorial")}
-                                icon={BookOpen}
-                            >
-                                Editorial
-                            </TabButton>
-                            <TabButton 
-                                isActive={activeTab === "chatAi"} 
-                                onClick={() => setActiveTab("chatAi")}
-                                icon={Brain}
-                            >
-                                AI Chat
-                            </TabButton>
+                        {/* LeetCode-Style Tabs */}
+                        <div className="flex space-x-6 border-b border-slate-600 text-slate-300 mb-6">
+                            {["description", "editorial", "solutions", "discussions", "submissions", "chatAi"].map(tab => (
+                                <motion.div 
+                                    key={tab} 
+                                    whileHover={{ scale: 1.05, y: -2 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => setActiveTab(tab)} 
+                                    className={`py-2 cursor-pointer transition-all duration-300 ${
+                                        activeTab === tab 
+                                            ? "text-cyan-400 border-b-2 border-cyan-400" 
+                                            : "hover:text-white hover:border-b-2 hover:border-slate-400"
+                                    }`}
+                                    style={{ fontFamily: "'Source Code Pro', monospace" }}
+                                >
+                                    {tab.toUpperCase()}
+                                </motion.div>
+                            ))}
                         </div>
 
                         {/* Tab Content */}
@@ -885,51 +867,23 @@ function EnhancedProblemPage() {
                                 className="min-h-[400px]"
                             >
                                 {activeTab === "description" && (
-                                    <div className="space-y-6">
+                                    <div className="space-y-4">
                                         <div 
                                             className="prose prose-invert max-w-none"
                                             dangerouslySetInnerHTML={{ __html: problem?.description }} 
                                         />
-                                        <div className="space-y-4">
-                                            <h3 className="text-xl font-bold text-white" style={{ fontFamily: "'Orbitron', sans-serif" }}>
-                                                Test Cases
-                                            </h3>
+                                        <div className="mt-4 space-y-2">
                                             {(problem?.visibletestcases || []).map((ex, i) => (
                                                 <motion.div 
                                                     key={i} 
                                                     initial={{ opacity: 0, scale: 0.95 }}
                                                     animate={{ opacity: 1, scale: 1 }}
                                                     transition={{ delay: i * 0.1 }}
-                                                    className="bg-slate-800/60 border border-slate-700 p-4 rounded-xl"
+                                                    className="bg-slate-800 p-3 rounded border border-slate-700"
                                                 >
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                        <div>
-                                                            <p className="text-cyan-400 font-semibold mb-2" style={{ fontFamily: "'Source Code Pro', monospace" }}>
-                                                                Input:
-                                                            </p>
-                                                            <p className="text-slate-300 font-mono text-sm bg-slate-900/50 p-2 rounded">
-                                                                {ex.input}
-                                                            </p>
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-green-400 font-semibold mb-2" style={{ fontFamily: "'Source Code Pro', monospace" }}>
-                                                                Output:
-                                                            </p>
-                                                            <p className="text-slate-300 font-mono text-sm bg-slate-900/50 p-2 rounded">
-                                                                {ex.output}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    {ex.explanation && (
-                                                        <div className="mt-4">
-                                                            <p className="text-yellow-400 font-semibold mb-2" style={{ fontFamily: "'Source Code Pro', monospace" }}>
-                                                                Explanation:
-                                                            </p>
-                                                            <p className="text-slate-300 text-sm">
-                                                                {ex.explanation}
-                                                            </p>
-                                                        </div>
-                                                    )}
+                                                    <p><strong>Input:</strong> {ex.input}</p>
+                                                    <p><strong>Output:</strong> {ex.output}</p>
+                                                    {ex.explanation && <p><strong>Explanation:</strong> {ex.explanation}</p>}
                                                 </motion.div>
                                             ))}
                                         </div>
@@ -937,22 +891,17 @@ function EnhancedProblemPage() {
                                 )}
                                 {activeTab === "submissions" && <SubmissionHistory problemid={problemid} />}
                                 {activeTab === "solutions" && (
-                                    <div className="space-y-6">
-                                        <div className="text-center py-12">
-                                            <Lightbulb size={64} className="mx-auto mb-4 text-yellow-400" />
-                                            <h3 className="text-2xl font-bold text-white mb-2">Solutions</h3>
-                                            <p className="text-slate-400 mb-6">
-                                                Solutions will be available after you submit a correct answer.
+                                    <div>
+                                        <div className="flex justify-between items-center mb-4">
+                                            <h3 className="text-lg font-bold">💡 Solutions</h3>
+                                        </div>
+                                        
+                                        <div className="bg-slate-800 p-6 rounded border border-slate-700 text-center">
+                                            <div className="text-slate-400 text-4xl mb-4">📝</div>
+                                            <h4 className="text-lg font-semibold text-slate-300 mb-3">No solutions shared yet</h4>
+                                            <p className="text-slate-400 mb-4">
+                                                Solve this problem first, then share your solution!
                                             </p>
-                                            <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
-                                                <h4 className="text-lg font-semibold text-white mb-3">How to unlock solutions:</h4>
-                                                <ul className="text-slate-300 space-y-2 text-left">
-                                                    <li>• Submit a correct solution to this problem</li>
-                                                    <li>• View multiple solution approaches</li>
-                                                    <li>• Learn from different coding styles</li>
-                                                    <li>• Understand time and space complexity</li>
-                                                </ul>
-                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -962,7 +911,20 @@ function EnhancedProblemPage() {
                                         problemTitle={problem?.title || "Problem"} 
                                     />
                                 )}
-                                {activeTab === "editorial" && <Editorial secureUrl={problem?.secureUrl} />}
+                                {activeTab === "editorial" && (
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-4">📚 Editorial Solution</h3>
+                                        {problem?.secureUrl ? (
+                                            <Editorial secureUrl={problem.secureUrl} />
+                                        ) : (
+                                            <div className="bg-slate-800 p-6 rounded border border-slate-700 text-center">
+                                                <div className="text-slate-400 text-lg mb-2">📝</div>
+                                                <p className="text-slate-400">No editorial solution available for this problem yet.</p>
+                                                <p className="text-sm text-slate-500 mt-2">Check back later or contribute by sharing your solution!</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                                 {activeTab === "chatAi" && <ChatAi problem={problem} />}
                             </motion.div>
                         </AnimatePresence>
@@ -1369,4 +1331,3 @@ function EnhancedProblemPage() {
 }
 
 export default EnhancedProblemPage;
-

@@ -232,7 +232,7 @@ function App() {
         {/* Protected Routes */}
         <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="/problems" element={isAuthenticated ? <ProblemListPage /> : <Navigate to="/login" />} />
-        <Route path="/problem/:problemid" element={<LeetCodeStylePage />} />
+        <Route path="/problem/:problemid" element={<LeetCodeStylePage/>} />
         <Route path="/problem/:problemid/write-solution" element={<WriteSolutionPage />} />
         <Route path="/test-write-solution" element={<WriteSolutionPage />} />
         <Route path="/contests" element={isAuthenticated ? <EnhancedContestPage /> : <Navigate to="/login" />} />

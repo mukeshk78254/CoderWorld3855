@@ -4977,9 +4977,62 @@ function Homepage() {
             <main className="container mx-auto px-4 sm:px-6 py-8">
                 {/* --- Hero Section --- */}
                 <section ref={heroRef} className="text-center py-20 lg:py-32 min-h-[70vh] flex flex-col justify-center">
-                    <h1 className="text-5xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
-                        Welcome to CoderWorld
-                    </h1>
+                    {/* Enhanced CoderWorld Logo */}
+                    <motion.div 
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        className="flex flex-col items-center mb-8"
+                    >
+                        {/* Logo Icon */}
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                            whileHover={{ rotate: 360, scale: 1.1 }}
+                            className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-2xl shadow-cyan-500/25 border border-cyan-400/20 mb-4"
+                        >
+                            <motion.div
+                                animate={{ 
+                                    scale: [1, 1.1, 1],
+                                    rotate: [0, 5, -5, 0]
+                                }}
+                                transition={{ 
+                                    duration: 2, 
+                                    repeat: Infinity, 
+                                    ease: "easeInOut" 
+                                }}
+                                className="w-12 h-12 lg:w-14 lg:h-14"
+                            >
+                                <img 
+                                    src="/src/pages/2896418.png" 
+                                    alt="CoderWorld Logo" 
+                                    className="w-full h-full object-contain"
+                                />
+                            </motion.div>
+                        </motion.div>
+                        
+                        {/* Logo Text */}
+                        <motion.h1 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5, duration: 0.6 }}
+                            className="text-5xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-2"
+                            style={{ fontFamily: "'Orbitron', sans-serif" }}
+                        >
+                            CoderWorld
+                        </motion.h1>
+                        
+                        <motion.p 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.7, duration: 0.6 }}
+                            className="text-lg text-slate-400"
+                            style={{ fontFamily: "'Source Code Pro', monospace" }}
+                        >
+                            Code • Learn • Solve
+                        </motion.p>
+                    </motion.div>
                     <p className="mt-4 max-w-2xl mx-auto text-lg text-slate-400">
                         Sharpen your skills, solve challenging problems, and compete with a global community of developers.
                     </p>

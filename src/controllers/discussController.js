@@ -1,94 +1,3 @@
-// const Post = require('../models/post');
-
-// // --- Create a new discussion post ---
-// const createPost = async (req, res) => {
-//     try {
-//         const { title, content, tags } = req.body;
-//         const authorId = req.ans1.id; // From auth middleware
-
-//         if (!title || !content) {
-//             return res.status(400).json({ message: "Title and content are required." });
-//         }
-
-//         const newPost = new Post({
-//             title,
-//             content,
-//             tags: tags || [],
-//             author: authorId,
-//         });
-
-//         await newPost.save();
-//         res.status(201).json(newPost);
-//     } catch (error) {
-//         res.status(500).json({ message: "Server Error: " + error.message });
-//     }
-// };
-
-// // --- Get all discussion posts (for the main forum view) ---
-// const getAllPosts = async (req, res) => {
-//     try {
-//         // Populate author to get their firstname
-//         const posts = await Post.find({})
-//             .populate('author', 'firstname')
-//             .sort({ createdAt: -1 }); // Newest first by default
-//         res.status(200).json(posts);
-//     } catch (error) {
-//         res.status(500).json({ message: "Server Error: " + error.message });
-//     }
-// };
-
-// // --- Get a single post by its ID (for the detailed view) ---
-// const getPostById = async (req, res) => {
-//     try {
-//         const post = await Post.findById(req.params.id)
-//             .populate('author', 'firstname')
-//             .populate('replies.author', 'firstname');
-        
-//         if (!post) {
-//             return res.status(404).json({ message: "Post not found." });
-//         }
-        
-//         // Increment views (optional)
-//         post.views += 1;
-//         await post.save();
-
-//         res.status(200).json(post);
-//     } catch (error) {
-//         res.status(500).json({ message: "Server Error: " + error.message });
-//     }
-// };
-
-// // --- Add a reply to a post ---
-// const addReplyToPost = async (req, res) => {
-//     try {
-//         const { content } = req.body;
-//         const authorId = req.ans1.id;
-//         const postId = req.params.id;
-
-//         const newReply = {
-//             content,
-//             author: authorId,
-//         };
-
-//         const updatedPost = await Post.findByIdAndUpdate(
-//             postId,
-//             { $push: { replies: newReply } },
-//             { new: true }
-//         ).populate('replies.author', 'firstname');
-        
-//         res.status(201).json(updatedPost);
-//     } catch (error) {
-//         res.status(500).json({ message: "Server Error: " + error.message });
-//     }
-// };
-
-// module.exports = {
-//     createPost,
-//     getAllPosts,
-//     getPostById,
-//     addReplyToPost,
-// };
-
 const Post = require('../models/post');
 const Comment = require('../models/comment');
 
@@ -99,7 +8,14 @@ exports.getPosts = async (req, res) => {
         const filter = (category && category !== 'For You') ? { category } : {};
         
         const posts = await Post.find(filter)
-            .populate('author', 'firstname') // Only get the author's first name
+            .populate('author', 'firstname')
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'author',
+                    select: 'firstname'
+                }
+            }) // Populate comments and their authors
             .sort({ createdAt: -1 })
             .lean();
         res.status(200).json(posts);
