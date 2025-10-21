@@ -1,4 +1,4 @@
-const { GoogleGenAI } = require("@google/genai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 
 const solveDoubt = async(req , res)=>{
@@ -7,7 +7,7 @@ const solveDoubt = async(req , res)=>{
     try{
 
         const {messages,title,description,testcases,startcode} = req.body;
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_KEY });
+        const ai = new GoogleGenerativeAI(process.env.GEMINI_KEY);
        
         async function main() {
         const response = await ai.models.generateContent({
