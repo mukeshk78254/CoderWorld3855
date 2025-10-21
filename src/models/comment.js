@@ -7,7 +7,7 @@ const commentSchema = new mongoose.Schema({
     upvotes: { type: Number, default: 0 },
 }, { timestamps: true });
 
-// When a new comment is saved, increment the commentCount on the parent Post
+
 commentSchema.post('save', async function(doc) {
     await mongoose.model('Post').findByIdAndUpdate(doc.post, { $inc: { commentCount: 1 } });
 });

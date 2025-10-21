@@ -2,14 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-// Middleware
+
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true 
 }));
 app.use(express.json());
 
-// Mock data for testing
+
 const mockProblems = [
     {
         _id: "681a827e01442250b54c0dac",
@@ -31,7 +31,7 @@ const mockProblems = [
     }
 ];
 
-// Mock submission responses
+
 const mockRunResponse = [
     {
         stdout: "Test case 1 passed",
@@ -56,7 +56,7 @@ const mockSubmitResponse = {
     errorMessage: null
 };
 
-// Routes
+
 app.get('/problem/problembyid/:id', (req, res) => {
     const problem = mockProblems.find(p => p._id === req.params.id);
     if (problem) {
@@ -73,7 +73,7 @@ app.get('/problem/getallproblem', (req, res) => {
 app.post('/submission/run/:id', (req, res) => {
     console.log('🚀 Run request received:', req.body);
     
-    // Simulate processing delay
+  
     setTimeout(() => {
         res.json(mockRunResponse);
     }, 1000);
@@ -82,23 +82,23 @@ app.post('/submission/run/:id', (req, res) => {
 app.post('/submission/submit/:id', (req, res) => {
     console.log('📝 Submit request received:', req.body);
     
-    // Simulate processing delay
+   
     setTimeout(() => {
         res.json(mockSubmitResponse);
     }, 1500);
 });
 
-// Health check
+
 app.get('/health', (req, res) => {
     res.json({ status: 'OK', message: 'Mock server is running!' });
 });
 
-// Start server
+
 const PORT = 5000;
 app.listen(PORT, () => {
-    console.log('🚀 Mock Backend Server running on port', PORT);
-    console.log('✅ Ready to handle run/submit requests!');
-    console.log('🔗 Frontend can connect to: http://localhost:' + PORT);
+    console.log(' Mock Backend Server running on port', PORT);
+    console.log(' Ready to handle run/submit requests!');
+    console.log(' Frontend can connect to: http://localhost:' + PORT);
 });
 
 module.exports = app;

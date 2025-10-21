@@ -11,10 +11,10 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/dashboard/Header';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-// Animated Background Component
+
 const AnimatedBackground = () => {
     const canvasRef = useRef(null);
     const animationRef = useRef(null);
@@ -63,7 +63,7 @@ const AnimatedBackground = () => {
         const animate = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw stars
+         
             stars.forEach(star => {
                 star.opacity += star.twinkle * (Math.random() > 0.5 ? 1 : -1);
                 star.opacity = Math.max(0.1, Math.min(0.9, star.opacity));
@@ -74,7 +74,6 @@ const AnimatedBackground = () => {
                 ctx.fill();
             });
 
-            // Draw particles
             particles.forEach(particle => {
                 particle.x += particle.vx;
                 particle.y += particle.vy;
@@ -120,7 +119,7 @@ const AnimatedBackground = () => {
     );
 };
 
-// Countdown Timer Component
+
 const CountdownTimer = ({ targetDate }) => {
     const [timeLeft, setTimeLeft] = useState({
         days: 0,
@@ -170,26 +169,26 @@ const CountdownTimer = ({ targetDate }) => {
     );
 };
 
-// Contest Opening Soon Page
+
 function ContestOpeningSoon() {
     const navigate = useNavigate();
     const titleRef = useRef(null);
     const subtitleRef = useRef(null);
     const heroRef = useRef(null);
 
-    // Contest starts in 2 days - create a fixed future date
+   
     const contestStartDate = new Date();
     contestStartDate.setDate(contestStartDate.getDate() + 2);
-    contestStartDate.setHours(18, 0, 0, 0); // 6 PM
+    contestStartDate.setHours(18, 0, 0, 0);
 
     useEffect(() => {
-        // Hero section animations
+        
         gsap.fromTo(heroRef.current,
             { opacity: 0, y: 50 },
             { opacity: 1, y: 0, duration: 1, ease: "power2.out" }
         );
 
-        // Title typing animation
+     
         gsap.fromTo(titleRef.current,
             { opacity: 0 },
             { 
@@ -205,13 +204,13 @@ function ContestOpeningSoon() {
             }
         );
 
-        // Subtitle animation
+        
         gsap.fromTo(subtitleRef.current,
             { opacity: 0, y: 20 },
             { opacity: 1, y: 0, duration: 1, delay: 0.5, ease: "power2.out" }
         );
 
-        // Staggered animations for cards
+        
         gsap.fromTo(".contest-card",
             { opacity: 0, y: 50, scale: 0.8 },
             { 
@@ -229,7 +228,7 @@ function ContestOpeningSoon() {
             }
         );
 
-        // Floating animation for icons
+       
         gsap.to(".floating-icon", {
             y: -10,
             duration: 2,
@@ -257,7 +256,7 @@ function ContestOpeningSoon() {
             <Header />
             
             <main className="container mx-auto px-4 py-8 relative z-10">
-                {/* Hero Section */}
+              
                 <motion.section 
                     ref={heroRef}
                     className="text-center py-16 mb-16"
@@ -291,13 +290,13 @@ function ContestOpeningSoon() {
                         Get ready for an exciting coding challenge! The contest will begin soon with amazing prizes and recognition.
                     </p>
 
-                    {/* Countdown Timer */}
+               
                     <div className="mb-12">
                         <h3 className="text-2xl font-bold text-white mb-6">Contest Starts In:</h3>
                         <CountdownTimer targetDate={contestStartDate.getTime()} />
                     </div>
 
-                    {/* Action Buttons */}
+                    
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                         <motion.button
                             whileHover={{ scale: 1.05 }}
@@ -319,12 +318,12 @@ function ContestOpeningSoon() {
                     </div>
                 </motion.section>
 
-                {/* Contest Information Cards */}
+             
                 <section className="contest-cards mb-16">
                     <h2 className="text-3xl font-bold text-white text-center mb-12">Contest Details</h2>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {/* Contest Info Card */}
+                      
                         <motion.div className="contest-card bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
                             <div className="flex items-center gap-4 mb-4">
                                 <div className="w-12 h-12 bg-cyan-500 rounded-xl flex items-center justify-center floating-icon">
@@ -352,7 +351,6 @@ function ContestOpeningSoon() {
                             </div>
                         </motion.div>
 
-                        {/* Participants Card */}
                         <motion.div className="contest-card bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
                             <div className="flex items-center gap-4 mb-4">
                                 <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center floating-icon">
@@ -372,7 +370,7 @@ function ContestOpeningSoon() {
                             </div>
                         </motion.div>
 
-                        {/* Difficulty Card */}
+                        
                         <motion.div className="contest-card bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
                             <div className="flex items-center gap-4 mb-4">
                                 <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center floating-icon">
@@ -395,7 +393,7 @@ function ContestOpeningSoon() {
                     </div>
                 </section>
 
-                {/* Contest Description */}
+               
                 <motion.section 
                     className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 mb-16"
                     initial={{ opacity: 0, y: 50 }}
@@ -439,7 +437,6 @@ function ContestOpeningSoon() {
                     </div>
                 </motion.section>
 
-                {/* Back Button */}
                 <div className="text-center">
                     <motion.button
                         whileHover={{ scale: 1.05 }}

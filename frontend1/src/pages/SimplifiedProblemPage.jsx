@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import '../components/ResizableEditor.css';
 
-// Simple Resizable Editor Component
+
 const ResizableEditor = ({ value, onChange, language, onMount }) => {
     const textareaRef = useRef(null);
     const [isResizing, setIsResizing] = useState(false);
@@ -22,7 +22,7 @@ const ResizableEditor = ({ value, onChange, language, onMount }) => {
 
     useEffect(() => {
         if (textareaRef.current) {
-            textareaRef.current.style.height = '400px'; // Default height
+            textareaRef.current.style.height = '400px'; 
             onMount && onMount(textareaRef.current);
         }
     }, [onMount]);
@@ -38,7 +38,7 @@ const ResizableEditor = ({ value, onChange, language, onMount }) => {
     const handleMouseMove = (e) => {
         if (!isResizing) return;
         const newHeight = startHeight + (e.clientY - startY);
-        if (newHeight > 200 && newHeight < 800) { // Min and max height
+        if (newHeight > 200 && newHeight < 800) { 
             textareaRef.current.style.height = `${newHeight}px`;
         }
     };
@@ -77,7 +77,7 @@ const ResizableEditor = ({ value, onChange, language, onMount }) => {
     );
 };
 
-// Simplified Header Component
+
 const SimplifiedHeader = ({ problem, onBack }) => {
     return (
         <header className="sticky top-0 z-50 bg-slate-950/70 backdrop-blur-lg border-b border-slate-800">
@@ -125,7 +125,7 @@ const SimplifiedHeader = ({ problem, onBack }) => {
     );
 };
 
-// Action Button Component
+
 const ActionButton = ({ onClick, variant, icon: Icon, loading, children, ...props }) => {
     const variants = {
         primary: "bg-blue-600 hover:bg-blue-700 text-white",
@@ -151,7 +151,7 @@ const ActionButton = ({ onClick, variant, icon: Icon, loading, children, ...prop
     );
 };
 
-// Main Simplified Problem Page Component
+
 function SimplifiedProblemPage() {
     const { problemid } = useParams();
     const navigate = useNavigate();
@@ -176,7 +176,7 @@ function SimplifiedProblemPage() {
         javascript: "JavaScript"
     };
 
-    // Fetch problem on load
+   
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -184,7 +184,7 @@ function SimplifiedProblemPage() {
                 const { data } = await axiosClient.get(`/problem/problembyid/${problemid}`);
                 setProblem(data);
                 
-                // Set initial code based on language
+               
                 if (data.startCode && data.startCode.length > 0) {
                     const initialCode = data.startCode.find(sc => sc.language === selectedLanguage);
                     if (initialCode) {
@@ -194,7 +194,7 @@ function SimplifiedProblemPage() {
             } catch (error) {
                 console.error('Error fetching problem:', error);
                 
-                // If problem fetch fails, create a mock problem for testing
+                
                 const mockProblem = {
                     _id: problemid,
                     title: "Add Two Numbers",
@@ -256,7 +256,7 @@ int main() {
                 
                 setProblem(mockProblem);
                 
-                // Set initial code based on language
+               
                 const initialCode = mockProblem.startCode.find(sc => sc.language === selectedLanguage);
                 if (initialCode) {
                     setCode(initialCode.initialCode);
@@ -271,7 +271,7 @@ int main() {
         }
     }, [problemid, selectedLanguage]);
 
-    // Update code when language changes
+   
     useEffect(() => {
         if (problem && problem.startCode) {
             const initialCode = problem.startCode.find(sc => sc.language === selectedLanguage);
@@ -406,7 +406,7 @@ int main() {
     };
 
     const handleFormatCode = () => {
-        // Simple formatting - just clean up whitespace
+        
         setCode(code.trim());
     };
 
@@ -440,9 +440,9 @@ int main() {
             
             <main className="container mx-auto px-4 lg:px-8 py-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[calc(100vh-8rem)]">
-                    {/* Left Panel - Problem Content */}
+                 
                     <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 lg:p-6 backdrop-blur-sm flex flex-col">
-                        {/* Problem Header */}
+                      
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
@@ -459,7 +459,7 @@ int main() {
                             </div>
                         </div>
 
-                        {/* Navigation Tabs */}
+                       
                         <div className="flex space-x-1 mb-4 bg-slate-800/50 p-1 rounded-lg">
                             {[
                                 { id: "description", label: "Description", icon: FileText },
@@ -484,7 +484,6 @@ int main() {
                             ))}
                         </div>
 
-                        {/* Tab Content */}
                         <div className="flex-1 overflow-y-auto">
                             <AnimatePresence mode="wait">
                                 <motion.div
@@ -519,9 +518,9 @@ int main() {
                         </div>
                     </div>
 
-                    {/* Right Panel - Code Editor */}
+                  
                     <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 lg:p-6 backdrop-blur-sm flex flex-col">
-                        {/* Editor Header */}
+                        
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
@@ -549,7 +548,7 @@ int main() {
                             </div>
                         </div>
 
-                        {/* Action Buttons */}
+                        
                         <div className="flex flex-wrap gap-2 mb-4">
                             <ActionButton 
                                 onClick={handleRun} 
@@ -599,7 +598,7 @@ int main() {
                             </ActionButton>
                         </div>
 
-                        {/* Resizable Code Editor */}
+                       
                         <ResizableEditor
                             value={code}
                             onChange={setCode}
@@ -610,7 +609,7 @@ int main() {
                 </div>
             </main>
 
-            {/* Result Modal */}
+           
             <AnimatePresence>
                 {showModal && (
                     <motion.div

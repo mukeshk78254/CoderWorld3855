@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import axiosClient from '../utils/axiosClient';
 
 function ChangePasswordModal({ isOpen, onClose }) {
-    const [step, setStep] = useState(1); // 1: Enter Email, 2: Enter OTP & New Password
+    const [step, setStep] = useState(1); 
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState(null); // { type: 'success' | 'error', text: string }
+    const [message, setMessage] = useState(null); 
 
     const clearState = () => {
         setStep(1);
@@ -63,8 +63,8 @@ function ChangePasswordModal({ isOpen, onClose }) {
             setMessage({ type: 'success', text: res.data.message || "Password reset successfully!" });
             setTimeout(() => {
                 onClose();
-                clearState(); // Reset modal state
-            }, 1500); // Give user time to read success message
+                clearState(); 
+            }, 1500);
         } catch (err) {
             setMessage({ type: 'error', text: err.response?.data?.message || "Failed to reset password. Please try again." });
         } finally {

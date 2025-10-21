@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { motion } from 'framer-motion';
+import Logo from '../components/Logo';
 import Editor from "@monaco-editor/react";
 import axiosClient from "../utils/axiosClient";
 import SubmissionHistory from "../components/SubmissionHistory";
@@ -12,10 +14,18 @@ import { gsap } from "gsap";
 const langMap = { cpp: "C++", java: "Java", javascript: "JavaScript" };
 
 function LeetCodeStylePage() {
+    console.log("=== LeetCodeStylePage COMPONENT INITIALIZED ===");
+    console.log("Current URL:", window.location.href);
+    
     const { problemid } = useParams();
+    console.log("Problem ID from useParams:", problemid);
+    
     const navigate = useNavigate();
     const editorRef = useRef(null);
     const containerRef = useRef(null);
+    const { isAuthenticated } = useSelector((state) => state.auth);
+    
+    console.log("Authentication status:", isAuthenticated);
     
     const [problem, setProblem] = useState(null);
     const [code, setCode] = useState("");
@@ -34,11 +44,19 @@ function LeetCodeStylePage() {
     const [submissionTags, setSubmissionTags] = useState("");
     const [hasSubmittedSolution, setHasSubmittedSolution] = useState(false);
     const [sharedSolutions, setSharedSolutions] = useState([]);
+    
+    
+    const [selectedVisibleCase, setSelectedVisibleCase] = useState(0);
+    const [customInput, setCustomInput] = useState("");
+    const [customExpected, setCustomExpected] = useState("");
+    const [customResult, setCustomResult] = useState(null);
+    const [isRunningCustom, setIsRunningCustom] = useState(false);
+    const [referenceUnavailable, setReferenceUnavailable] = useState(false);
 
-    // Enhanced GSAP Animations
+    
     useEffect(() => {
         if (containerRef.current) {
-            // Initial page animation
+            
             gsap.fromTo(containerRef.current.children,
                 { y: 50, opacity: 0 },
                 { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power2.out" }
@@ -46,28 +64,36 @@ function LeetCodeStylePage() {
         }
     }, []);
 
-    // Load shared solutions from localStorage
+    
     useEffect(() => {
         const savedSolutions = JSON.parse(localStorage.getItem('sharedSolutions') || '[]');
         const problemSolutions = savedSolutions.filter(sol => sol.problemId === problemid);
         setSharedSolutions(problemSolutions);
     }, [problemid]);
 
-    // Enhanced problem fetching
+    
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
+            console.log("LeetCodeStylePage mounted - Fetching problem data for ID:", problemid);
+            console.log("URL Path:", window.location.pathname);
+            console.log("URL Search:", window.location.search);
             try {
-                const { data } = await axiosClient.get(`/problem/problembyid/${problemid}`);
-                setProblem(data);
+                const url = `/problem/public/problembyid/${problemid}`;
+                console.log("Making API request to:", url);
+                const response = await axiosClient.get(url);
+                console.log("Problem data received:", response.data);
                 
-                const starter = data.startcode?.find(sc => 
+                setProblem(response.data);
+                
+                const starter = response.data.startcode?.find(sc => 
                     selectedLanguage === "cpp" ? ["cpp", "c++"].includes(sc.language) : sc.language === selectedLanguage
                 );
                 setCode(starter?.initialcode || "// No starter code available");
+                console.log("Starter code set for language:", selectedLanguage);
             } catch (err) {
                 console.error("Error loading problem:", err);
-                // Mock problem for development
+               
                 setProblem({
                     _id: problemid,
                     title: "Add Two Numbers",
@@ -88,7 +114,7 @@ function LeetCodeStylePage() {
         fetchData();
     }, [problemid, selectedLanguage]);
 
-    // Enhanced code reset with animation
+   
     useEffect(() => {
         if (problem) {
             const starter = problem.startcode?.find(sc => 
@@ -112,14 +138,19 @@ function LeetCodeStylePage() {
         }
     }, [selectedLanguage, problem]);
 
-    // Enhanced handlers with animations
+   
     const handleRun = async () => {
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+        
         setShowModal(true);
         setLoadingModalText("💻 Running your code...");
         setRunResult(null);
         setSubmitResult(null);
         
-        // Animate modal appearance
+       
         gsap.fromTo('.modal-content', 
             { scale: 0.8, opacity: 0 },
             { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.7)" }
@@ -131,16 +162,26 @@ function LeetCodeStylePage() {
                 language: selectedLanguage === "cpp" ? "c++" : selectedLanguage
             });
             
+            const decodeMaybeBase64 = (s) => {
+                if (!s || typeof s !== 'string') return s || '';
+                try {
+                    const b64 = s.replace(/\s/g, '');
+                    const isB64 = /^[A-Za-z0-9+/=]+$/.test(b64) && b64.length % 4 === 0;
+                    if (!isB64) return s;
+                    return atob(b64);
+                } catch { return s; }
+            };
+
             const results = data.map((res, i) => ({
                 input: problem.visibletestcases[i]?.input || "",
                 expected: problem.visibletestcases[i]?.output || "",
-                output: res.stdout || res.stderr || res.compile_output || "No output",
+                output: decodeMaybeBase64(res.stdout) || decodeMaybeBase64(res.stderr) || decodeMaybeBase64(res.compile_output) || "No output",
                 passed: res.status.id === 3
             }));
             
             setRunResult(results);
             
-            // Animate results
+           
             gsap.fromTo('.result-item',
                 { x: -50, opacity: 0 },
                 { x: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out" }
@@ -152,7 +193,29 @@ function LeetCodeStylePage() {
         }
     };
 
+    const extractErrorLine = (message) => {
+        if (!message) return null;
+        const patterns = [
+            /on line (\d+)/i,
+            /:(\d+):\d*:/,          
+            /line (\d+)\b/,
+            /\((\d+),\d+\)/
+        ];
+        for (const re of patterns) {
+            const m = message.match(re);
+            if (m && m[1]) return parseInt(m[1], 10);
+        }
+        return null;
+    };
+
+    const normalize = (s) => (s ?? "").toString().trim().replace(/\r\n/g, "\n").replace(/\t/g, '  ');
+
     const handleSubmit = async () => {
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+        
         setShowModal(true);
         setLoadingModalText("🚀 Submitting...");
         setRunResult(null);
@@ -167,10 +230,10 @@ function LeetCodeStylePage() {
             console.log("Submit result data:", data);
             console.log("Submit result status:", data.status);
             
-            // If submission is successful, mark that user has submitted a solution
+           
             if (data.status === "accepted" || data.status === "Accepted") {
                 setHasSubmittedSolution(true);
-                // Save the user's code and language for the write solution page
+               
                 localStorage.setItem('lastSubmittedCode', code);
                 localStorage.setItem('lastSubmittedLanguage', selectedLanguage);
             }
@@ -178,6 +241,79 @@ function LeetCodeStylePage() {
             setSubmitResult({ status: "error", message: "Submission failed." });
         } finally {
             setLoadingModalText("");
+        }
+    };
+    
+    
+    const handleRunCustom = async () => {
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+        
+        setIsRunningCustom(true);
+        setCustomResult(null);
+        setReferenceUnavailable(false); 
+        
+        try {
+            const { data } = await axiosClient.post(`/submission/run-custom/${problemid}`, {
+                code,
+                language: selectedLanguage === "cpp" ? "c++" : selectedLanguage,
+                input: customInput
+            });
+            
+            const decodeMaybeBase64 = (s) => {
+                if (!s || typeof s !== 'string') return s || '';
+                try {
+                    const b64 = s.replace(/\s/g, '');
+                    const isB64 = /^[A-Za-z0-9+/=]+$/.test(b64) && b64.length % 4 === 0;
+                    if (!isB64) return s;
+                    return atob(b64);
+                } catch { return s; }
+            };
+
+           
+            const userOutput = decodeMaybeBase64(data.stdout) || 
+                              decodeMaybeBase64(data.stderr) || 
+                              decodeMaybeBase64(data.compile_output) || 
+                              "No output";
+            
+           
+            if (data.reference_unavailable || !data.reference_output) {
+                setReferenceUnavailable(true);
+            }
+            
+            let passed = undefined;
+            if (customExpected.trim()) {
+                
+                const normalizedOutput = normalize(userOutput);
+                const normalizedExpected = normalize(customExpected);
+                passed = normalizedOutput === normalizedExpected;
+            }
+            
+            setCustomResult({
+                userOutput,
+                expected: customExpected.trim() || null,
+                error: data.stderr ? decodeMaybeBase64(data.stderr) : null,
+                passed
+            });
+            
+          
+            gsap.fromTo('.custom-result-item',
+                { y: 20, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }
+            );
+        } catch (error) {
+            console.error("Custom test error:", error);
+            setReferenceUnavailable(true);
+            setCustomResult({ 
+                error: "Custom test run failed. Please try again.",
+                userOutput: null,
+                expected: null,
+                passed: false
+            });
+        } finally {
+            setIsRunningCustom(false);
         }
     };
 
@@ -200,22 +336,22 @@ function LeetCodeStylePage() {
         }
 
         try {
-            // Create solution data
+            
             const solutionData = {
-                id: Date.now(), // Simple ID for demo
+                id: Date.now(), 
                 problemId: problemid,
                 code,
                 language: selectedLanguage,
                 knowledge: submissionKnowledge,
                 tags: submissionTags.split(',').map(tag => tag.trim()),
                 timestamp: new Date().toISOString(),
-                author: "You" // In real app, this would be the logged-in user
+                author: "You" 
             };
             
-            // Add to shared solutions list
+           
             setSharedSolutions(prev => [solutionData, ...prev]);
             
-            // Clear form
+           
             setSubmissionKnowledge("");
             setSubmissionTags("");
             
@@ -266,27 +402,40 @@ function LeetCodeStylePage() {
             x: -window.innerWidth, 
             duration: 0.5, 
             ease: "power2.in",
-            onComplete: () => navigate("/")
+            onComplete: () => navigate("/home")
         });
     };
 
     const fetchAllProblems = async () => {
+        
         if (allProblems.length > 0) {
             setShowProblemList(!showProblemList);
             return;
         }
         
         try {
-            const res = await axiosClient.get("/problem/getallproblem");
-            setAllProblems(res.data);
-            setShowProblemList(true);
+            console.log("Fetching all problems...");
+            const url = "/problem/public/getallproblem";
+            console.log("API request to:", url);
             
-            // Animate problem list
-            gsap.fromTo('.problem-list-item',
-                { x: -20, opacity: 0 },
-                { x: 0, opacity: 1, duration: 0.3, stagger: 0.05, ease: "power2.out" }
-            );
+            const res = await axiosClient.get(url);
+            console.log("Problems received:", res.data);
+            
+            if (Array.isArray(res.data) && res.data.length > 0) {
+                setAllProblems(res.data);
+                setShowProblemList(true);
+                
+              
+                gsap.fromTo('.problem-list-item',
+                    { x: -20, opacity: 0 },
+                    { x: 0, opacity: 1, duration: 0.3, stagger: 0.05, ease: "power2.out" }
+                );
+            } else {
+                console.error("No problems returned or invalid data format:", res.data);
+                alert("No problems available at this time.");
+            }
         } catch (err) {
+            console.error("Error fetching problem list:", err);
             alert("Failed to load problem list.");
         }
     };
@@ -312,6 +461,13 @@ function LeetCodeStylePage() {
         );
     }
 
+  
+    console.log("=== LeetCodeStylePage RENDERING ===");
+    console.log("Problem data:", problem);
+    console.log("Problem ID:", problemid);
+    console.log("Custom test variables added: selectedVisibleCase, customInput, customExpected");
+    console.log("Fixed referenceUnavailable:", referenceUnavailable);
+    
     return (
         <div className={`min-h-screen flex bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] text-white font-mono ${isFullScreen ? "fixed inset-0 z-50" : ""}`}>
             <style>{`
@@ -321,66 +477,21 @@ function LeetCodeStylePage() {
             `}</style>
             
             
-            {/* Main Content - Desktop Split Layout */}
+           
             <div ref={containerRef} className="relative z-10 flex w-full">
-                {/* Left Panel - Problem Description */}
+            
                 <div className="w-1/2 p-4 space-y-3 overflow-y-auto relative">
                     <div className="flex justify-between items-center">
-                        {/* Enhanced CoderWorld Logo with Icon and Hover Effects */}
-                        <motion.div 
-                            whileHover={{ scale: 1.05, rotate: 2 }}
-                            whileTap={{ scale: 0.95 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                            onClick={handleBack} 
-                            className="flex items-center gap-3 cursor-pointer group"
-                        >
-                            {/* Logo Icon */}
-                            <motion.div
-                                whileHover={{ rotate: 360 }}
-                                transition={{ duration: 0.6, ease: "easeInOut" }}
-                                className="w-14 h-14 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/25 border border-cyan-400/20 group-hover:shadow-cyan-500/40 transition-all duration-300"
-                            >
-                                <motion.div
-                                    animate={{ 
-                                        scale: [1, 1.1, 1],
-                                        rotate: [0, 5, -5, 0]
-                                    }}
-                                    transition={{ 
-                                        duration: 2, 
-                                        repeat: Infinity, 
-                                        ease: "easeInOut" 
-                                    }}
-                                    className="w-12 h-12"
-                                >
-                                    <img 
-                                        src="/src/pages/2896418.png" 
-                                        alt="CoderWorld Logo" 
-                                        className="w-full h-full object-contain"
-                                    />
-                                </motion.div>
-                            </motion.div>
-                            
-                            {/* Logo Text */}
-                            <div className="flex flex-col">
-                                <motion.span 
-                                    whileHover={{ scale: 1.02 }}
-                                    className="text-3xl font-bold text-white group-hover:text-cyan-300 transition-colors duration-300"
-                                    style={{ fontFamily: "'Orbitron', sans-serif" }}
-                                >
-                                    CoderWorld
-                                </motion.span>
-                                <motion.span 
-                                    initial={{ opacity: 0.7 }}
-                                    whileHover={{ opacity: 1 }}
-                                    className="text-sm text-slate-400 group-hover:text-cyan-400 transition-colors duration-300"
-                                    style={{ fontFamily: "'Source Code Pro', monospace" }}
-                                >
-                                    Code • Learn • Solve
-                                </motion.span>
-                            </div>
-                        </motion.div>
+                       
+                        <Logo 
+                          className="group"
+                          onClick={handleBack}
+                          iconSizeClass="w-14 h-14"
+                          innerImgSizeClass="w-12 h-12"
+                          textSizeClass="text-3xl"
+                        />
                         
-                        {/* Enhanced Problems Button with Hover Effect */}
+                 
                         <motion.div 
                             whileHover={{ scale: 1.05, y: -2 }}
                             whileTap={{ scale: 0.95 }}
@@ -396,22 +507,38 @@ function LeetCodeStylePage() {
                     {showProblemList && (
                         <div className="bg-gray-900 border border-gray-700 p-3 rounded max-h-60 overflow-y-auto">
                             <h3 className="text-xl font-bold mb-2">All Problems</h3>
-                            <ul className="space-y-1">
-                                {allProblems.map((p, index) => (
-                                    <motion.li 
-                                        key={p._id} 
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: index * 0.05 }}
-                                        whileHover={{ scale: 1.02, x: 5 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        onClick={() => navigate(`/problem/${p._id}`)} 
-                                        className="problem-list-item text-cyan-300 cursor-pointer hover:text-cyan-200 hover:underline transition-all duration-300 py-1 px-2 rounded hover:bg-gray-800/50 text-base font-medium"
-                                    >
-                                        ➤ {p.title}
-                                    </motion.li>
-                                ))}
-                            </ul>
+                            {allProblems.length > 0 ? (
+                                <ul className="space-y-1">
+                                    {allProblems.map((p, index) => (
+                                        <motion.li 
+                                            key={p._id || index} 
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: index * 0.05 }}
+                                            whileHover={{ scale: 1.02, x: 5 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={() => {
+                                                console.log("Problem clicked:", p);
+                                                console.log("Problem ID:", p._id);
+                                                
+                                              
+                                                const a = document.createElement('a');
+                                                a.href = `/problem/${p._id}`;
+                                                a.target = '_self';
+                                                a.click();
+                                            }} 
+                                            className="problem-list-item text-cyan-300 cursor-pointer hover:text-cyan-200 hover:underline transition-all duration-300 py-1 px-2 rounded hover:bg-gray-800/50 text-base font-medium"
+                                        >
+                                            ➤ {p.title || `Problem #${index + 1}`}
+                                        </motion.li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <div className="text-center p-4">
+                                    <p className="text-gray-400">Loading problems...</p>
+                                    <div className="mt-2 loading loading-spinner loading-md"></div>
+                                </div>
+                            )}
                         </div>
                     )}
 
@@ -571,12 +698,16 @@ function LeetCodeStylePage() {
                             />
                         )}
                         
-                        {activeTab === "submissions" && <SubmissionHistory problemid={problemid} />}
+                        {activeTab === "submissions" && (
+                          <>
+                            <SubmissionHistory problemid={problemid} />
+                          </>
+                        )}
                         {activeTab === "chatAi" && <ChatAi problem={problem} />}
                     </div>
                 </div>
 
-                {/* Right Panel - Code Editor */}
+         
                 <div className="w-1/2 p-4 flex flex-col gap-3">
                     <div className="flex flex-wrap justify-between items-center gap-2">
                         <div className="flex items-center gap-3">
@@ -585,8 +716,7 @@ function LeetCodeStylePage() {
                                     <option key={k} value={k}>{v}</option>
                                 ))}
                             </select>
-                            
-                            {/* Zoom Controls */}
+                           
                             <div className="flex items-center gap-1 bg-gray-800 border border-gray-600 rounded">
                                 <motion.button 
                                     whileHover={{ scale: 1.05 }}
@@ -619,6 +749,15 @@ function LeetCodeStylePage() {
                             </div>
                         </div>
 
+                        {!isAuthenticated && (
+                            <div className="alert alert-info mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>Please <button className="link link-primary" onClick={() => navigate('/login')}>login</button> to run and submit your code.</span>
+                            </div>
+                        )}
+                        
                         <div className="flex flex-wrap gap-2">
                             <motion.button 
                                 whileHover={{ scale: 1.05, y: -2 }}
@@ -710,10 +849,98 @@ function LeetCodeStylePage() {
                             }}
                         />
                     </div>
+
+                
+                    <div className="mt-2 bg-gray-900 border border-gray-700 rounded p-3">
+                        <div className="flex items-center justify-between mb-3">
+                            <h4 className="text-sm font-semibold text-gray-200">Custom Test</h4>
+                            <div className="flex items-center gap-2">
+                                {problem?.visibletestcases?.length > 0 && (
+                                    <div className="flex items-center gap-2">
+                                        <select
+                                            className="bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded px-2 py-1"
+                                            value={selectedVisibleCase}
+                                            onChange={(e) => setSelectedVisibleCase(Number(e.target.value))}
+                                        >
+                                            {problem.visibletestcases.map((_, idx) => (
+                                                <option key={idx} value={idx}>Test #{idx + 1}</option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            className="btn btn-outline btn-xs"
+                                            onClick={() => {
+                                                const t = problem.visibletestcases[selectedVisibleCase];
+                                                setCustomInput(t?.input || "");
+                                                setCustomExpected(t?.output || "");
+                                            }}
+                                        >Use Test</button>
+                                    </div>
+                                )}
+                                <button onClick={handleRunCustom} disabled={isRunningCustom} className={`btn btn-info btn-xs ${isRunningCustom ? 'opacity-70 brightness-90 cursor-not-allowed bg-cyan-600/70 border-cyan-500/40' : ''}`}>{isRunningCustom ? 'Running...' : 'Run Custom Test'}</button>
+                            </div>
+                        </div>
+                        {referenceUnavailable && (
+                            <div className="text-xs text-amber-300 mb-2">Reference runner unavailable. Comparing your code against selected test’s expected output instead.</div>
+                        )}
+                        <textarea
+                            value={customInput}
+                            onChange={(e) => setCustomInput(e.target.value)}
+                            placeholder="Enter stdin for your program..."
+                            className="w-full h-24 p-2 rounded bg-gray-800 border border-gray-700 text-gray-100 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                        />
+                        <div className="mt-2">
+                            <label className="block text-xs text-gray-400 mb-1">Expected Output (optional)</label>
+                            <textarea
+                                value={customExpected}
+                                onChange={(e) => setCustomExpected(e.target.value)}
+                                placeholder="Enter expected output to compare (optional)"
+                                className="w-full h-16 p-2 rounded bg-gray-800 border border-gray-700 text-gray-100 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                            />
+                        </div>
+                        {customResult && (
+                            <div className="custom-result-item mt-3 grid grid-cols-1 lg:grid-cols-3 gap-3">
+                                <div className={`bg-gray-800 border ${customResult.passed === false ? 'border-red-500/40' : customResult.passed === true ? 'border-green-500/40' : 'border-gray-700'} rounded p-3`}>
+                                    <div className="flex items-center justify-between mb-1">
+                                        <div className="text-xs text-gray-400">Your Code Output</div>
+                                        {customResult.passed !== undefined && (
+                                            <div className={`text-xs ${customResult.passed ? 'text-green-400' : 'text-red-400'}`}>
+                                                {customResult.passed ? 'PASSED' : 'FAILED'}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <pre className="text-sm whitespace-pre-wrap text-gray-100">{customResult.userOutput || '—'}</pre>
+                                </div>
+                                
+                                <div className={`bg-gray-800 border ${customResult.expected ? 'border-gray-700' : 'border-gray-900'} rounded p-3`}>
+                                    <div className="flex items-center justify-between mb-1">
+                                        <div className="text-xs text-gray-400">Expected Output</div>
+                                        {!customResult.expected && (
+                                            <div className="text-xs text-amber-400">Not Provided</div>
+                                        )}
+                                    </div>
+                                    <pre className="text-sm whitespace-pre-wrap text-gray-100">{customResult.expected || 'No expected output provided for comparison'}</pre>
+                                </div>
+                                
+                                <div className={`bg-gray-900 border ${customResult.error ? 'border-red-500/40' : 'border-gray-700'} rounded p-3`}>
+                                    <div className="text-xs text-red-300 font-semibold mb-1">Errors</div>
+                                    {customResult.error ? (
+                                        <>
+                                            <pre className="text-sm whitespace-pre-wrap text-red-400">{customResult.error}</pre>
+                                            {customResult.line && (
+                                                <div className="text-xs text-amber-300 mt-1">Possible error near line {customResult.line}</div>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <div className="text-sm text-gray-400">No errors detected</div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
-            {/* Floating Result Modal */}
+            
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex justify-center items-center z-50">
                     <div className="modal-content bg-gray-900 p-6 rounded-lg border border-gray-700 w-[90%] max-w-2xl fade-in">

@@ -12,10 +12,10 @@ import {
 import axiosClient from '../utils/axiosClient';
 import Header from '../components/dashboard/Header';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger);
 
-// Animated Background Component
+
 const AnimatedBackground = () => {
     const canvasRef = useRef(null);
     const animationRef = useRef(null);
@@ -100,7 +100,7 @@ const AnimatedBackground = () => {
     );
 };
 
-// Problem Card Component with Solved Status
+
 const ProblemCard = ({ problem, isSolved, onSolve, onStartDiscussion }) => {
     const cardRef = useRef(null);
 
@@ -144,7 +144,7 @@ const ProblemCard = ({ problem, isSolved, onSolve, onStartDiscussion }) => {
                 isSolved ? 'border-green-500/50 bg-green-500/5' : 'border-slate-800 hover:border-cyan-400/50'
             }`}
         >
-            {/* Solved Badge */}
+         
             {isSolved && (
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                     <CheckCircle size={16} className="text-white" />
@@ -212,7 +212,7 @@ const ProblemCard = ({ problem, isSolved, onSolve, onStartDiscussion }) => {
     );
 };
 
-// Discussion Modal Component
+
 const DiscussionModal = ({ isOpen, onClose, problem, onPost }) => {
     const [discussionText, setDiscussionText] = useState('');
     const [discussions, setDiscussions] = useState([
@@ -274,7 +274,7 @@ const DiscussionModal = ({ isOpen, onClose, problem, onPost }) => {
                     </button>
                 </div>
 
-                {/* Post New Discussion */}
+               
                 <div className="mb-6">
                     <textarea
                         value={discussionText}
@@ -294,7 +294,7 @@ const DiscussionModal = ({ isOpen, onClose, problem, onPost }) => {
                     </div>
                 </div>
 
-                {/* Discussions List */}
+            
                 <div className="space-y-4 max-h-96 overflow-y-auto">
                     {discussions.map((discussion) => (
                         <div key={discussion.id} className="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
@@ -326,7 +326,7 @@ const DiscussionModal = ({ isOpen, onClose, problem, onPost }) => {
     );
 };
 
-// Leaderboard Component
+
 const Leaderboard = ({ users, currentUser }) => {
     return (
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 backdrop-blur-sm">
@@ -385,7 +385,6 @@ const Leaderboard = ({ users, currentUser }) => {
     );
 };
 
-// Main Dashboard Component
 function EnhancedDashboard() {
     const { user: currentUser } = useSelector(state => state.auth);
     const navigate = useNavigate();
@@ -419,7 +418,7 @@ function EnhancedDashboard() {
         discussions: 0
     });
 
-    // Fetch problems data
+    
     useEffect(() => {
         const fetchProblems = async () => {
             try {
@@ -427,12 +426,12 @@ function EnhancedDashboard() {
                 const response = await axiosClient.get('/problem/getallproblem');
                 setProblems(response.data || []);
                 
-                // Mock some solved problems
+               
                 const mockSolved = new Set(['1', '2', '3']);
                 setSolvedProblems(mockSolved);
             } catch (error) {
                 console.error('Error fetching problems:', error);
-                // Mock data
+               
                 const mockProblems = [
                     {
                         _id: '1',
@@ -473,7 +472,7 @@ function EnhancedDashboard() {
         fetchProblems();
     }, []);
 
-    // GSAP Animations
+    
     useEffect(() => {
         const ctx = gsap.context(() => {
             gsap.fromTo(".dashboard-section",
@@ -495,11 +494,11 @@ function EnhancedDashboard() {
     };
 
     const handlePostDiscussion = (discussion) => {
-        // Update leaderboard based on discussion activity
+       
         setLeaderboardUsers(prev => 
             prev.map(user => 
                 user.id === currentUser?.id 
-                    ? { ...user, score: user.score + 5 } // Award points for discussion
+                    ? { ...user, score: user.score + 5 } 
                     : user
             )
         );
@@ -519,7 +518,7 @@ function EnhancedDashboard() {
 
     const renderProblems = () => (
         <div className="space-y-6">
-            {/* Search and Filter */}
+          
             <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1 relative">
@@ -545,7 +544,7 @@ function EnhancedDashboard() {
                 </div>
             </div>
 
-            {/* Problems Grid */}
+          
             <div className="grid gap-4">
                 {filteredProblems.map((problem) => (
                     <ProblemCard
@@ -624,7 +623,7 @@ function EnhancedDashboard() {
             <Header />
             
             <main className="container mx-auto px-4 py-8 relative z-10">
-                {/* Dashboard Header */}
+             
                 <motion.div
                     initial={{ opacity: 0, y: -30 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -642,7 +641,7 @@ function EnhancedDashboard() {
                     </div>
                 </motion.div>
 
-                {/* Tabs */}
+              
                 <div className="flex gap-2 mb-8">
                     {tabs.map((tab) => (
                         <button
@@ -660,7 +659,7 @@ function EnhancedDashboard() {
                     ))}
                 </div>
 
-                {/* Content */}
+            
                 <div className="dashboard-section">
                     <AnimatePresence mode="wait">
                         {activeTab === 'problems' && (
@@ -697,7 +696,7 @@ function EnhancedDashboard() {
                 </div>
             </main>
 
-            {/* Discussion Modal */}
+           
             <DiscussionModal
                 isOpen={showDiscussion}
                 onClose={() => setShowDiscussion(false)}

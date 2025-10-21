@@ -8,17 +8,17 @@ const replySchema = new mongoose.Schema({
 
 const postSchema = new mongoose.Schema({
     title: { type: String, required: true, trim: true },
-    content: { type: String, required: true }, // Will store HTML from the rich text editor
+    content: { type: String, required: true },
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
     category: { 
         type: String, 
         enum: ['For You', 'Career', 'Contest', 'Compensation', 'Feedback', 'Interview', 'general', 'algorithm', 'data-structure', 'interview', 'contest', 'bug-report', 'feature-request'],
         required: true 
     },
-    tags: [{ type: String, trim: true }], // Array of tags
+    tags: [{ type: String, trim: true }], 
     upvotes: { type: Number, default: 0 },
     views: { type: Number, default: 0 },
-    commentCount: { type: Number, default: 0 } // Denormalized for efficiency
+    commentCount: { type: Number, default: 0 } 
 }, { timestamps: true });
 
 module.exports = mongoose.model("Post", postSchema);

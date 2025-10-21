@@ -48,7 +48,7 @@
     background: #9ca3af;
 }
 
-/* Syntax highlighting for different languages */
+
 .language-javascript {
     color: #374151;
 }
@@ -61,7 +61,7 @@
     color: #374151;
 }
 
-/* Line numbers simulation */
+
 .resizable-editor.with-line-numbers {
     counter-reset: line;
 }
@@ -71,7 +71,7 @@
     padding-left: 3rem;
 }
 
-/* Custom scrollbar */
+
 .resizable-editor textarea::-webkit-scrollbar {
     width: 8px;
 }

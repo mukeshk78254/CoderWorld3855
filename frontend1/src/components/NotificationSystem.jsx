@@ -194,14 +194,6 @@ export const NotificationBell = ({ user, onNotificationClick }) => {
         // Mock notifications for now
         const mockNotifications = [
             {
-                id: 1,
-                title: 'Welcome!',
-                message: 'Welcome to CoderWorld! Start solving problems now.',
-                type: 'info',
-                read: false,
-                timestamp: new Date().toISOString()
-            },
-            {
                 id: 2,
                 title: 'New Contest',
                 message: 'Weekly coding contest is now live!',
@@ -300,21 +292,8 @@ export const NotificationManager = () => {
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
-        // Mock notification for testing
-        const mockNotification = {
-            id: 1,
-            title: 'Welcome to CoderWorld!',
-            message: 'Start your coding journey with us today.',
-            type: 'success',
-            timestamp: new Date().toISOString()
-        };
-        
-        setCurrentNotification(mockNotification);
-        
-        // Auto-hide after 5 seconds
-        setTimeout(() => {
-            setCurrentNotification(null);
-        }, 5000);
+        // Remove auto-notification on mount
+        // Notifications will only show when triggered by user actions
     }, []);
 
     return (

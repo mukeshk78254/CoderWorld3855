@@ -14,10 +14,10 @@ import {
 import axiosClient from '../utils/axiosClient';
 import Header from '../components/dashboard/Header';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-// Simple Problem Card for List View - No Transitions
+
 const ProblemListCard = ({ problem, onSolve }) => {
     const getDifficultyColor = (difficulty) => {
         switch (difficulty?.toLowerCase()) {
@@ -51,7 +51,7 @@ const ProblemListCard = ({ problem, onSolve }) => {
                             {problem.title}
                         </h3>
                     
-                    {/* Tags from backend */}
+                   
                     {tagsArray.length > 0 && (
                         <div className="flex flex-wrap gap-2">
                             {tagsArray.map((tag, tagIndex) => (
@@ -75,15 +75,23 @@ const ProblemListCard = ({ problem, onSolve }) => {
     );
 };
 
-// Enhanced Search and Filter Bar
+
 const ProblemSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDifficultyFilter, sortBy, setSortBy, uniqueTags, tagFilter, setTagFilter }) => {
     const searchRef = useRef(null);
 
     useEffect(() => {
-        gsap.fromTo(searchRef.current,
-            { y: -50, opacity: 0 },
-            { y: 0, opacity: 1, duration: 1, ease: "power3.out" }
-        );
+        if (!gsap) return;
+        
+        try {
+            if (searchRef.current) {
+                gsap.fromTo(searchRef.current,
+                    { y: -50, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 1, ease: "power3.out" }
+                );
+            }
+        } catch (error) {
+            console.log('GSAP animation error in SearchSection:', error);
+        }
     }, []);
 
     return (
@@ -92,7 +100,7 @@ const ProblemSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDiff
             className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 backdrop-blur-sm mb-8"
         >
             <div className="flex flex-col lg:flex-row gap-4">
-                {/* Search Input */}
+               
                 <div className="flex-1 relative">
                     <Search size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" />
                     <input
@@ -104,7 +112,7 @@ const ProblemSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDiff
                     />
                 </div>
 
-                {/* Difficulty Filter */}
+               
                 <select
                     value={difficultyFilter}
                     onChange={(e) => setDifficultyFilter(e.target.value)}
@@ -116,7 +124,7 @@ const ProblemSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDiff
                     <option value="hard">Hard</option>
                 </select>
 
-                {/* Tag Filter */}
+             
                 <select
                     value={tagFilter}
                     onChange={(e) => setTagFilter(e.target.value)}
@@ -128,7 +136,7 @@ const ProblemSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDiff
                     ))}
                 </select>
 
-                {/* Sort By */}
+               
                 <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
@@ -144,23 +152,31 @@ const ProblemSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDiff
     );
 };
 
-// Enhanced Stats Overview with Tag Counts
+
 const ProblemStatsOverview = ({ stats }) => {
     const statsRef = useRef(null);
 
     useEffect(() => {
-        gsap.fromTo(statsRef.current?.children,
-            { y: 50, opacity: 0, scale: 0.8 },
-            { 
-                y: 0, opacity: 1, scale: 1, 
-                duration: 0.8, 
-                stagger: 0.2, 
-                ease: "back.out(1.7)" 
+        if (!gsap) return;
+        
+        try {
+            if (statsRef.current?.children) {
+                gsap.fromTo(statsRef.current.children,
+                    { y: 50, opacity: 0, scale: 0.8 },
+                    { 
+                        y: 0, opacity: 1, scale: 1, 
+                        duration: 0.8, 
+                        stagger: 0.2, 
+                        ease: "back.out(1.7)" 
+                    }
+                );
             }
-        );
+        } catch (error) {
+            console.log('GSAP animation error in StatsSection:', error);
+        }
     }, [stats]);
 
-    // Get top tags by count
+   
     const topTags = stats?.tagCounts ? 
         Object.entries(stats.tagCounts)
             .sort(([,a], [,b]) => b - a)
@@ -168,7 +184,7 @@ const ProblemStatsOverview = ({ stats }) => {
 
     return (
         <div className="space-y-8 mb-8">
-            {/* Main Stats */}
+           
             <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {[
                     { label: 'Total Problems', value: stats?.totalProblems || 0, icon: Code, color: 'from-cyan-500 to-blue-500' },
@@ -199,7 +215,7 @@ const ProblemStatsOverview = ({ stats }) => {
                 ))}
             </div>
 
-            {/* Tag-based Stats */}
+            
             {topTags.length > 0 && (
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -236,7 +252,7 @@ const ProblemStatsOverview = ({ stats }) => {
     );
 };
 
-// Main Problem List Page Component
+
 function ProblemListPage() {
     const { user } = useSelector(state => state.auth);
     const navigate = useNavigate();
@@ -252,15 +268,15 @@ function ProblemListPage() {
     const headerRef = useRef(null);
     const titleRef = useRef(null);
 
-    // Fetch problems data
+  
     useEffect(() => {
         const fetchProblems = async () => {
             try {
                 setLoading(true);
-                const response = await axiosClient.get('/problem/getallproblem');
+                const response = await axiosClient.get('/problem/public/getallproblem');
                 setProblems(response.data || []);
                 
-                // Calculate stats including tag-based counts
+               
                 const allProblems = response.data || [];
                 const tagCounts = {};
                 
@@ -287,7 +303,7 @@ function ProblemListPage() {
                 setStats(problemStats);
             } catch (error) {
                 console.error('Error fetching problems:', error);
-                // Mock data for development
+                
                 const mockProblems = [
                     {
                         _id: '1',
@@ -334,7 +350,7 @@ function ProblemListPage() {
                 ];
                 setProblems(mockProblems);
                 
-                // Calculate tag counts for mock data
+                
                 const tagCounts = {};
                 mockProblems.forEach(problem => {
                     let problemTags = [];
@@ -364,7 +380,7 @@ function ProblemListPage() {
         fetchProblems();
     }, []);
 
-    // Auto-update stats when problems change
+    
     useEffect(() => {
         if (problems.length > 0) {
             const tagCounts = {};
@@ -393,33 +409,49 @@ function ProblemListPage() {
         }
     }, [problems]);
 
-    // GSAP Animations
+   
     useEffect(() => {
-        const ctx = gsap.context(() => {
-            // Title typing effect
-            gsap.to(titleRef.current, {
-                text: "All Problems",
-                duration: 2,
-                ease: "none",
-                delay: 0.5
-            });
+        if (!gsap) return;
+        
+        try {
+            const ctx = gsap.context(() => {
+                
+                if (titleRef.current) {
+                    gsap.to(titleRef.current, {
+                        text: "All Problems",
+                        duration: 2,
+                        ease: "none",
+                        delay: 0.5
+                    });
+                }
 
-            // Header animation
-            gsap.fromTo(headerRef.current,
-                { y: -50, opacity: 0 },
-                { y: 0, opacity: 1, duration: 1, ease: "power3.out" }
-            );
-        }, headerRef);
+             
+                if (headerRef.current) {
+                    gsap.fromTo(headerRef.current,
+                        { y: -50, opacity: 0 },
+                        { y: 0, opacity: 1, duration: 1, ease: "power3.out" }
+                    );
+                }
+            }, headerRef);
 
-        return () => ctx.revert();
+            return () => {
+                try {
+                    ctx.revert();
+                } catch (error) {
+                    console.log('GSAP cleanup error:', error);
+                }
+            };
+        } catch (error) {
+            console.log('GSAP animation error in ProblemListPage:', error);
+        }
     }, []);
 
-    // Filter and sort problems
+    
     const filteredProblems = problems.filter(problem => {
         const matchSearch = searchTerm === '' || 
             problem.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             problem.description.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchDifficulty = !difficultyFilter || problem.difficulty === difficultyFilter;
+                const matchDifficulty = !difficultyFilter || problem.difficulty === difficultyFilter;
         
         let problemTags = [];
         if (Array.isArray(problem.tags)) {
@@ -438,7 +470,7 @@ function ProblemListPage() {
                 const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
                 return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
             case 'popularity':
-                return Math.random() - 0.5; // Mock popularity
+                return Math.random() - 0.5; 
             default:
                 return new Date(b.createdAt) - new Date(a.createdAt);
         }
@@ -452,10 +484,21 @@ function ProblemListPage() {
     )).sort();
 
     const handleSolveProblem = (problem) => {
+        console.log("ProblemListPage: Navigating to problem with ID:", problem._id);
+        console.log("ProblemListPage: Full problem object:", problem);
+        
+        
+        console.log("Attempting to navigate using navigate()...");
         navigate(`/problem/${problem._id}`);
+        
+        
+        setTimeout(() => {
+            console.log("Backup plan: Trying window.location...");
+            window.location.href = `/problem/${problem._id}`;
+        }, 500); 
     };
 
-    // Function to refresh stats (can be called when new problems are added)
+    
     const refreshStats = () => {
         const allProblems = problems;
         const tagCounts = {};
@@ -483,10 +526,10 @@ function ProblemListPage() {
         setStats(newStats);
     };
 
-    // Function to add a new problem (for when new problems are created)
+
     const addNewProblem = (newProblem) => {
         setProblems(prev => [...prev, newProblem]);
-        // Stats will be automatically updated when problems state changes
+       
     };
 
     if (loading) {
@@ -510,7 +553,7 @@ function ProblemListPage() {
             <Header />
             
             <main className="container mx-auto px-4 py-8">
-                {/* Back Button */}
+                
                 <motion.div 
                     className="mb-8"
                     initial={{ opacity: 0, x: -50 }}
@@ -526,7 +569,6 @@ function ProblemListPage() {
                     </button>
                 </motion.div>
 
-                {/* Header */}
                 <motion.div 
                     ref={headerRef}
                     className="text-center mb-12"
@@ -539,15 +581,14 @@ function ProblemListPage() {
                             animation: 'gradientShift 3s ease-in-out infinite'
                         }}
                     >
-                        {/* Text will be filled by GSAP */}
+                       
                     </motion.h1>
                     
                 </motion.div>
 
-                {/* Stats Overview */}
+             
                 <ProblemStatsOverview stats={stats} />
 
-                {/* Search and Filter */}
                 <ProblemSearchBar
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
@@ -560,7 +601,7 @@ function ProblemListPage() {
                     setTagFilter={setTagFilter}
                 />
 
-                {/* Problems List - Vertical Layout, No Transitions */}
+               
                 <div className="space-y-4">
                     {filteredProblems.map((problem) => (
                             <ProblemListCard

@@ -1,4 +1,4 @@
-/* Coding Background Animations */
+
 @keyframes float {
     0%, 100% {
         transform: translateY(0px) rotate(0deg);
@@ -66,7 +66,6 @@
     animation: pulse-slow 3s ease-in-out infinite;
 }
 
-/* Glass morphism effect */
 .glass-effect {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
@@ -74,7 +73,7 @@
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
-/* Code syntax highlighting for floating elements */
+
 .code-snippet {
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
     font-size: 0.75rem;
@@ -82,14 +81,14 @@
     white-space: pre;
 }
 
-/* Hover effects for interactive elements */
+
 .coding-element:hover {
     opacity: 0.3 !important;
     transform: scale(1.05);
     transition: all 0.3s ease;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
     .animate-float,
     .animate-float-delayed,
@@ -102,7 +101,7 @@
     }
 }
 
-/* Dark mode support */
+
 @media (prefers-color-scheme: dark) {
     .animate-float,
     .animate-float-delayed,

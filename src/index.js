@@ -180,19 +180,22 @@ const aiRouter = require("./routes/aiChatting");
 const videoRouter = require("./routes/videoCreator");
 const discussRouter = require("./routes/discussRoutes");
 const profileRouter = require('./routes/profileRoutes'); // 
-// const authRouter = require('./routes/'); // Assuming you have this
-// const profileRouter = require('./routes/profileRoutes'); // Your new profile router
-// CORS Configuration
+const notificationRoutes = require('./routes/notificationRoutes');
+const migrationRoutes = require('./routes/migrationRoutes'); 
+const paymentRoutes = require('./routes/payment'); 
+
 app.use(cors({
-    origin: 'http://localhost:5173', // Your frontend URL
-    credentials: true 
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'], // Allow all frontend ports
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
-// Middlewares
+
 app.use(express.json());
 app.use(cookieparser());
 
-// API Routes
+
 app.use('/user', authrouter);
 app.use('/user', userRoutes);
 app.use('/problem', problemrouter);
@@ -201,30 +204,29 @@ app.use('/ai', aiRouter);
 app.use("/video", videoRouter);
 app.use("/api/discuss", discussRouter);
 app.use("/profile", profileRouter); 
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/migration", migrationRoutes);
+app.use("/payment", paymentRoutes); 
 
 
-// ...
-// app.use('/auth', authRouter); // Or whatever prefix you use for auth routes
-// app.use('/api', profileRouter); // Using /api for profile routes
-// 
-// Initialize Connections and Start Server
+
 const initialiseConnection = async () => {
     try {
-        // Connect to MongoDB
+       
         await main(); 
-        console.log("✅ Connected to MongoDB"); 
+        console.log(" Connected to MongoDB"); 
   
-        // Start the server
+       
         app.listen(process.env.PORT || 5000, () => {
-          console.log("🚀 Server listening at port " + (process.env.PORT || 5000));
-          console.log("📡 Frontend URL: http://localhost:5173");
-          console.log("🔗 Backend URL: http://localhost:" + (process.env.PORT || 5000));
+          console.log(" Server listening at port " + (process.env.PORT || 5000));
+          console.log(" Frontend URL: http://localhost:5173");
+          console.log(" Backend URL: http://localhost:" + (process.env.PORT || 5000));
         });
     } catch(err) {
-      console.error("❌ Failed to initialize server:", err.message);
-      console.log("💡 Make sure MongoDB is running on your system");
-      console.log("💡 You can start MongoDB with: mongod");
-      process.exit(1); // Exit process with failure
+      console.error(" Failed to initialize server:", err.message);
+      console.log(" Make sure MongoDB is running on your system");
+      console.log(" You can start MongoDB with: mongod");
+      process.exit(1); 
     }
 };
 

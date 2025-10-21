@@ -15,10 +15,10 @@ import {
 import axiosClient from '../utils/axiosClient';
 import Header from '../components/dashboard/Header';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-// Animated Background Component
+
 const AnimatedBackground = () => {
     const canvasRef = useRef(null);
     const animationRef = useRef(null);
@@ -66,7 +66,7 @@ const AnimatedBackground = () => {
         const animate = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw stars
+            
             stars.forEach(star => {
                 star.x += star.vx;
                 star.y += star.vy;
@@ -82,7 +82,6 @@ const AnimatedBackground = () => {
                 ctx.fill();
             });
 
-            // Draw particles
             particles.forEach(particle => {
                 particle.x += particle.vx;
                 particle.y += particle.vy;
@@ -97,7 +96,7 @@ const AnimatedBackground = () => {
                 ctx.fillStyle = particle.color;
                 ctx.fill();
 
-                // Add glow effect
+                
                 ctx.shadowBlur = 20;
                 ctx.shadowColor = particle.color;
                 ctx.beginPath();
@@ -138,7 +137,7 @@ const AnimatedBackground = () => {
     );
 };
 
-// Simple Problem Card without transitions
+
 const SimpleProblemCard = ({ problem, index, onSolve }) => {
 
     const getDifficultyColor = (difficulty) => {
@@ -194,7 +193,7 @@ const SimpleProblemCard = ({ problem, index, onSolve }) => {
     );
 };
 
-// Simple Search Bar Component
+
 const SimpleSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDifficultyFilter, uniqueTags, tagFilter, setTagFilter }) => {
     return (
         <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 mb-6">
@@ -234,7 +233,7 @@ const SimpleSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDiffi
     );
 };
 
-// Main Homepage Component
+
 function EnhancedHomepage() {
     const { user } = useSelector(state => state.auth);
     const navigate = useNavigate();
@@ -250,10 +249,13 @@ function EnhancedHomepage() {
     const titleRef = useRef(null);
     const subtitleRef = useRef(null);
 
-    // GSAP Hero Animations
+    
     useEffect(() => {
-        const ctx = gsap.context(() => {
-            // Title typing effect
+        if (!gsap) return;
+        
+        try {
+            const ctx = gsap.context(() => {
+            
             gsap.to(titleRef.current, {
                 text: "Master Coding with CodeFlow",
                 duration: 2,
@@ -261,20 +263,29 @@ function EnhancedHomepage() {
                 delay: 0.5
             });
 
-            // Subtitle animation
+            
             gsap.fromTo(subtitleRef.current,
                 { y: 30, opacity: 0 },
                 { y: 0, opacity: 1, duration: 1, delay: 1.5, ease: "power2.out" }
             );
 
-            // Hero elements animation
+            
             gsap.fromTo(heroRef.current?.children,
                 { y: 50, opacity: 0, filter: 'blur(10px)' },
                 { y: 0, opacity: 1, filter: 'blur(0px)', duration: 0.8, stagger: 0.15, ease: 'power3.out', delay: 0.5 }
             );
-        }, heroRef);
+            }, heroRef);
+        } catch (error) {
+            console.log('GSAP animation error in EnhancedHomepage:', error);
+        }
 
-        return () => ctx.revert();
+        return () => {
+            try {
+                ctx.revert();
+            } catch (error) {
+                console.log('GSAP cleanup error:', error);
+            }
+        };
     }, []);
 
     // Fetch problems data
@@ -282,7 +293,7 @@ function EnhancedHomepage() {
         const fetchProblems = async () => {
             try {
                 setLoading(true);
-                const response = await axiosClient.get('/problem/getallproblem');
+                const response = await axiosClient.get('/problem/public/getallproblem');
                 setProblems(response.data || []);
                 
                 // Calculate stats
@@ -341,7 +352,7 @@ function EnhancedHomepage() {
         fetchProblems();
     }, []);
 
-    // Filter problems
+  
     const filteredProblems = useMemo(() => {
         return problems.filter(problem => {
             const matchSearch = searchTerm === '' || problem.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -372,7 +383,32 @@ function EnhancedHomepage() {
     }, [problems]);
 
     const handleSolveProblem = (problem) => {
+        console.log("EnhancedHomepage: Navigating to problem with ID:", problem._id);
+        console.log("EnhancedHomepage: Full problem object:", problem);
+        
+     
+        const link = document.createElement('a');
+        link.href = `/problem/${problem._id}`;
+        link.textContent = 'Test link to problem';
+        link.style.position = 'fixed';
+        link.style.top = '50px';
+        link.style.right = '10px';
+        link.style.backgroundColor = 'red';
+        link.style.color = 'white';
+        link.style.padding = '10px';
+        link.style.zIndex = '9999';
+        document.body.appendChild(link);
+        
+        console.log("Added test link to DOM:", link);
+        
+       
         navigate(`/problem/${problem._id}`);
+        
+      
+        setTimeout(() => {
+            console.log("Trying window.location as fallback...");
+            window.location.href = `/problem/${problem._id}`;
+        }, 800);
     };
 
     if (loading) {
@@ -392,7 +428,7 @@ function EnhancedHomepage() {
             <Header />
             
             <main className="container mx-auto px-4 py-8 relative z-10">
-                {/* Hero Section */}
+              
                 <motion.section 
                     ref={heroRef}
                     className="text-center py-16"
@@ -420,7 +456,7 @@ function EnhancedHomepage() {
                         className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
                     >
                         <button
-                            onClick={() => document.getElementById('problem-list')?.scrollIntoView({ behavior: 'smooth' })}
+                            onClick={() => navigate('/problems')}
                             className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl text-lg flex items-center gap-3 hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300"
                         >
                             <Code size={24} />
@@ -462,7 +498,7 @@ function EnhancedHomepage() {
                         transition={{ duration: 0.8 }}
                         className="text-3xl font-bold text-white text-center mb-12"
                     >
-                        Why Choose CodeFlow?
+                        Why Choose CoderWorld?
                     </motion.h2>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[

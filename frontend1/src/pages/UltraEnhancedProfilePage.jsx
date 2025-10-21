@@ -15,10 +15,10 @@ import {
 import axiosClient from '../utils/axiosClient';
 import Header from '../components/dashboard/Header';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-// Floating Particles Component
+
 const FloatingParticles = () => {
     const containerRef = useRef(null);
 
@@ -29,7 +29,7 @@ const FloatingParticles = () => {
         const particles = [];
         const particleCount = 30;
 
-        // Create particles
+     
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'absolute w-1 h-1 bg-cyan-400 rounded-full opacity-60';
@@ -39,7 +39,7 @@ const FloatingParticles = () => {
             particles.push(particle);
         }
 
-        // Animate particles
+      
         particles.forEach((particle, index) => {
             gsap.set(particle, {
                 x: Math.random() * window.innerWidth,
@@ -74,7 +74,7 @@ const FloatingParticles = () => {
     return <div ref={containerRef} className="absolute inset-0 overflow-hidden pointer-events-none" />;
 };
 
-// Enhanced Profile Header with Advanced Animations
+
 const UltraProfileHeader = ({ user, stats, isOwnProfile }) => {
     const headerRef = useRef(null);
     const avatarRef = useRef(null);
@@ -85,10 +85,10 @@ const UltraProfileHeader = ({ user, stats, isOwnProfile }) => {
     useEffect(() => {
         const tl = gsap.timeline();
         
-        // Initial setup
+      
         gsap.set([avatarRef.current, nameRef.current, statsRef.current], { opacity: 0 });
         
-        // Avatar entrance with morphing effect
+       
         tl.fromTo(avatarRef.current, 
             { scale: 0, rotation: -180, opacity: 0 },
             { 
@@ -100,14 +100,14 @@ const UltraProfileHeader = ({ user, stats, isOwnProfile }) => {
                 transformOrigin: "center center"
             }
         )
-        // Name typing effect
+      
         .to(nameRef.current, {
             text: user?.firstname + ' ' + (user?.lastname || ''),
             duration: 2,
             ease: "none",
             delay: 0.5
         })
-        // Stats cascade animation
+     
         .fromTo(statsRef.current.children,
             { y: 100, opacity: 0, scale: 0.8 },
             { 
@@ -121,7 +121,7 @@ const UltraProfileHeader = ({ user, stats, isOwnProfile }) => {
             "-=1"
         );
 
-        // Continuous floating animation for avatar
+       
         gsap.to(avatarRef.current, {
             y: -10,
             duration: 3,
@@ -130,7 +130,7 @@ const UltraProfileHeader = ({ user, stats, isOwnProfile }) => {
             repeat: -1
         });
 
-        // Glow effect for stats
+      
         gsap.to(statsRef.current.children, {
             boxShadow: "0 0 20px rgba(6, 182, 212, 0.3)",
             duration: 2,
@@ -146,7 +146,7 @@ const UltraProfileHeader = ({ user, stats, isOwnProfile }) => {
         <div ref={headerRef} className="relative overflow-hidden min-h-[80vh] flex items-center">
             <FloatingParticles />
             
-            {/* Animated Background */}
+         
             <div className="absolute inset-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/30 via-purple-900/20 to-pink-900/30" />
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-cyan-500/5 to-transparent" />
@@ -154,26 +154,26 @@ const UltraProfileHeader = ({ user, stats, isOwnProfile }) => {
 
             <div className="relative z-10 container mx-auto px-4 py-16">
                 <div className="flex flex-col lg:flex-row items-center gap-12">
-                    {/* Enhanced Avatar Section */}
+                    
                     <div className="flex-shrink-0">
                         <motion.div
                             ref={avatarRef}
                             className="relative group"
                             whileHover={{ scale: 1.1 }}
                         >
-                            {/* Outer glow ring */}
+                           
                             <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-full opacity-75 blur-lg group-hover:opacity-100 transition-opacity duration-500" />
                             
-                            {/* Main avatar */}
+                          
                             <div className="relative w-40 h-40 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 p-2">
                                 <div className="w-full h-full rounded-full bg-slate-800 flex items-center justify-center text-6xl font-bold text-white relative overflow-hidden">
                                     <span className="relative z-10">{user?.firstname?.charAt(0)?.toUpperCase() || 'U'}</span>
-                                    {/* Animated background pattern */}
+                                  
                                     <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/20 to-purple-400/20 animate-pulse" />
                                 </div>
                             </div>
 
-                            {/* Floating badges around avatar */}
+                           
                             <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center animate-bounce">
                                 <Crown size={16} className="text-white" />
                             </div>
@@ -193,7 +193,6 @@ const UltraProfileHeader = ({ user, stats, isOwnProfile }) => {
                         </motion.div>
                     </div>
 
-                    {/* Enhanced Profile Info */}
                     <div className="flex-grow text-center lg:text-left">
                         <motion.h1 
                             ref={nameRef}
@@ -203,7 +202,7 @@ const UltraProfileHeader = ({ user, stats, isOwnProfile }) => {
                                 animation: 'gradientShift 3s ease-in-out infinite'
                             }}
                         >
-                            {/* Text will be filled by GSAP */}
+                           
                         </motion.h1>
                         
                         <motion.p 
@@ -224,7 +223,7 @@ const UltraProfileHeader = ({ user, stats, isOwnProfile }) => {
                             {user?.bio || "🚀 Passionate developer on an epic journey to master coding challenges and build revolutionary solutions that change the world! 💻✨"}
                         </motion.p>
 
-                        {/* Enhanced Social Links */}
+                       
                         <motion.div 
                             className="flex justify-center lg:justify-start gap-6 mb-12"
                             initial={{ opacity: 0, y: 20 }}
@@ -251,7 +250,7 @@ const UltraProfileHeader = ({ user, stats, isOwnProfile }) => {
                             ))}
                         </motion.div>
 
-                        {/* Enhanced Quick Stats */}
+                      
                         <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-6">
                             {[
                                 { label: 'Solved', value: stats?.solvedCount || 0, icon: CheckCircle, color: 'from-emerald-500 to-green-500' },
@@ -291,7 +290,7 @@ const UltraProfileHeader = ({ user, stats, isOwnProfile }) => {
     );
 };
 
-// Enhanced Stats Card with Advanced Animations
+
 const UltraStatsCard = ({ icon, title, value, subtitle, color = "cyan", delay = 0, index = 0 }) => {
     const cardRef = useRef(null);
 
@@ -311,7 +310,7 @@ const UltraStatsCard = ({ icon, title, value, subtitle, color = "cyan", delay = 
             }
         );
 
-        // Continuous hover animation
+      
         gsap.to(cardRef.current, {
             y: -5,
             duration: 2 + index * 0.2,
@@ -341,7 +340,7 @@ const UltraStatsCard = ({ icon, title, value, subtitle, color = "cyan", delay = 
             }}
             className="group relative p-8 bg-slate-900/60 border border-slate-800 rounded-2xl backdrop-blur-sm hover:border-cyan-400/50 transition-all duration-500 overflow-hidden"
         >
-            {/* Animated background */}
+           
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
@@ -363,7 +362,7 @@ const UltraStatsCard = ({ icon, title, value, subtitle, color = "cyan", delay = 
     );
 };
 
-// Enhanced Problem History with Morphing Animations
+
 const UltraProblemHistory = ({ problems, isLoading }) => {
     const historyRef = useRef(null);
 
@@ -405,7 +404,7 @@ const UltraProblemHistory = ({ problems, isLoading }) => {
                         whileHover={{ x: 10, scale: 1.02 }}
                         className="group relative flex items-center gap-6 p-6 bg-slate-900/60 border border-slate-800 rounded-2xl hover:border-cyan-400/50 transition-all duration-300 overflow-hidden"
                     >
-                        {/* Animated background */}
+                       
                         <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         
                         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
@@ -452,7 +451,7 @@ const UltraProblemHistory = ({ problems, isLoading }) => {
     );
 };
 
-// Enhanced Skills Section with Morphing Effects
+
 const UltraSkillsSection = ({ skills }) => {
     const skillsRef = useRef(null);
 
@@ -494,7 +493,7 @@ const UltraSkillsSection = ({ skills }) => {
     );
 };
 
-// Main Ultra Enhanced Profile Page Component
+
 function UltraEnhancedProfilePage() {
     const { user: currentUser } = useSelector(state => state.auth);
     const { userId } = useParams();
@@ -519,15 +518,29 @@ function UltraEnhancedProfilePage() {
                     return;
                 }
 
-                // Fetch user profile
+              
                 const userRes = await axiosClient.get(`/user/${targetUserId}`);
                 setProfileUser(userRes.data);
 
-                // Fetch dashboard stats
-                const statsRes = await axiosClient.get(`/user/${targetUserId}/dashboard-pro`);
-                setStats(statsRes.data);
+               
+                try {
+                    const statsRes = await axiosClient.get(`/user/${targetUserId}/dashboard-pro`);
+                    setStats(statsRes.data);
+                } catch (statsError) {
+                    console.error('Error fetching dashboard stats:', statsError);
+                    
+                    setStats({
+                        solvedCount: 0,
+                        easyCount: 0,
+                        mediumCount: 0,
+                        hardCount: 0,
+                        currentStreak: 0,
+                        longestStreak: 0,
+                        rank: 'N/A'
+                    });
+                }
 
-                // Fetch recent problems
+               
                 const problemsRes = await axiosClient.get(`/user/${targetUserId}/recent-problems`);
                 setRecentProblems(problemsRes.data || []);
 
@@ -592,7 +605,7 @@ function UltraEnhancedProfilePage() {
                 />
 
                 <div className="container mx-auto px-4 py-12">
-                    {/* Enhanced Tab Navigation */}
+                 
                     <motion.div 
                         className="flex flex-wrap gap-4 mb-12 border-b border-slate-800"
                         initial={{ opacity: 0, y: 30 }}
@@ -617,7 +630,7 @@ function UltraEnhancedProfilePage() {
                         ))}
                     </motion.div>
 
-                    {/* Enhanced Tab Content */}
+                    
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={activeTab}
@@ -628,7 +641,7 @@ function UltraEnhancedProfilePage() {
                         >
                             {activeTab === 'overview' && (
                                 <div className="space-y-12">
-                                    {/* Enhanced Stats Grid */}
+                                   
                                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                                         <UltraStatsCard
                                             icon={<Code size={32} className="text-white" />}
@@ -668,7 +681,7 @@ function UltraEnhancedProfilePage() {
                                         />
                                     </div>
 
-                                    {/* Enhanced Skills Section */}
+                                  
                                     <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 backdrop-blur-sm">
                                         <h3 className="text-3xl font-bold text-white mb-8 flex items-center gap-3">
                                             <BookOpen size={32} className="text-cyan-400" />
@@ -677,7 +690,7 @@ function UltraEnhancedProfilePage() {
                                         <UltraSkillsSection skills={stats?.solvedTags || []} />
                                     </div>
 
-                                    {/* Enhanced Performance Chart */}
+                                  
                                     <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 backdrop-blur-sm">
                                         <h3 className="text-3xl font-bold text-white mb-8 flex items-center gap-3">
                                             <TrendingUp size={32} className="text-cyan-400" />
@@ -718,7 +731,7 @@ function UltraEnhancedProfilePage() {
                                             Achievements & Badges
                                         </h3>
                                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                            {/* Achievement cards would go here */}
+                                           
                                             <motion.div 
                                                 className="text-center py-16"
                                                 initial={{ scale: 0 }}

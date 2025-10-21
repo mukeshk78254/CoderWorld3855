@@ -21,10 +21,10 @@ import {
 import axiosClient from '../utils/axiosClient';
 import Header from '../components/dashboard/Header';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-// Advanced Animated Background with Floating Icons
+
 const AnimatedProfileBackground = () => {
     const canvasRef = useRef(null);
     const containerRef = useRef(null);
@@ -45,7 +45,7 @@ const AnimatedProfileBackground = () => {
             canvas.height = window.innerHeight;
         };
 
-        // Create floating icons
+        
         const iconList = [
             Code, Trophy, Star, Award, Target, Zap, Flame, Brain, Cpu, Database,
             Layers, GitBranch, Terminal, Wrench, Key, Mail, Phone, Camera, Image,
@@ -66,7 +66,7 @@ const AnimatedProfileBackground = () => {
                     opacity: Math.random() * 0.6 + 0.2,
                     rotation: Math.random() * Math.PI * 2,
                     rotationSpeed: (Math.random() - 0.5) * 0.02,
-                    color: `hsl(${Math.random() * 60 + 180}, 70%, 60%)`, // Cyan to blue range
+                    color: `hsl(${Math.random() * 60 + 180}, 70%, 60%)`, 
                     icon: IconComponent,
                     pulse: Math.random() * 0.02 + 0.01
                 });
@@ -93,7 +93,7 @@ const AnimatedProfileBackground = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             time += 0.01;
 
-            // Draw gradient background
+            
             const gradient = ctx.createRadialGradient(
                 canvas.width / 2, canvas.height / 2, 0,
                 canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) / 2
@@ -104,7 +104,7 @@ const AnimatedProfileBackground = () => {
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Animate and draw particles
+           
             particles.forEach((particle, index) => {
                 particle.x += particle.vx;
                 particle.y += particle.vy;
@@ -120,7 +120,7 @@ const AnimatedProfileBackground = () => {
                 ctx.fill();
             });
 
-            // Animate and draw floating icons
+        
             floatingIcons.forEach((icon, index) => {
                 icon.x += icon.vx;
                 icon.y += icon.vy;
@@ -131,7 +131,7 @@ const AnimatedProfileBackground = () => {
                 if (icon.x < -50 || icon.x > canvas.width + 50) icon.vx *= -1;
                 if (icon.y < -50 || icon.y > canvas.height + 50) icon.vy *= -1;
 
-                // Draw icon shadow
+                
                 ctx.save();
                 ctx.globalAlpha = icon.opacity * 0.3;
                 ctx.translate(icon.x + 2, icon.y + 2);
@@ -143,7 +143,7 @@ const AnimatedProfileBackground = () => {
                 ctx.fillText('●', 0, 0);
                 ctx.restore();
 
-                // Draw icon
+               
                 ctx.save();
                 ctx.globalAlpha = icon.opacity;
                 ctx.translate(icon.x, icon.y);
@@ -190,7 +190,7 @@ const AnimatedProfileBackground = () => {
     );
 };
 
-// Floating Icon Components
+
 const FloatingIcon = ({ Icon, delay = 0, duration = 3, x = 0, y = 0 }) => {
     const iconRef = useRef(null);
 
@@ -239,10 +239,10 @@ const FloatingIcon = ({ Icon, delay = 0, duration = 3, x = 0, y = 0 }) => {
     );
 };
 
-// Theme Context
+
 const ThemeContext = React.createContext();
 
-// Theme Provider Component
+
 const ThemeProvider = ({ children }) => {
     const [theme, setTheme] = useState('dark');
     const [language, setLanguage] = useState('en');
@@ -294,7 +294,7 @@ const ThemeProvider = ({ children }) => {
     );
 };
 
-// Theme Toggle Component
+
 const ThemeToggle = () => {
     const { theme, setTheme, themes } = React.useContext(ThemeContext);
     const [showThemes, setShowThemes] = useState(false);
@@ -341,7 +341,7 @@ const ThemeToggle = () => {
     );
 };
 
-// Language Toggle Component
+
 const LanguageToggle = () => {
     const { language, setLanguage, languages } = React.useContext(ThemeContext);
     const [showLanguages, setShowLanguages] = useState(false);
@@ -379,7 +379,7 @@ const LanguageToggle = () => {
     );
 };
 
-// Achievement Badge Component
+
 const AchievementBadge = ({ achievement, index }) => {
     return (
         <div className="relative group">
@@ -407,7 +407,7 @@ const AchievementBadge = ({ achievement, index }) => {
     );
 };
 
-// Editable Field Component
+
 const EditableField = ({ label, value, onSave, type = "text", placeholder, points = 0, icon: Icon }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(value);
@@ -478,7 +478,7 @@ const EditableField = ({ label, value, onSave, type = "text", placeholder, point
     );
 };
 
-// Main Profile Page Component
+
 function EnhancedProfilePage() {
     const { user: currentUser, isAuthenticated, loading: authLoading } = useSelector(state => state.auth);
     const navigate = useNavigate();
@@ -489,7 +489,7 @@ function EnhancedProfilePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Fetch profile data
+    
     useEffect(() => {
         const fetchProfileData = async () => {
             if (!isAuthenticated || authLoading) return;
@@ -501,20 +501,20 @@ function EnhancedProfilePage() {
                 setProfileData(response.data.user || response.data);
             } catch (err) {
                 console.error('Error fetching profile:', err);
-                // Don't set error state, just use fallback data
+                
                 console.log('Using fallback profile data');
-                // Set loading to false immediately so content shows
+                
                 setLoading(false);
             } finally {
                 setLoading(false);
             }
         };
 
-        // Only fetch if authenticated and not loading
+       
         if (isAuthenticated && !authLoading) {
             fetchProfileData();
         } else {
-            // If not authenticated, just set loading to false
+           
             setLoading(false);
         }
     }, [isAuthenticated, authLoading]);
@@ -528,7 +528,6 @@ function EnhancedProfilePage() {
         { id: 6, name: 'Community Helper', description: 'Help 10 other users', unlocked: false, icon: '🤝' }
     ]);
 
-    // Handle saving profile field
     const handleSaveField = async (fieldPath, value) => {
         try {
             const response = await axiosClient.put('/profile/field', {
@@ -536,7 +535,7 @@ function EnhancedProfilePage() {
                 value: value
             });
             
-            // Update local profile data
+          
             setProfileData(response.data.user || response.data);
         } catch (err) {
             console.error('Error updating profile field:', err);
@@ -907,7 +906,7 @@ function EnhancedProfilePage() {
         }
     };
 
-    // Show loading state only briefly, then show content
+    
     if (authLoading || loading) {
         return (
             <div className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center">
@@ -919,10 +918,10 @@ function EnhancedProfilePage() {
         );
     }
 
-    // Show a warning if not authenticated but still show the profile
+    
     const showAuthWarning = !isAuthenticated;
 
-    // Create fallback profile data if none exists
+   
     const displayProfileData = profileData || {
         firstname: currentUser?.firstname || 'Demo User',
         profile: {
@@ -946,7 +945,7 @@ function EnhancedProfilePage() {
             <div className="min-h-screen bg-slate-950 text-slate-200 relative overflow-hidden">
                 <AnimatedProfileBackground />
                 
-                {/* Floating Icons Overlay */}
+              
                 <div className="fixed inset-0 pointer-events-none z-10">
                     <FloatingIcon Icon={Code} delay={0} duration={4} x={-200} y={-100} />
                     <FloatingIcon Icon={Trophy} delay={0.5} duration={3.5} x={200} y={-150} />
@@ -980,7 +979,7 @@ function EnhancedProfilePage() {
 
                 <Header />
                 
-                {/* Authentication Warning Banner */}
+             
                 {showAuthWarning && (
                     <motion.div 
                         className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-4 mx-4 mb-4"
@@ -1009,7 +1008,7 @@ function EnhancedProfilePage() {
                 )}
                 
                 <main className="container mx-auto px-4 py-8 relative z-20">
-                    {/* Profile Header */}
+                  
                     <motion.div 
                         className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 mb-8 backdrop-blur-sm"
                         initial={{ opacity: 0, y: 50, scale: 0.9 }}
@@ -1065,7 +1064,7 @@ function EnhancedProfilePage() {
                                 </div>
                             </motion.div>
 
-                            {/* Theme and Language Controls */}
+                           
                             <motion.div 
                                 className="flex items-center gap-4"
                                 initial={{ opacity: 0, x: 30 }}
@@ -1079,7 +1078,7 @@ function EnhancedProfilePage() {
                     </motion.div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                        {/* Sidebar */}
+                       
                         <motion.div 
                             className="lg:col-span-1"
                             initial={{ opacity: 0, x: -50 }}
@@ -1112,7 +1111,7 @@ function EnhancedProfilePage() {
                             </motion.div>
                         </motion.div>
 
-                        {/* Main Content */}
+                       
                         <motion.div 
                             className="lg:col-span-3"
                             initial={{ opacity: 0, x: 50 }}

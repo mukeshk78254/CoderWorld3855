@@ -7,10 +7,10 @@ import {
     Minimize2, Maximize2, Settings
 } from 'lucide-react';
 
-// Register GSAP plugins
+
 gsap.registerPlugin();
 
-// Floating AI Chat Assistant Component
+
 const AIChatAssistant = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isMinimized, setIsMinimized] = useState(false);
@@ -32,12 +32,12 @@ const AIChatAssistant = () => {
     const messagesEndRef = useRef(null);
     const dragRef = useRef(null);
 
-    // Auto-scroll to bottom when new messages arrive
+   
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-    // Entrance animation
+    
     useEffect(() => {
         if (isOpen) {
             gsap.fromTo(chatRef.current,
@@ -47,7 +47,7 @@ const AIChatAssistant = () => {
         }
     }, [isOpen]);
 
-    // Drag functionality
+   
     const handleMouseDown = (e) => {
         if (e.target.closest('.drag-handle')) {
             setIsDragging(true);
@@ -72,7 +72,7 @@ const AIChatAssistant = () => {
         }
     };
 
-    // Send message function
+  
     const sendMessage = async () => {
         if (!inputValue.trim() || isTyping) return;
 
@@ -87,7 +87,7 @@ const AIChatAssistant = () => {
         setInputValue('');
         setIsTyping(true);
 
-        // Simulate AI response
+        
         setTimeout(() => {
             const aiResponse = generateAIResponse(inputValue);
             const aiMessage = {
@@ -102,7 +102,7 @@ const AIChatAssistant = () => {
         }, 1500);
     };
 
-    // Generate AI response based on input
+    
     const generateAIResponse = (input) => {
         const responses = [
             "That's a great question! Let me help you with that. Based on your query, I'd recommend checking the documentation and considering edge cases.",
@@ -118,7 +118,7 @@ const AIChatAssistant = () => {
         return responses[Math.floor(Math.random() * responses.length)];
     };
 
-    // Handle Enter key press
+    
     const handleKeyPress = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -126,7 +126,7 @@ const AIChatAssistant = () => {
         }
     };
 
-    // Quick action buttons
+    
     const quickActions = [
         { icon: Code, text: "Explain this code", action: "Can you explain how this code works?" },
         { icon: Bug, text: "Debug help", action: "I'm getting an error, can you help debug?" },
@@ -136,7 +136,7 @@ const AIChatAssistant = () => {
 
     return (
         <>
-            {/* Floating Chat Button */}
+          
             {!isOpen && (
                 <motion.button
                     initial={{ scale: 0, rotate: -180 }}
@@ -150,7 +150,7 @@ const AIChatAssistant = () => {
                 </motion.button>
             )}
 
-            {/* Chat Window */}
+          
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -166,7 +166,7 @@ const AIChatAssistant = () => {
                         }}
                         onMouseDown={handleMouseDown}
                     >
-                        {/* Header */}
+                      
                         <div className="drag-handle flex items-center justify-between p-4 bg-slate-800 rounded-t-2xl cursor-move">
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center">
@@ -199,7 +199,7 @@ const AIChatAssistant = () => {
 
                         {!isMinimized && (
                             <>
-                                {/* Messages */}
+                         
                                 <div className="flex-1 overflow-y-auto p-4 space-y-4 h-[480px]">
                                     {messages.map((message) => (
                                         <motion.div
@@ -232,7 +232,7 @@ const AIChatAssistant = () => {
                                         </motion.div>
                                     ))}
 
-                                    {/* Typing indicator */}
+                                
                                     {isTyping && (
                                         <motion.div
                                             initial={{ opacity: 0, y: 20 }}
@@ -256,7 +256,7 @@ const AIChatAssistant = () => {
                                     <div ref={messagesEndRef} />
                                 </div>
 
-                                {/* Quick Actions */}
+                                
                                 <div className="p-4 border-t border-slate-800">
                                     <div className="grid grid-cols-2 gap-2 mb-4">
                                         {quickActions.map((action, index) => (
@@ -274,7 +274,7 @@ const AIChatAssistant = () => {
                                     </div>
                                 </div>
 
-                                {/* Input */}
+                               
                                 <div className="p-4 border-t border-slate-800">
                                     <div className="flex items-center gap-3">
                                         <input
@@ -308,6 +308,39 @@ const AIChatAssistant = () => {
 };
 
 export default AIChatAssistant;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

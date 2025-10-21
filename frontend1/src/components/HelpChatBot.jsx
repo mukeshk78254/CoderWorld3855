@@ -41,7 +41,7 @@ const HelpChatBot = () => {
         setIsLoading(true);
 
         try {
-            // Create messages array in the format expected by your backend
+          
             const messagesForAPI = [
                 ...messages.map(msg => ({
                     role: msg.role === 'bot' ? 'model' : 'user',
@@ -99,7 +99,7 @@ const HelpChatBot = () => {
     };
 
     const formatMessage = (content) => {
-        // Simple formatting for better readability
+       
         return content.split('\n').map((line, index) => (
             <span key={index}>
                 {line}
@@ -110,7 +110,7 @@ const HelpChatBot = () => {
 
     return (
         <div className="relative">
-            {/* Chat Toggle Button */}
+        
             <motion.button
                 onClick={() => setIsOpen(!isOpen)}
                 className="fixed bottom-6 right-6 w-14 h-14 bg-cyan-500 hover:bg-cyan-600 text-white rounded-full shadow-lg flex items-center justify-center z-50 transition-colors"
@@ -142,7 +142,7 @@ const HelpChatBot = () => {
                 </AnimatePresence>
             </motion.button>
 
-            {/* Chat Window */}
+           
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -171,7 +171,7 @@ const HelpChatBot = () => {
                             </button>
                         </div>
 
-                        {/* Messages */}
+                        
                         <div className="flex-1 overflow-y-auto p-4 space-y-4">
                             {messages.map((message, index) => (
                                 <motion.div

@@ -15,10 +15,10 @@ import {
 import axiosClient from '../utils/axiosClient';
 import Header from '../components/dashboard/Header';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-// Floating Code Particles
+
 const CodeParticles = () => {
     const containerRef = useRef(null);
 
@@ -67,7 +67,7 @@ const CodeParticles = () => {
     return <div ref={containerRef} className="absolute inset-0 overflow-hidden pointer-events-none" />;
 };
 
-// Enhanced Problem Card with Advanced Animations
+
 const UltraProblemCard = ({ problem, index, onSolve }) => {
     const cardRef = useRef(null);
 
@@ -87,7 +87,7 @@ const UltraProblemCard = ({ problem, index, onSolve }) => {
             }
         );
 
-        // Continuous floating animation
+       
         gsap.to(cardRef.current, {
             y: -5,
             duration: 3 + index * 0.1,
@@ -127,7 +127,7 @@ const UltraProblemCard = ({ problem, index, onSolve }) => {
             className="group relative bg-slate-900/60 border border-slate-800 rounded-2xl p-6 backdrop-blur-sm hover:border-cyan-400/50 transition-all duration-500 overflow-hidden cursor-pointer"
             onClick={() => onSolve(problem)}
         >
-            {/* Animated background */}
+         
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
@@ -190,7 +190,7 @@ const UltraProblemCard = ({ problem, index, onSolve }) => {
     );
 };
 
-// Enhanced Search and Filter Bar
+
 const UltraSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDifficultyFilter, sortBy, setSortBy }) => {
     const searchRef = useRef(null);
 
@@ -207,7 +207,7 @@ const UltraSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDiffic
             className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 backdrop-blur-sm mb-8"
         >
             <div className="flex flex-col lg:flex-row gap-4">
-                {/* Search Input */}
+              
                 <div className="flex-1 relative">
                     <Search size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" />
                     <input
@@ -219,7 +219,6 @@ const UltraSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDiffic
                     />
                 </div>
 
-                {/* Difficulty Filter */}
                 <select
                     value={difficultyFilter}
                     onChange={(e) => setDifficultyFilter(e.target.value)}
@@ -231,7 +230,7 @@ const UltraSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDiffic
                     <option value="hard">Hard</option>
                 </select>
 
-                {/* Sort By */}
+              
                 <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
@@ -247,7 +246,7 @@ const UltraSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDiffic
     );
 };
 
-// Enhanced Stats Overview
+
 const UltraStatsOverview = ({ stats }) => {
     const statsRef = useRef(null);
 
@@ -296,7 +295,7 @@ const UltraStatsOverview = ({ stats }) => {
     );
 };
 
-// Main Ultra Homepage Component
+
 function UltraHomepage() {
     const { user } = useSelector(state => state.auth);
     const navigate = useNavigate();
@@ -308,7 +307,7 @@ function UltraHomepage() {
     const [sortBy, setSortBy] = useState('newest');
     const [stats, setStats] = useState({});
 
-    // Fetch problems data
+   
     useEffect(() => {
         const fetchProblems = async () => {
             try {
@@ -316,7 +315,7 @@ function UltraHomepage() {
                 const response = await axiosClient.get('/problem/getall');
                 setProblems(response.data || []);
                 
-                // Calculate stats
+                
                 const problemStats = {
                     totalProblems: response.data?.length || 0,
                     easy: response.data?.filter(p => p.difficulty === 'easy').length || 0,
@@ -326,7 +325,7 @@ function UltraHomepage() {
                 setStats(problemStats);
             } catch (error) {
                 console.error('Error fetching problems:', error);
-                // Mock data for development
+               
                 const mockProblems = [
                     {
                         _id: '1',
@@ -372,7 +371,7 @@ function UltraHomepage() {
         fetchProblems();
     }, []);
 
-    // Filter and sort problems
+   
     const filteredProblems = problems
         .filter(problem => {
             const matchesSearch = problem.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -388,7 +387,7 @@ function UltraHomepage() {
                     const difficultyOrder = { easy: 1, medium: 2, hard: 3 };
                     return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
                 case 'popularity':
-                    return Math.random() - 0.5; // Mock popularity
+                    return Math.random() - 0.5; 
                 default:
                     return new Date(b.createdAt) - new Date(a.createdAt);
             }
@@ -421,7 +420,7 @@ function UltraHomepage() {
             <main className="container mx-auto px-4 py-8">
                 <CodeParticles />
                 
-                {/* Hero Section */}
+             
                 <motion.div 
                     className="text-center mb-12"
                     initial={{ opacity: 0, y: 50 }}
@@ -436,10 +435,10 @@ function UltraHomepage() {
                     </p>
                 </motion.div>
 
-                {/* Stats Overview */}
+               
                 <UltraStatsOverview stats={stats} />
 
-                {/* Search and Filter */}
+               
                 <UltraSearchBar
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
@@ -449,7 +448,7 @@ function UltraHomepage() {
                     setSortBy={setSortBy}
                 />
 
-                {/* Problems Grid */}
+           
                 <motion.div 
                     className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
                     initial={{ opacity: 0 }}

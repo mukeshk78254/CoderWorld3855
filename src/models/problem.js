@@ -6,70 +6,70 @@ const {Schema}=mongoose;
 const problemschema=new Schema({
   
 
-    title:{   // two sum//id
+    title:{  
         type:String,
         required:true
     },
-    description:{    // a array of n elements ...
+    description:{   
         type:String,
         required:true
     },
-    difficulty:{  // easy ,ed hard
+    difficulty:{  
         type:String,
         required:true,
         enum:['easy','medium','hard']
     },
-    tags:{      // array ka hai ki dp hai greedy ka hai problem
+    tags:{      
         type:String,
         required:true,
-        enum:['array','linked list','dp','string']
+        enum:['array','linked list','dp','string','Graph','trees','greedy','math','Backtracking','sorting','searching','stack','queue','bit manipulation']
     },  
      visibletestcases:[{
         input:{
             type:String,
-        required:true
+        
         },
         output:{
             type:String,
-        required:true
+            
         },explanation:{
             type:String,
-        required:true
+          
         }
     }],
     hiddentestcases:[{
         input:{
             type:String,
-        required:true
+       
         },
         output:{
             type:String,
-        required:true
+      
         }
     }],
     startcode:[{
-        language:{        // c++,pyhton..
+        language:{       
             type:String,
-        required:true
+        
         },
-        initialcode:{   // clas sol   public   int sum(vector<int>arr){  };
+        initialcode:{   
             type:String,
             required:true
         }
     }],
     refsolution:[{
-        language:{        // c++,pyhton..
+        language:{        
             type:String,
         required:true
         },
-        completecode:{   // clas sol   public   int sum(vector<int>arr){  };
+        completecode:{   
             type:String,
             required:true
         }
     }],
 
 
-    // kaun bnaya is sar problem ko us wale admin ka object id ko lelo //user ka id lena hai so give refernce as a user kyunki schema to bhut ka hoga n lena user ka id hai jo us problem ko cerate kiya hai
+    
 
     problemcreator:{
         type:Schema.Types.ObjectId,

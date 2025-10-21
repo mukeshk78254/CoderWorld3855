@@ -5,51 +5,50 @@ import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-r
 const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
   const pageNumbers = [];
 
-  // Calculate total number of pages needed based on total items and items per page.
+ 
   for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
     pageNumbers.push(i);
   }
 
-  // Determine which page numbers to show around the current page for a cleaner UI.
-  // This logic prevents showing too many page buttons.
-  const maxPageButtons = 5; // Maximum number of numbered page buttons to display.
+  
+  const maxPageButtons = 5; 
   let startPage, endPage;
 
   if (pageNumbers.length <= maxPageButtons) {
-    // If total pages are less than or equal to the maximum, show all page numbers.
+  
     startPage = 1;
     endPage = pageNumbers.length;
   } else {
-    // If there are more pages than `maxPageButtons`, implement truncation.
-    const maxPagesBeforeCurrentPage = Math.floor(maxPageButtons / 2); // How many buttons before current
-    const maxPagesAfterCurrentPage = Math.ceil(maxPageButtons / 2) - 1; // How many buttons after current
+    
+    const maxPagesBeforeCurrentPage = Math.floor(maxPageButtons / 2); 
+    const maxPagesAfterCurrentPage = Math.ceil(maxPageButtons / 2) - 1;
 
     if (currentPage <= maxPagesBeforeCurrentPage) {
-      // If current page is near the beginning, show first `maxPageButtons` pages.
+     
       startPage = 1;
       endPage = maxPageButtons;
     } else if (currentPage + maxPagesAfterCurrentPage >= pageNumbers.length) {
-      // If current page is near the end, show last `maxPageButtons` pages.
+     
       startPage = pageNumbers.length - maxPageButtons + 1;
       endPage = pageNumbers.length;
     } else {
-      // If current page is in the middle, center `maxPageButtons` around it.
+      
       startPage = currentPage - maxPagesBeforeCurrentPage;
       endPage = currentPage + maxPagesAfterCurrentPage;
     }
   }
 
-  // Extract the specific page numbers that will be displayed based on `startPage` and `endPage`.
+  
   const displayedPageNumbers = pageNumbers.slice(startPage - 1, endPage);
 
   if (pageNumbers.length <= 1) {
-    return null; // Don't show pagination if there's only one page or no pages
+    return null; 
   }
 
   return (
     <div className="flex justify-center items-center mt-8 gap-2">
       <div className="flex items-center gap-2">
-        {/* First Page Button */}
+      
         <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -60,7 +59,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
           <ChevronsLeft size={16} />
         </motion.button>
 
-        {/* Previous Page Button */}
+        
         <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -71,9 +70,9 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
           <ChevronLeft size={16} />
         </motion.button>
 
-        {/* Page Numbers */}
+       
         <div className="flex items-center gap-1">
-          {/* First Page and Ellipsis */}
+      
           {startPage > 1 && (
             <>
               <motion.button 
@@ -90,7 +89,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
             </>
           )}
 
-          {/* Displayed Page Numbers */}
+        
           {displayedPageNumbers.map(number => (
             <motion.button 
               key={number} 
@@ -107,7 +106,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
             </motion.button>
           ))}
 
-          {/* Last Page and Ellipsis */}
+        
           {endPage < pageNumbers.length && (
             <>
               {endPage < pageNumbers.length - 1 && (
@@ -125,7 +124,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
           )}
         </div>
 
-        {/* Next Page Button */}
+       
         <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -136,7 +135,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
           <ChevronRight size={16} />
         </motion.button>
 
-        {/* Last Page Button */}
+       
         <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -148,7 +147,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
         </motion.button>
       </div>
 
-      {/* Page Info */}
+     
       <div className="ml-4 text-sm text-slate-400">
         Page {currentPage} of {pageNumbers.length}
       </div>

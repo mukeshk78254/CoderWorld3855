@@ -23,10 +23,10 @@ import {
     Info, HelpCircle, CheckSquare, Square, Circle, Triangle
 } from 'lucide-react';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger);
 
-// Enhanced Algorithm-Themed Animated Background
+
 const AnimatedBackground = () => {
     const canvasRef = useRef(null);
     const animationRef = useRef(null);
@@ -106,7 +106,7 @@ const AnimatedBackground = () => {
             ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
             ctx.fill();
             
-            // Add inner glow
+           
             ctx.globalAlpha = node.opacity * 0.5;
             ctx.fillStyle = 'white';
             ctx.beginPath();
@@ -132,7 +132,7 @@ const AnimatedBackground = () => {
             ctx.lineTo(currentX, currentY);
             ctx.stroke();
             
-            // Add data packet
+            
             ctx.fillStyle = flow.color;
             ctx.beginPath();
             ctx.arc(currentX, currentY, 3, 0, Math.PI * 2);
@@ -160,7 +160,7 @@ const AnimatedBackground = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             time += 0.01;
 
-            // Draw data flow
+            
             dataFlow.forEach(flow => {
                 drawDataFlow(flow);
                 flow.progress += flow.speed;
@@ -173,7 +173,7 @@ const AnimatedBackground = () => {
                 }
             });
 
-            // Draw algorithm nodes
+            
             algorithmNodes.forEach(node => {
                 node.x += node.vx;
                 node.y += node.vy;
@@ -186,7 +186,7 @@ const AnimatedBackground = () => {
                 drawAlgorithmNode(node);
             });
 
-            // Draw code lines
+           
             codeLines.forEach(line => {
                 line.x += line.vx;
                 line.y += line.vy;
@@ -200,7 +200,7 @@ const AnimatedBackground = () => {
                 drawCodeLine(line);
             });
 
-            // Add pulsing background effect
+           
             const gradient = ctx.createRadialGradient(
                 canvas.width / 2, canvas.height / 2, 0,
                 canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) / 2
@@ -247,7 +247,7 @@ const AnimatedBackground = () => {
     );
 };
 
-// Problem List Modal Component
+
 const ProblemListModal = ({ isOpen, onClose, problems, onProblemSelect }) => {
     const modalRef = useRef(null);
 
@@ -331,7 +331,7 @@ const ProblemListModal = ({ isOpen, onClose, problems, onProblemSelect }) => {
     );
 };
 
-// Enhanced Tab Component with More Visible Animations
+
 const TabButton = ({ isActive, onClick, children, icon: Icon }) => (
     <motion.button
         whileHover={{ scale: 1.15, y: -4 }}
@@ -358,7 +358,7 @@ const TabButton = ({ isActive, onClick, children, icon: Icon }) => (
     </motion.button>
 );
 
-// Enhanced Action Button Component with More Visible Animations
+
 const ActionButton = ({ onClick, children, variant = "primary", icon: Icon, loading = false }) => {
     const variants = {
         primary: "bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 shadow-xl shadow-cyan-500/50 border-2 border-cyan-400/40",
@@ -401,7 +401,7 @@ const ActionButton = ({ onClick, children, variant = "primary", icon: Icon, load
     );
 };
 
-// Main Enhanced Problem Page Component
+
 function EnhancedProblemPage() {
     const { problemid } = useParams();
     const navigate = useNavigate();
@@ -429,16 +429,16 @@ function EnhancedProblemPage() {
         javascript: "JavaScript"
     };
 
-    // Enhanced GSAP Animations
+   
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Page entrance animation
+           
             gsap.fromTo("body", 
                 { opacity: 0, scale: 0.95 },
                 { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }
             );
 
-            // Staggered content animation
+           
             gsap.fromTo(".content-section",
                 { y: 50, opacity: 0 },
                 { 
@@ -455,7 +455,7 @@ function EnhancedProblemPage() {
         return () => ctx.revert();
     }, []);
 
-    // Fetch problem on load
+  
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -477,7 +477,7 @@ function EnhancedProblemPage() {
         fetchData();
     }, [problemid]);
 
-    // Reset code on language change
+    
     useEffect(() => {
         if (problem) {
             const starter = problem.startcode.find(sc =>
@@ -490,7 +490,7 @@ function EnhancedProblemPage() {
     }, [selectedLanguage]);
 
     const handleRun = async () => {
-        // Validate code before running
+        
         if (!code.trim()) {
             setRunResult([{ error: "❌ Please write some code before running!" }]);
             setShowModal(true);
@@ -542,7 +542,7 @@ function EnhancedProblemPage() {
     };
 
     const handleSubmit = async () => {
-        // Validate code before submitting
+        
         if (!code.trim()) {
             setSubmitResult({ status: "error", message: "❌ Please write some code before submitting!" });
             setShowModal(true);
@@ -562,7 +562,7 @@ function EnhancedProblemPage() {
             });
             
             if (data) {
-                // Format the response for better display
+                
                 const formattedResult = {
                     status: data.status || "unknown",
                     testCasesPassed: data.testCasesPassed || 0,
@@ -596,7 +596,7 @@ function EnhancedProblemPage() {
         }
     };
 
-    // Helper function to generate user-friendly submission messages
+    
     const getSubmissionMessage = (status, passed, total) => {
         switch (status) {
             case 'accepted':
@@ -624,23 +624,23 @@ function EnhancedProblemPage() {
         
         try {
             if (editorRef.current) {
-                // Use Monaco Editor's built-in format document action
+               
                 await editorRef.current.getAction('editor.action.formatDocument').run();
             } else {
-                // Enhanced fallback: Manual formatting with proper left alignment
+                
                 const lines = code.split("\n");
                 let formatted = lines.map(line => {
-                    // Remove all leading whitespace and align to left
+                    
                     return line.trimLeft();
                 }).join("\n");
                 
-                // Remove any trailing whitespace from the entire code
+               
                 formatted = formatted.replace(/\s+$/gm, '');
                 
-                // Remove empty lines at the beginning and end
+              
                 formatted = formatted.replace(/^\n+|\n+$/g, '');
                 
-                // Ensure proper spacing between code blocks
+                
                 formatted = formatted.replace(/\n{3,}/g, '\n\n');
                 
                 setCode(formatted);
@@ -648,7 +648,7 @@ function EnhancedProblemPage() {
         } catch (error) {
             console.error('Formatting error:', error);
         } finally {
-            // Add a small delay to show the formatting animation
+            
             setTimeout(() => {
                 setIsFormatting(false);
             }, 500);
@@ -704,7 +704,7 @@ function EnhancedProblemPage() {
             <Header problem={problem} />
             
             <main className="container mx-auto px-4 py-8 relative z-10">
-                {/* Back Button */}
+               
                 <motion.div 
                     className="mb-8"
                     initial={{ opacity: 0, x: -50 }}
@@ -721,12 +721,12 @@ function EnhancedProblemPage() {
                 </motion.div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 min-h-[80vh] h-full">
-                    {/* Left Panel - Problem Description */}
+                    
                     <div className="content-section bg-slate-900/60 border border-slate-800 rounded-2xl p-4 lg:p-6 backdrop-blur-sm overflow-y-auto flex flex-col h-full">
-                        {/* LeetCode-Style Header with CoderWorld Branding */}
+                        
                         <div className="flex items-center justify-between mb-8">
                             <div className="flex items-center gap-6">
-                                {/* CoderWorld Logo with Hover Effects */}
+                               
                                 <motion.div 
                                     whileHover={{ scale: 1.05, rotate: 2 }}
                                     whileTap={{ scale: 0.95 }}
@@ -734,7 +734,7 @@ function EnhancedProblemPage() {
                                     onClick={() => navigate(-1)}
                                     className="flex items-center gap-3 cursor-pointer group"
                                 >
-                                    {/* Triangle Logo Icon */}
+                                    
                                     <motion.div
                                         whileHover={{ rotate: 360 }}
                                         transition={{ duration: 0.6, ease: "easeInOut" }}
@@ -760,13 +760,13 @@ function EnhancedProblemPage() {
                                         </motion.div>
                                     </motion.div>
                                     
-                                    {/* Logo Text */}
+                                
                                     <span className="text-2xl font-bold text-white group-hover:text-cyan-300 transition-colors duration-300" style={{ fontFamily: "'Orbitron', sans-serif" }}>
                                         CoderWorld
                                     </span>
                                 </motion.div>
                                 
-                                {/* Problem Title and Info */}
+                             
                                 <div className="flex items-center gap-4">
                                     <div>
                                         <motion.h1 
@@ -799,7 +799,7 @@ function EnhancedProblemPage() {
                                 </div>
                             </div>
                             
-                            {/* Problems Button with Hover Effect */}
+                            
                             <motion.button
                                 whileHover={{ scale: 1.05, y: -2 }}
                                 whileTap={{ scale: 0.95 }}
@@ -811,7 +811,7 @@ function EnhancedProblemPage() {
                             </motion.button>
                         </div>
 
-                        {/* Progress Indicator */}
+                        
                         <div className="mb-6">
                             <div className="flex items-center justify-between mb-2">
                                 <span className="text-sm text-slate-400">Problem Progress</span>
@@ -836,7 +836,7 @@ function EnhancedProblemPage() {
                             </div>
                         </div>
 
-                        {/* LeetCode-Style Tabs */}
+                      
                         <div className="flex space-x-6 border-b border-slate-600 text-slate-300 mb-6">
                             {["description", "editorial", "solutions", "discussions", "submissions", "chatAi"].map(tab => (
                                 <motion.div 
@@ -856,7 +856,7 @@ function EnhancedProblemPage() {
                             ))}
                         </div>
 
-                        {/* Tab Content */}
+                       
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={activeTab}
@@ -930,9 +930,9 @@ function EnhancedProblemPage() {
                         </AnimatePresence>
                     </div>
 
-                    {/* Enhanced Right Panel - Code Editor */}
+                   
                     <div className="content-section bg-slate-900/60 border border-slate-800 rounded-2xl p-6 lg:p-8 backdrop-blur-sm flex flex-col shadow-2xl h-full min-h-[600px]">
-                        {/* Enhanced Editor Header */}
+                       
                         <div className="flex items-center justify-between mb-8">
                             <div className="flex items-center gap-5">
                                 <motion.div 
@@ -976,7 +976,7 @@ function EnhancedProblemPage() {
                             </motion.div>
                         </div>
 
-                        {/* Enhanced Action Buttons with Better Spacing */}
+                       
                         <div className="flex flex-wrap gap-4 mb-8">
                             <ActionButton 
                                 onClick={handleRun} 
@@ -1027,7 +1027,7 @@ function EnhancedProblemPage() {
                             </ActionButton>
                         </div>
 
-                        {/* Enhanced Code Editor */}
+                       
                         <div className="flex-1 bg-slate-900/80 border border-slate-700/50 rounded-xl overflow-hidden shadow-2xl">
                             <Editor
                                 language={selectedLanguage}
@@ -1053,19 +1053,19 @@ function EnhancedProblemPage() {
                                     smoothScrolling: true,
                                     cursorBlinking: "smooth",
                                     cursorSmoothCaretAnimation: true,
-                                    // Enhanced formatting options
+                                    
                                     formatOnPaste: true,
                                     formatOnType: true,
                                     insertSpaces: true,
                                     tabSize: 4,
                                     detectIndentation: false,
                                     trimAutoWhitespace: true,
-                                    // Better code formatting
+                                    
                                     suggest: {
                                         showKeywords: true,
                                         showSnippets: true
                                     },
-                                    // Auto-formatting
+                                    
                                     formatOnSave: false
                                 }}
                             />
@@ -1074,7 +1074,7 @@ function EnhancedProblemPage() {
                 </div>
             </main>
 
-            {/* Problem List Modal */}
+            
             <ProblemListModal
                 isOpen={showProblemList}
                 onClose={() => setShowProblemList(false)}
@@ -1082,7 +1082,7 @@ function EnhancedProblemPage() {
                 onProblemSelect={handleProblemSelect}
             />
 
-            {/* Result Modal */}
+           
             <AnimatePresence>
                 {showModal && (
                     <motion.div
@@ -1119,7 +1119,7 @@ function EnhancedProblemPage() {
                             
                             {runResult && (
                                 <div className="space-y-4 max-h-96 overflow-y-auto">
-                                    {/* Summary Header */}
+                                    
                                     <div className="bg-slate-800/60 border border-slate-700 p-4 rounded-xl">
                                         <h4 className="text-cyan-400 font-semibold mb-2" style={{ fontFamily: "'Source Code Pro', monospace" }}>
                                             🧪 Test Results Summary
@@ -1160,7 +1160,7 @@ function EnhancedProblemPage() {
                                                 </div>
                                             ) : (
                                                 <div className="space-y-3">
-                                                    {/* Test Case Header */}
+                                                    
                                                     <div className="flex items-center justify-between">
                                                         <h5 className="text-white font-semibold" style={{ fontFamily: "'Source Code Pro', monospace" }}>
                                                             Test Case {i + 1}
@@ -1224,7 +1224,7 @@ function EnhancedProblemPage() {
                                     animate={{ opacity: 1, scale: 1 }}
                                     className="mt-6"
                                 >
-                                    {/* Main Status Display */}
+                                   
                                     <div className="text-center mb-6">
                                         <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-full text-lg font-bold ${
                                             submitResult.status === 'accepted' 
@@ -1245,7 +1245,7 @@ function EnhancedProblemPage() {
                                         </div>
                                     </div>
 
-                                    {/* User-friendly message */}
+                                 
                                     {submitResult.message && (
                                         <div className="text-center mb-6">
                                             <p className="text-lg font-semibold text-white" style={{ fontFamily: "'Source Code Pro', monospace" }}>
@@ -1254,7 +1254,7 @@ function EnhancedProblemPage() {
                                         </div>
                                     )}
 
-                                    {/* Test Cases Summary */}
+                                   
                                     <div className="bg-slate-800/60 border border-slate-700 rounded-xl p-4 mb-4">
                                         <h4 className="text-cyan-400 font-semibold mb-3" style={{ fontFamily: "'Source Code Pro', monospace" }}>
                                             📊 Test Cases Summary
@@ -1277,7 +1277,7 @@ function EnhancedProblemPage() {
                                         </div>
                                     </div>
 
-                                    {/* Performance Metrics */}
+                                   
                                     {(submitResult.runtime || submitResult.memory) && (
                                         <div className="bg-slate-800/60 border border-slate-700 rounded-xl p-4 mb-4">
                                             <h4 className="text-cyan-400 font-semibold mb-3" style={{ fontFamily: "'Source Code Pro', monospace" }}>
@@ -1300,7 +1300,7 @@ function EnhancedProblemPage() {
                                         </div>
                                     )}
 
-                                    {/* Error Message */}
+          
                                     {submitResult.errorMessage && (
                                         <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
                                             <h4 className="text-red-400 font-semibold mb-2" style={{ fontFamily: "'Source Code Pro', monospace" }}>

@@ -4,7 +4,7 @@ const Comment = require('../models/comment');
 exports.getPosts = async (req, res) => {
     try {
         const { category } = req.query;
-        // Build filter object. If category is 'For You' or not provided, fetch all.
+        
         const filter = (category && category !== 'For You') ? { category } : {};
         
         const posts = await Post.find(filter)
@@ -15,7 +15,7 @@ exports.getPosts = async (req, res) => {
                     path: 'author',
                     select: 'firstname'
                 }
-            }) // Populate comments and their authors
+            }) 
             .sort({ createdAt: -1 })
             .lean();
         res.status(200).json(posts);
@@ -27,7 +27,7 @@ exports.getPosts = async (req, res) => {
 exports.createPost = async (req, res) => {
     try {
         const { title, content, category } = req.body;
-        const author = req.ans1.id; // From usermiddleware
+        const author = req.ans1.id;
 
         if (!title || !content || !category) {
             return res.status(400).json({ message: "Title, content, and category are required." });
@@ -77,7 +77,7 @@ exports.addComment = async (req, res) => {
         const newComment = new Comment({ post: postId, author, content });
         await newComment.save();
         
-        // Populate the author details before sending back to the client
+    
         const populatedComment = await Comment.findById(newComment._id).populate('author', 'firstname').lean();
 
         res.status(201).json(populatedComment);

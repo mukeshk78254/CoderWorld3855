@@ -14,10 +14,10 @@ import {
 import axiosClient from '../utils/axiosClient';
 import Header from '../components/dashboard/Header';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-// Enhanced Coding-Themed Animated Background
+
 const AnimatedBackground = () => {
     const canvasRef = useRef(null);
     const animationRef = useRef(null);
@@ -117,7 +117,7 @@ const AnimatedBackground = () => {
             ctx.lineTo(stream.x + dx * stream.length, stream.y + dy * stream.length);
             ctx.stroke();
             
-            // Add binary digits along the line
+           
             for (let i = 0; i < stream.length / 20; i++) {
                 const digitX = stream.x + dx * i * 20;
                 const digitY = stream.y + dy * i * 20;
@@ -145,7 +145,7 @@ const AnimatedBackground = () => {
             ctx.lineTo(currentX, currentY);
             ctx.stroke();
             
-            // Add circuit nodes
+            
             if (line.progress > 0.1 && line.progress < 0.9) {
                 ctx.fillStyle = line.color;
                 ctx.beginPath();
@@ -160,7 +160,7 @@ const AnimatedBackground = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             time += 0.01;
 
-            // Draw circuit lines
+        
             circuitLines.forEach(line => {
                 drawCircuitLine(line);
                 line.progress += line.speed;
@@ -173,7 +173,7 @@ const AnimatedBackground = () => {
                 }
             });
 
-            // Draw binary streams
+           
             binaryStreams.forEach(stream => {
                 drawBinaryStream(stream);
                 stream.x += Math.cos(stream.direction) * stream.speed;
@@ -187,7 +187,6 @@ const AnimatedBackground = () => {
                 }
             });
 
-            // Draw code particles
             codeParticles.forEach(particle => {
                 particle.x += particle.vx;
                 particle.y += particle.vy;
@@ -201,7 +200,7 @@ const AnimatedBackground = () => {
                 drawCodeSymbol(particle.x, particle.y, particle.symbol, particle.size, particle.color, particle.opacity, particle.rotation);
             });
 
-            // Add pulsing background effect
+        
             const gradient = ctx.createRadialGradient(
                 canvas.width / 2, canvas.height / 2, 0,
                 canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) / 2
@@ -248,7 +247,7 @@ const AnimatedBackground = () => {
     );
 };
 
-// Contest Card Component
+
 const ContestCard = ({ contest, index, onJoin }) => {
     const cardRef = useRef(null);
 
@@ -268,7 +267,7 @@ const ContestCard = ({ contest, index, onJoin }) => {
             }
         );
 
-        // Continuous floating animation
+       
         gsap.to(cardRef.current, {
             y: -5,
             duration: 4 + index * 0.2,
@@ -315,7 +314,7 @@ const ContestCard = ({ contest, index, onJoin }) => {
                 perspective: '1000px'
             }}
         >
-            {/* Animated background */}
+           
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
@@ -410,7 +409,7 @@ const ContestCard = ({ contest, index, onJoin }) => {
                 </div>
             </div>
 
-            {/* Enhanced floating particles around card */}
+        
             <div className="absolute inset-0 pointer-events-none">
                 {[...Array(8)].map((_, i) => (
                     <motion.div
@@ -435,7 +434,7 @@ const ContestCard = ({ contest, index, onJoin }) => {
                     />
                 ))}
                 
-                {/* Special code symbols floating around */}
+             
                 {['{', '}', '(', ')'].map((symbol, i) => (
                     <motion.div
                         key={`symbol-${i}`}
@@ -464,7 +463,7 @@ const ContestCard = ({ contest, index, onJoin }) => {
     );
 };
 
-// Stats Overview Component
+
 const ContestStatsOverview = ({ stats }) => {
     const statsRef = useRef(null);
 
@@ -513,7 +512,7 @@ const ContestStatsOverview = ({ stats }) => {
     );
 };
 
-// Main Enhanced Contest Page Component
+
 function EnhancedContestPage() {
     const { user } = useSelector(state => state.auth);
     const navigate = useNavigate();
@@ -526,19 +525,19 @@ function EnhancedContestPage() {
     const headerRef = useRef(null);
     const titleRef = useRef(null);
 
-    // Handle contest join/end navigation
+ 
     const handleContestAction = (contest) => {
         if (contest.status === 'upcoming') {
             navigate('/contest/opening-soon');
         } else if (contest.status === 'ended') {
             navigate('/contest/ended');
         } else if (contest.status === 'live') {
-            // For live contests, you could navigate to the actual contest page
-            navigate('/contest/opening-soon'); // For now, using the same page
+           
+            navigate('/contest/opening-soon');
         }
     };
 
-    // Mock data for contests
+    
     useEffect(() => {
         const mockContests = [
             {
@@ -609,16 +608,16 @@ function EnhancedContestPage() {
         setLoading(false);
     }, []);
 
-    // Enhanced GSAP Animations with Page Transitions
+ 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Page entrance animation
+          
             gsap.fromTo("body", 
                 { opacity: 0, scale: 0.95 },
                 { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }
             );
 
-            // Title typing effect with enhanced styling
+           
             gsap.to(titleRef.current, {
                 text: "Contest Arena",
                 duration: 2.5,
@@ -626,7 +625,7 @@ function EnhancedContestPage() {
                 delay: 0.8
             });
 
-            // Header animation with stagger
+           
             gsap.fromTo(headerRef.current,
                 { y: -100, opacity: 0, scale: 0.8 },
                 { 
@@ -639,13 +638,13 @@ function EnhancedContestPage() {
                 }
             );
 
-            // Animated background entrance
+           
             gsap.fromTo(".animated-bg",
                 { opacity: 0, scale: 1.1 },
                 { opacity: 1, scale: 1, duration: 2, ease: "power2.out", delay: 0.2 }
             );
 
-            // Staggered content animation
+           
             gsap.fromTo(".content-section",
                 { y: 50, opacity: 0 },
                 { 
@@ -658,7 +657,7 @@ function EnhancedContestPage() {
                 }
             );
 
-            // Continuous floating animation for main container
+          
             gsap.to(".main-container", {
                 y: -10,
                 duration: 6,
@@ -705,7 +704,7 @@ function EnhancedContestPage() {
             <Header />
             
             <main className="main-container container mx-auto px-4 py-8 relative z-10">
-                {/* Back Button */}
+              
                 <motion.div 
                     className="mb-8"
                     initial={{ opacity: 0, x: -50 }}
@@ -721,7 +720,6 @@ function EnhancedContestPage() {
                     </button>
                 </motion.div>
 
-                {/* Header */}
                 <motion.div 
                     ref={headerRef}
                     className="text-center mb-12"
@@ -737,7 +735,7 @@ function EnhancedContestPage() {
                             letterSpacing: '-0.02em'
                         }}
                     >
-                        {/* Text will be filled by GSAP */}
+                     
                     </motion.h1>
                     
                     <p className="text-2xl text-slate-400 max-w-4xl mx-auto leading-relaxed" style={{ fontFamily: "'Source Code Pro', 'Fira Code', monospace", fontWeight: 400 }}>
@@ -745,12 +743,12 @@ function EnhancedContestPage() {
                     </p>
                 </motion.div>
 
-                {/* Stats Overview */}
+            
                 <div className="content-section">
                     <ContestStatsOverview stats={stats} />
                 </div>
 
-                {/* Filter Tabs */}
+               
                 <motion.div 
                     className="content-section flex justify-center mb-12"
                     initial={{ opacity: 0, y: 30 }}
@@ -781,7 +779,7 @@ function EnhancedContestPage() {
                     </div>
                 </motion.div>
 
-                {/* Contests Grid */}
+               
                 <motion.div 
                     className="content-section grid grid-cols-1 lg:grid-cols-2 gap-8"
                     initial={{ opacity: 0 }}

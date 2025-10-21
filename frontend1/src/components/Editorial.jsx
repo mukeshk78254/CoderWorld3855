@@ -11,7 +11,6 @@ const Editorial = ({ secureUrl, thumbnailUrl, duration }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
 
-  // Format seconds to MM:SS
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -29,7 +28,7 @@ const Editorial = ({ secureUrl, thumbnailUrl, duration }) => {
     }
   };
 
-  // Update current time during playback
+
   useEffect(() => {
     const video = videoRef.current;
     
@@ -49,7 +48,7 @@ const Editorial = ({ secureUrl, thumbnailUrl, duration }) => {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      {/* Video Element */}
+     
       <video
         ref={videoRef}
         src={secureUrl}
@@ -58,13 +57,13 @@ const Editorial = ({ secureUrl, thumbnailUrl, duration }) => {
         className="w-full aspect-video bg-black cursor-pointer"
       />
       
-      {/* Video Controls Overlay */}
+     
       <div 
         className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 transition-opacity ${
           isHovering || !isPlaying ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        {/* Play/Pause Button */}
+       
         <button
           onClick={togglePlayPause}
           className="btn btn-circle btn-primary mr-3"
@@ -77,7 +76,7 @@ const Editorial = ({ secureUrl, thumbnailUrl, duration }) => {
           )}
         </button>
         
-        {/* Progress Bar */}
+      
         <div className="flex items-center w-full mt-2">
           <span className="text-white text-sm mr-2">
             {formatTime(currentTime)}

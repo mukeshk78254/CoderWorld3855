@@ -1,11 +1,20 @@
-const mongoose = require("mongoose");
 
-const notificationSchema = new mongoose.Schema({
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
+
+const notificationSchema = new Schema({
     title: { type: String, required: true },
     message: { type: String, required: true },
-    link: { type: String }, // Optional link, e.g., to a new contest
-    // This allows us to track who has read the notification
-    readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }], 
+    type: { type: String, default: 'info' },
+    link: { type: String }, 
+    targetUserId: { type: mongoose.Schema.Types.ObjectId, ref: 'user', default: null },
+    targetRole: { type: String, default: 'all' },
+    isRead: { type: Boolean, default: false },
+
+    deletedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }], 
+   
+    fromAdmin: { type: Boolean, default: false },
+    adminName: { type: String, default: 'Admin' },
 }, { timestamps: true });
 
-module.exports = mongoose.model("Notification", notificationSchema);
+module.exports = mongoose.model("notification", notificationSchema);

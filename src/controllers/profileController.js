@@ -1,114 +1,9 @@
-// const user = require("../models/users"); // Your Mongoose User model
 
-// // Get user profile
-// const getProfile = async (req, res) => {
-//     try {
-//         const userId = req.ans1.id; 
-//         const foundUser = await user.findById(userId).select('-password -__v -createdAt -updatedAt'); 
-//         if (!foundUser) {
-//             return res.status(404).json({ message: "User not found." });
-//         }
-//         res.status(200).json(foundUser);
-//     } catch (err) {
-//         console.error("Error fetching profile:", err);
-//         res.status(500).json({ message: "Internal server error." });
-//     }
-// };
-
-// // Update a specific field in the user's profile (basic info, experience, skills)
-// const updateProfileField = async (req, res) => {
-//     try {
-//         const userId = req.ans1.id; // From middleware
-//         const { field, value } = req.body; // `field` can be 'firstname', 'profile.location', 'profile.skills', etc.
-
-//         if (!field) {
-//             return res.status(400).json({ message: "Field to update is required." });
-//         }
-
-//         const foundUser = await user.findById(userId);
-//         if (!foundUser) {
-//             return res.status(404).json({ message: "User not found." });
-//         }
-
-//         foundUser.set(field, value);
-
-//         await foundUser.save();
-
-//         const updatedUser = await user.findById(userId).select('-password -__v -createdAt -updatedAt');
-//         res.status(200).json({ message: `${field} updated successfully.`, user: updatedUser });
-//     } catch (err) {
-//         console.error("Error updating profile field:", err);
-//         res.status(500).json({ message: "Internal server error." });
-//     }
-// };
-
-// // Update privacy settings
-// const updatePrivacySettings = async (req, res) => {
-//     try {
-//         const userId = req.ans1.id;
-//         const { field, value } = req.body; // e.g., field: 'contactByCompanies', value: true/false
-
-//         if (!field) {
-//             return res.status(400).json({ message: "Privacy setting field is required." });
-//         }
-
-//         const foundUser = await user.findById(userId);
-//         if (!foundUser) {
-//             return res.status(404).json({ message: "User not found." });
-//         }
-
-//         foundUser.set(`settings.privacy.${field}`, value);
-//         await foundUser.save();
-
-//         const updatedUser = await user.findById(userId).select('-password -__v -createdAt -updatedAt');
-//         res.status(200).json({ message: "Privacy settings updated successfully.", user: updatedUser });
-//     } catch (err) {
-//         console.error("Error updating privacy settings:", err);
-//         res.status(500).json({ message: "Internal server error." });
-//     }
-// };
-
-// // Update notification settings
-// const updateNotificationSettings = async (req, res) => {
-//     try {
-//         const userId = req.ans1.id;
-//         const { setting, type, value } = req.body; // e.g., setting: 'importantAnnouncements', type: 'email', value: true/false
-
-//         if (!setting || !type) {
-//             return res.status(400).json({ message: "Notification setting and type are required." });
-//         }
-
-//         const foundUser = await user.findById(userId);
-//         if (!foundUser) {
-//             return res.status(404).json({ message: "User not found." });
-//         }
-
-//         foundUser.set(`settings.notifications.${setting}.${type}`, value);
-//         await foundUser.save();
-
-//         const updatedUser = await user.findById(userId).select('-password -__v -createdAt -updatedAt');
-//         res.status(200).json({ message: "Notification settings updated successfully.", user: updatedUser });
-//     } catch (err) {
-//         console.error("Error updating notification settings:", err);
-//         res.status(500).json({ message: "Internal server error." });
-//     }
-// };
+const user = require("../models/users"); 
 
 
-// module.exports = {
-//     getProfile,
-//     updateProfileField,
-//     updatePrivacySettings,
-//     updateNotificationSettings
-// };
-
-
-// controllers/profileController.js
-const user = require("../models/users"); // Your Mongoose User model
-
-// --- Security: Whitelist of allowed fields for profile updates ---
 const ALLOWED_PROFILE_FIELDS = [
-    'firstname', // Direct field on the User model
+    'firstname', 
     'profile.location',
     'profile.birthday',
     'profile.gender',
@@ -117,14 +12,12 @@ const ALLOWED_PROFILE_FIELDS = [
     'profile.github',
     'profile.linkedin',
     'profile.twitter',
-    'profile.work', // Assuming these are single string fields or specific structures
+    'profile.work',
     'profile.education',
-    'profile.skills' // Assuming this is a single string field for a comma-separated list or similar
+    'profile.skills' 
 ];
 
-// --- Default settings structure for new users or missing settings ---
-// These defaults will be sent to the frontend if the user document doesn't have them.
-// Ensure these match the frontend's expected initial state.
+
 const DEFAULT_NOTIFICATION_SETTINGS = {
     importantAnnouncements: { email: true, site: false },
     featureAnnouncements: { email: true, site: false },
@@ -152,19 +45,16 @@ const DEFAULT_PRIVACY_SETTINGS = {
  */
 const getProfile = async (req, res) => {
     try {
-        const userId = req.ans1.id; // User ID from authentication middleware
-        // Fetch user, excluding sensitive fields like password and internal Mongoose fields
+        const userId = req.ans1.id; 
         const foundUser = await user.findById(userId).select('-password -__v -createdAt -updatedAt'); 
 
         if (!foundUser) {
             return res.status(404).json({ message: "User not found." });
         }
 
-        // Convert Mongoose document to a plain JavaScript object
+     
         const userResponseData = foundUser.toObject();
 
-        // Ensure nested objects like 'profile' and 'settings' exist
-        // and apply default values for settings if they are not present in the DB
         userResponseData.profile = userResponseData.profile || {};
         userResponseData.settings = userResponseData.settings || {};
         userResponseData.settings.notifications = userResponseData.settings.notifications || DEFAULT_NOTIFICATION_SETTINGS;
@@ -191,7 +81,7 @@ const updateProfileField = async (req, res) => {
             return res.status(400).json({ message: "Field to update is required." });
         }
 
-        // CRITICAL SECURITY: Whitelist check
+     
         if (!ALLOWED_PROFILE_FIELDS.includes(field)) {
             return res.status(403).json({ message: "Updating this field is not allowed. Invalid field: " + field });
         }
@@ -202,30 +92,28 @@ const updateProfileField = async (req, res) => {
         }
 
         let processedValue = value;
-        // Handle specific type conversions for incoming data if necessary
+   
         if (field === 'profile.birthday' && value) {
             processedValue = new Date(value);
-            if (isNaN(processedValue.getTime())) { // Check if the date is invalid
+            if (isNaN(processedValue.getTime())) {
                 return res.status(400).json({ message: "Invalid date format for birthday." });
             }
         }
-        // Add more specific handling for other fields if needed (e.g., array fields like skills)
-
-        // Mongoose's .set() method can update nested fields using dot notation (e.g., 'profile.location')
+        
         foundUser.set(field, processedValue);
 
-        // Save the document and run schema validators (important for enums, types, etc.)
+     
         await foundUser.save({ runValidators: true });
 
-        // Fetch the updated user data to send back, excluding sensitive fields
+        
         const updatedUser = await user.findById(userId).select('-password -__v -createdAt -updatedAt');
         res.status(200).json({ 
             message: `${field.split('.').pop()} updated successfully.`, 
-            user: updatedUser // Send back the updated user object
+            user: updatedUser 
         });
     } catch (err) {
         console.error("Error updating profile field:", err);
-        // Provide more specific error messages from Mongoose validation if possible
+        
         if (err.name === 'ValidationError') {
             return res.status(400).json({ message: err.message });
         }
@@ -247,7 +135,7 @@ const updatePrivacySettings = async (req, res) => {
             return res.status(400).json({ message: "Privacy setting field and a boolean value are required." });
         }
 
-        // Whitelist for privacy settings fields
+        
         const ALLOWED_PRIVACY_FIELDS = Object.keys(DEFAULT_PRIVACY_SETTINGS);
         if (!ALLOWED_PRIVACY_FIELDS.includes(field)) {
             return res.status(403).json({ message: "Updating this privacy setting is not allowed." });
@@ -280,13 +168,13 @@ const updatePrivacySettings = async (req, res) => {
 const updateNotificationSettings = async (req, res) => {
     try {
         const userId = req.ans1.id;
-        const { setting, type, value } = req.body; // `value` must be a boolean
+        const { setting, type, value } = req.body; 
 
         if (!setting || !type || typeof value !== 'boolean') {
             return res.status(400).json({ message: "Notification setting, type, and a boolean value are required." });
         }
 
-        // Whitelist for notification settings and their types
+
         const ALLOWED_NOTIFICATION_SETTINGS = Object.keys(DEFAULT_NOTIFICATION_SETTINGS);
         const ALLOWED_NOTIFICATION_TYPES = ['email', 'site'];
 

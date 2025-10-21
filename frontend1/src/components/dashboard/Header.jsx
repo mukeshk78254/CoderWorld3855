@@ -1,22 +1,39 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, LogOut, Settings, UserCircle, Code, Trophy, Users, MessageSquare, Bell, Shield } from 'lucide-react';
+import Logo from '../Logo';
+import { LayoutDashboard, LogOut, Settings, UserCircle, Code, Trophy, Users, MessageSquare, Bell, Shield, RefreshCw, Activity, Crown, Sparkles } from 'lucide-react';
 import { logoutUser } from '../../authSlice';
 import ProblemPicker from '../ProblemPicker';
-import { NotificationBell } from '../NotificationSystem';
-import { useState } from 'react';
+import NotificationBox from '../NotificationBox';
+import AdminNotificationPanel from '../admin/AdminNotificationPanel';
+import { useLogoutModal } from '../../context/LogoutModalContext';
+import { useState, useEffect, useRef } from 'react';
 
-function Header({ user, problem }) {
+function Header({ user, problem, refreshing, onRefresh }) {
     // If user is passed as prop, use it; otherwise get from Redux store
     const reduxUser = useSelector(state => state.auth.user);
+    const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
     const currentUser = user || reduxUser;
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [showProblemPicker, setShowProblemPicker] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const { showLogoutModal } = useLogoutModal();
+    const dropdownRef = useRef(null);
 
     const handleLogout = () => {
         dispatch(logoutUser());
+        navigate('/login');
+    };
+
+    const handleLogoutClick = () => {
+        setIsDropdownOpen(false); // Close dropdown when showing confirmation
+        showLogoutModal(currentUser, handleLogout);
+    };
+
+    const handleSignInClick = () => {
+        setIsDropdownOpen(false);
         navigate('/login');
     };
 
@@ -26,7 +43,7 @@ function Header({ user, problem }) {
             // If we're on a problem page, show problem picker
             setShowProblemPicker(true);
         } else {
-            // Otherwise navigate to problems page
+          
             navigate('/problems');
         }
     };
@@ -35,53 +52,39 @@ function Header({ user, problem }) {
         navigate(`/problem/${selectedProblem._id}`);
     };
 
+    const handleNavigation = (path) => {
+        console.log('Navigating to:', path);
+        console.log('Current user:', currentUser);
+        console.log('User role:', currentUser?.role);
+        navigate(path);
+        setIsDropdownOpen(false);
+    };
+
+    // Handle click outside to close dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            console.log('Click outside detected, dropdown open:', isDropdownOpen);
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                console.log('Clicking outside dropdown, closing it');
+                setIsDropdownOpen(false);
+            }
+        };
+
+        if (isDropdownOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isDropdownOpen]);
+
     return (
         <header className="sticky top-0 z-50 bg-slate-950/70 backdrop-blur-lg border-b border-slate-800">
             <div className="container mx-auto px-4 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center space-x-4 md:space-x-8">
-                        <motion.button 
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={handleLogoClick}
-                            className="flex items-center gap-3 min-w-0 group"
-                        >
-                            {/* Enhanced Logo Icon */}
-                            <motion.div
-                                whileHover={{ rotate: 360 }}
-                                transition={{ duration: 0.6, ease: "easeInOut" }}
-                                className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/25 border border-cyan-400/20 group-hover:shadow-cyan-500/40 transition-all duration-300"
-                            >
-                                <motion.div
-                                    animate={{ 
-                                        scale: [1, 1.1, 1],
-                                        rotate: [0, 5, -5, 0]
-                                    }}
-                                    transition={{ 
-                                        duration: 2, 
-                                        repeat: Infinity, 
-                                        ease: "easeInOut" 
-                                    }}
-                                    className="w-8 h-8 md:w-9 md:h-9"
-                                >
-                                    <img 
-                                        src="/src/pages/2896418.png" 
-                                        alt="CoderWorld Logo" 
-                                        className="w-full h-full object-contain"
-                                    />
-                                </motion.div>
-                            </motion.div>
-                            
-                            {/* Logo Text */}
-                            <div className="flex flex-col">
-                                <span className="text-xl md:text-2xl font-bold text-white group-hover:text-cyan-300 transition-colors duration-300 truncate" style={{ fontFamily: "'Orbitron', sans-serif" }}>
-                                    CoderWorld
-                                </span>
-                                <span className="text-xs text-slate-400 group-hover:text-cyan-400 transition-colors duration-300 hidden md:block" style={{ fontFamily: "'Source Code Pro', monospace" }}>
-                                    Code • Learn • Solve
-                                </span>
-                            </div>
-                        </motion.button>
+                        <Logo withButtonWrapper onClick={handleLogoClick} />
                         
                         {/* Problem Title Display */}
                         {problem && (
@@ -110,24 +113,44 @@ function Header({ user, problem }) {
                                 </div>
                             </div>
                         )}
-                                <nav className="hidden lg:flex items-center space-x-6">
-                                    <NavLink to="/dashboard" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
-                                        <LayoutDashboard size={18} />
-                                        Dashboard
-                        </NavLink>
-                            <NavLink to="/problems" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+                        <nav className="hidden lg:flex items-center space-x-6">
+                            <NavLink 
+                                to="/dashboard" 
+                                className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+                                onClick={() => console.log('Dashboard clicked - navigating to /dashboard')}
+                            >
+                                <LayoutDashboard size={18} />
+                                Dashboard
+                            </NavLink>
+                            <NavLink 
+                                to="/problems" 
+                                className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+                                onClick={() => console.log('Problems clicked - navigating to /problems')}
+                            >
                                 <Code size={18} />
                                 Problems
                             </NavLink>
-                            <NavLink to="/contests" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+                            <NavLink 
+                                to="/contests" 
+                                className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+                                onClick={() => console.log('Contests clicked - navigating to /contests')}
+                            >
                                 <Trophy size={18} />
                                 Contests
                             </NavLink>
-                            <NavLink to="/discuss" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+                            <NavLink 
+                                to="/discuss" 
+                                className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+                                onClick={() => console.log('Discuss clicked - navigating to /discuss')}
+                            >
                                 <MessageSquare size={18} />
                                 Discuss
                             </NavLink>
-                            <NavLink to="/leaderboard" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+                            <NavLink 
+                                to="/leaderboard" 
+                                className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+                                onClick={() => console.log('Leaderboard clicked - navigating to /leaderboard')}
+                            >
                                 <Users size={18} />
                                 Leaderboard
                             </NavLink>
@@ -135,8 +158,57 @@ function Header({ user, problem }) {
                     </div>
 
                     <div className="flex items-center space-x-2 md:space-x-4">
-                        {/* Notification Bell */}
-                        <NotificationBell user={currentUser} />
+                        {/* Premium Button */}
+                        {!currentUser?.isPremium && (
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => navigate('/premium')}
+                                className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500 via-pink-500 to-purple-500 hover:from-yellow-600 hover:via-pink-600 hover:to-purple-600 text-white font-bold rounded-lg shadow-lg shadow-purple-500/50 transition-all"
+                            >
+                                <Crown size={18} className="animate-pulse" />
+                                <span>Go Premium</span>
+                                <Sparkles size={16} />
+                            </motion.button>
+                        )}
+
+                        {currentUser?.isPremium && (
+                            <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500/20 to-purple-500/20 border border-yellow-500/30 rounded-lg">
+                                <Crown size={18} className="text-yellow-400" />
+                                <span className="text-yellow-400 font-semibold text-sm">Premium</span>
+                            </div>
+                        )}
+
+                        {/* Refresh Button - Only show on dashboard */}
+                        {onRefresh && (
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={onRefresh}
+                                disabled={refreshing}
+                                className="p-2 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 text-slate-400 hover:text-white transition-colors disabled:opacity-50"
+                                title="Refresh Dashboard Data"
+                            >
+                                <motion.div
+                                    animate={refreshing ? { rotate: 360 } : {}}
+                                    transition={{ duration: 1, repeat: refreshing ? Infinity : 0 }}
+                                >
+                                    <RefreshCw size={18} />
+                                </motion.div>
+                            </motion.button>
+                        )}
+                        
+                        {/* Real-time Status Indicator */}
+                        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20">
+                            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                            <span className="text-xs text-green-400 font-medium">Live</span>
+                        </div>
+                        
+                        {/* Notification System */}
+                        <NotificationBox />
+                        
+                        {/* Admin Notification Panel (only for admins) */}
+                        <AdminNotificationPanel />
                         
                         {/* Mobile Menu Button */}
                         <div className="lg:hidden dropdown dropdown-end">
@@ -145,83 +217,177 @@ function Header({ user, problem }) {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                                 </svg>
                             </div>
-                                    <div tabIndex={0} className="dropdown-content mt-2 z-[60] w-48 bg-slate-900/95 backdrop-blur-xl border border-slate-700 rounded-xl shadow-2xl">
-                                        <div className="p-2 space-y-1">
-                                            <NavLink to="/dashboard" className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors">
-                                                <LayoutDashboard size={18} />
-                                                Dashboard
-                                            </NavLink>
-                                            <NavLink to="/problems" className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors">
-                                                <Code size={18} />
-                                                Problems
-                                            </NavLink>
-                                            <NavLink to="/contests" className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors">
-                                                <Trophy size={18} />
-                                                Contests
-                                            </NavLink>
-                                            <NavLink to="/discuss" className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors">
-                                                <MessageSquare size={18} />
-                                                Discuss
-                                            </NavLink>
-                                            <NavLink to="/leaderboard" className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors">
-                                                <Users size={18} />
-                                                Leaderboard
-                                            </NavLink>
-                                        </div>
-                                    </div>
+                            <div tabIndex={0} className="dropdown-content mt-2 z-[60] w-48 bg-slate-900/95 backdrop-blur-xl border border-slate-700 rounded-xl shadow-2xl">
+                                <div className="p-2 space-y-1">
+                                    <NavLink 
+                                        to="/dashboard" 
+                                        className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
+                                        onClick={() => console.log('Mobile Dashboard clicked - navigating to /dashboard')}
+                                    >
+                                        <LayoutDashboard size={18} />
+                                        Dashboard
+                                    </NavLink>
+                                    <NavLink 
+                                        to="/problems" 
+                                        className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
+                                        onClick={() => console.log('Mobile Problems clicked - navigating to /problems')}
+                                    >
+                                        <Code size={18} />
+                                        Problems
+                                    </NavLink>
+                                    <NavLink 
+                                        to="/contests" 
+                                        className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
+                                        onClick={() => console.log('Mobile Contests clicked - navigating to /contests')}
+                                    >
+                                        <Trophy size={18} />
+                                        Contests
+                                    </NavLink>
+                                    <NavLink 
+                                        to="/discuss" 
+                                        className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
+                                        onClick={() => console.log('Mobile Discuss clicked - navigating to /discuss')}
+                                    >
+                                        <MessageSquare size={18} />
+                                        Discuss
+                                    </NavLink>
+                                    <NavLink 
+                                        to="/leaderboard" 
+                                        className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
+                                        onClick={() => console.log('Mobile Leaderboard clicked - navigating to /leaderboard')}
+                                    >
+                                        <Users size={18} />
+                                        Leaderboard
+                                    </NavLink>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Profile Dropdown */}
-                        <div className="dropdown dropdown-end">
-                            <div tabIndex={0} role="button" className="flex items-center space-x-2 cursor-pointer hover:bg-slate-800/50 rounded-lg p-2 transition-colors">
+                        <div ref={dropdownRef} className="relative">
+                            <div 
+                                tabIndex={0} 
+                                role="button" 
+                                className="flex items-center space-x-2 cursor-pointer hover:bg-slate-800/50 rounded-lg p-2 transition-colors"
+                                onClick={() => {
+                                    console.log('Profile clicked, current state:', isDropdownOpen);
+                                    setIsDropdownOpen(!isDropdownOpen);
+                                }}
+                            >
                                 <div className="avatar">
-                                    <div className="w-8 h-8 md:w-9 md:h-9 rounded-full ring-2 ring-offset-2 ring-offset-slate-900 ring-cyan-500">
-                                       <span className="text-sm md:text-lg font-bold flex items-center justify-center h-full">{currentUser?.firstname?.charAt(0).toUpperCase() || '?'}</span>
+                                    <div className={`w-8 h-8 md:w-9 md:h-9 rounded-full ring-2 ring-offset-2 ring-offset-slate-900 transition-all ${
+                                        isDropdownOpen ? 'ring-cyan-400 bg-cyan-500/20' : 'ring-cyan-500'
+                                    }`}>
+                                       <span className="text-sm md:text-lg font-bold flex items-center justify-center h-full">
+                                           {isAuthenticated ? (currentUser?.firstname?.charAt(0).toUpperCase() || '?') : '?'}
+                                       </span>
                                     </div>
                                 </div>
+                                {/* Debug indicator */}
+                                {isDropdownOpen && (
+                                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                                )}
                             </div>
-                            <div tabIndex={0} className="dropdown-content mt-4 z-[60] w-64 overflow-hidden rounded-xl bg-slate-900/80 backdrop-blur-xl border border-slate-700 shadow-2xl">
-                                <div className="p-4 bg-slate-800/50">
-                                    <p className="font-bold text-white text-lg truncate">{currentUser?.firstname || 'Valued User'}</p>
-                                    <p className="text-sm text-slate-400 truncate">{currentUser?.emailId || 'Welcome!'}</p>
-                                </div>
-                                <div className="h-px bg-slate-700" />
-                                <div className="p-2 space-y-1">
-                                     {currentUser?.role === 'admin' && (
-                                                      <NavLink to="/admin" className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-lg text-gray-300 hover:bg-indigo-500/20 hover:text-white transition-colors duration-200">
-                                            <Shield size={18} />
-                                                        <span>Admin Panel</span>
-                                                      </NavLink>
-                                                    )}
-                                    <NavLink 
-                                        to="/dashboard" 
-                                        className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
-                                    >
-                                        <LayoutDashboard size={18} />
-                                        <span>Dashboard</span>
-                                    </NavLink>
-                                    <NavLink 
-                                        to="/profile" 
-                                        className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
-                                    >
-                                        <UserCircle size={18} />
-                                        <span>My Profile</span>
-                                    </NavLink>
-                                    <button className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors">
-                                        <Settings size={18} />
-                                        <span>Settings</span>
-                                    </button>
-                                    <button className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors">
-                                        <Bell size={18} />
-                                        <span>Notifications</span>
-                                    </button>
-                                    <div className="h-px bg-slate-700/50 my-1" />
-                                    <button onClick={handleLogout} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors">
-                                        <LogOut size={18} />
-                                        <span>Sign Out</span>
-                                    </button>
-                                </div>
-                            </div>
+                            {isDropdownOpen && (
+                                <>
+                                    {/* Backdrop */}
+                                    <div 
+                                        className="fixed inset-0 z-[59] bg-black/20"
+                                        onClick={() => {
+                                            console.log('Backdrop clicked, closing dropdown');
+                                            setIsDropdownOpen(false);
+                                        }}
+                                    />
+                                    {/* Dropdown */}
+                                    <div className="absolute right-0 mt-4 z-[60] w-64 overflow-hidden rounded-xl bg-slate-900/95 backdrop-blur-xl border border-slate-700 shadow-2xl">
+                                {isAuthenticated ? (
+                                    <>
+                                        <div className="p-4 bg-slate-800/50">
+                                            <p className="font-bold text-white text-lg truncate">{currentUser?.firstname || 'Valued User'}</p>
+                                            <p className="text-sm text-slate-400 truncate">{currentUser?.emailId || 'Welcome!'}</p>
+                                        </div>
+                                        <div className="h-px bg-slate-700" />
+                                        <div className="p-2 space-y-1">
+                                             {currentUser?.role === 'admin' && (
+                                                <button 
+                                                    onClick={() => {
+                                                        console.log('Admin button clicked');
+                                                        handleNavigation('/admin');
+                                                    }}
+                                                    className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-lg text-gray-300 hover:bg-indigo-500/20 hover:text-white transition-colors duration-200"
+                                                >
+                                                    <Shield size={18} />
+                                                    <span>Admin Panel</span>
+                                                </button>
+                                            )}
+                                            <button 
+                                                onClick={() => {
+                                                    console.log('Profile Dropdown Dashboard button clicked');
+                                                    handleNavigation('/dashboard');
+                                                }}
+                                                className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
+                                            >
+                                                <LayoutDashboard size={18} />
+                                                <span>Dashboard</span>
+                                            </button>
+                                            <button 
+                                                onClick={() => {
+                                                    console.log('Profile Dropdown Profile button clicked');
+                                                    handleNavigation('/profile');
+                                                }}
+                                                className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
+                                            >
+                                                <UserCircle size={18} />
+                                                <span>My Profile</span>
+                                            </button>
+                                            <button 
+                                                onClick={() => {
+                                                    console.log('Settings button clicked');
+                                                    handleNavigation('/settings');
+                                                }}
+                                                className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
+                                            >
+                                                <Settings size={18} />
+                                                <span>Settings</span>
+                                            </button>
+                                            <div className="h-px bg-slate-700/50 my-1" />
+                                            <button onClick={handleLogoutClick} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors">
+                                                <LogOut size={18} />
+                                                <span>Sign Out</span>
+                                            </button>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="p-4 bg-slate-800/50">
+                                            <p className="font-bold text-white text-lg">Welcome Guest</p>
+                                            <p className="text-sm text-slate-400">Sign in to access all features</p>
+                                        </div>
+                                        <div className="h-px bg-slate-700" />
+                                        <div className="p-2 space-y-1">
+                                            <button 
+                                                onClick={handleSignInClick}
+                                                className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-cyan-400 hover:bg-cyan-500/10 transition-colors"
+                                            >
+                                                <UserCircle size={18} />
+                                                <span>Sign In</span>
+                                            </button>
+                                            <button 
+                                                onClick={() => {
+                                                    setIsDropdownOpen(false);
+                                                    navigate('/signup');
+                                                }}
+                                                className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
+                                            >
+                                                <Settings size={18} />
+                                                <span>Create Account</span>
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -234,6 +400,7 @@ function Header({ user, problem }) {
                 onSelectProblem={handleSelectProblem}
                 currentProblemId={problem?._id}
             />
+
         </header>
     );
 }

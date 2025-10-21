@@ -34,7 +34,7 @@ const{title,description,difficulty,tags,visibletestcases,hiddentestcases, refsol
         return res.status(400).send("error occured "); // return bcoz iske bd koi ab nhi run hoga
       }
     }
-g
+
    }
    // now jitna bhi error hoga sare for loop me ho gya hoga agr error aaya to yha aayega hi ngi so now we can store in db.
 
@@ -185,17 +185,33 @@ const getallproblem=async(req,res)=>{
 // kitna user problem solved kiya hai ye to simple hai sirf dekh lo problemsolved ka length hai basicallw wh to eka array hai jisne sare unique problem id jo solve ho gye hai usko rkha hai to wh length de dega ki kitna solve hua hai
 const solvedallproblembyuser=async(req,res)=>{
   try{ // usermiddlewares se pas kiye to user ke sare id and usko info store hai req.ans1 me
-  // const count =req.ans1.problemsolved.length;  // ye to sirf count dega agr hmo chahiye ki kaun kauns se problem solve kiya hai to use populate command
-
-  const userid=req.ans1.id;
-  const user=await User.findById(userid).populate({   // polulate se hota ye hai ye user jis problemsolved ka problem id  ko rfer krega uske sare detail ko lao
-    path:"problemsolved",
-    select:"id title difficulty tags"
-  })
-  res.status(200).send(user.problemsolved);  // fronetnd me whi dekho jo kam ka hai bs jaise problemsolved difficulty usliye select use 
+    const userid=req.ans1.id;
+    
+    // Check if user exists
+    const userData = await User.findById(userid);
+    if (!userData) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    // Use proper field name (problemsSolved not problemsolved)
+    const user = await User.findById(userid).populate({
+      path: "problemsSolved", // Correct field name based on your schema
+      select: "title difficulty tags" // Include ID by default
+    });
+    
+    // Check if problemsSolved exists and is an array
+    if (!user.problemsSolved) {
+      return res.status(200).json([]);
+    }
+    
+    return res.status(200).json({
+      problems: user.problemsSolved,
+      count: user.problemsSolved.length
+    });
   }
   catch(err){
-  res.status(500).send("error : "+ err)
+    console.error("Error in solvedallproblembyuser:", err);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
 
@@ -203,16 +219,18 @@ const solvedallproblembyuser=async(req,res)=>{
 const submittedproblem=async(req,res)=>{
  try{
    const userid=req.ans1.id;
-  const problemid=req.params.pid;
+   const problemid=req.params.pid;
 
-  const ans=await Submission.find({userid,problemid});
-  if(ans.length==0)
-    res.status(200).send("No any submisssion here for this particular problem by this user")
+   const ans=await Submission.find({userid,problemid}).sort({createdAt: -1});
+   if(ans.length==0) {
+     return res.status(200).json([]);  // Return an empty array instead of a string
+   }
 
-  res.status(200).send(ans);
+   return res.status(200).json(ans);  // Use json() for proper content type
  }
  catch(err){
-  res.status(501).send("internal server error " + err);
+   console.error("Error in submittedproblem:", err);
+   return res.status(500).send("Internal server error");  // 500 is more appropriate than 501
  }
 
 }

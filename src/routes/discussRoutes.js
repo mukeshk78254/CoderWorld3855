@@ -3,7 +3,7 @@ const router = express.Router();
 const usermiddleware = require('../middleware/middle');
 const discussController = require('../controllers/discussController');
 
-// All forum routes are protected and require a logged-in user
+
 router.use(usermiddleware);
 
 router.get('/posts', discussController.getPosts);

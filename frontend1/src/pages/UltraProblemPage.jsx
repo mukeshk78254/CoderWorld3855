@@ -14,10 +14,10 @@ import {
 import axiosClient from '../utils/axiosClient';
 import Header from '../components/dashboard/Header';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-// Floating Code Particles
+
 const CodeParticles = () => {
     const containerRef = useRef(null);
 
@@ -66,7 +66,7 @@ const CodeParticles = () => {
     return <div ref={containerRef} className="absolute inset-0 overflow-hidden pointer-events-none" />;
 };
 
-// Enhanced Problem Header
+
 const UltraProblemHeader = ({ problem, onRun, onSubmit, isRunning, isSubmitting }) => {
     const headerRef = useRef(null);
     const titleRef = useRef(null);
@@ -76,26 +76,26 @@ const UltraProblemHeader = ({ problem, onRun, onSubmit, isRunning, isSubmitting 
     useEffect(() => {
         const tl = gsap.timeline();
         
-        // Title typing effect
+       
         tl.to(titleRef.current, {
             text: problem?.title || "Loading Problem...",
             duration: 2,
             ease: "none"
         })
-        // Difficulty badge animation
+        
         .fromTo(difficultyRef.current,
             { scale: 0, rotation: -180 },
             { scale: 1, rotation: 0, duration: 1, ease: "elastic.out(1, 0.3)" },
             "-=1"
         )
-        // Buttons cascade
+        
         .fromTo(buttonsRef.current?.children,
             { y: 50, opacity: 0 },
             { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "back.out(1.7)" },
             "-=0.5"
         );
 
-        // Continuous glow effect
+       
         gsap.to(difficultyRef.current, {
             boxShadow: "0 0 20px rgba(6, 182, 212, 0.5)",
             duration: 2,
@@ -129,7 +129,7 @@ const UltraProblemHeader = ({ problem, onRun, onSubmit, isRunning, isSubmitting 
                                 animation: 'gradientShift 3s ease-in-out infinite'
                             }}
                         >
-                            {/* Text will be filled by GSAP */}
+                            
                         </motion.h1>
                         
                         <div className="flex items-center gap-6 mb-6">
@@ -202,13 +202,13 @@ const UltraProblemHeader = ({ problem, onRun, onSubmit, isRunning, isSubmitting 
     );
 };
 
-// Enhanced Code Editor
+
 const UltraCodeEditor = ({ code, setCode, language = 'javascript' }) => {
     const editorRef = useRef(null);
     const [isFullscreen, setIsFullscreen] = useState(false);
 
     useEffect(() => {
-        // Code editor entrance animation
+       
         gsap.fromTo(editorRef.current,
             { scale: 0.9, opacity: 0, y: 50 },
             { scale: 1, opacity: 1, y: 0, duration: 1, ease: "power3.out" }
@@ -223,7 +223,7 @@ const UltraCodeEditor = ({ code, setCode, language = 'javascript' }) => {
             }`}
             layout
         >
-            {/* Editor Header */}
+           
             <div className="flex items-center justify-between p-4 bg-slate-800 border-b border-slate-700">
                 <div className="flex items-center gap-4">
                     <div className="flex gap-2">
@@ -246,7 +246,7 @@ const UltraCodeEditor = ({ code, setCode, language = 'javascript' }) => {
                 </div>
             </div>
 
-            {/* Code Editor */}
+            
             <div className="relative">
                 <textarea
                     value={code}
@@ -256,7 +256,7 @@ const UltraCodeEditor = ({ code, setCode, language = 'javascript' }) => {
                     spellCheck={false}
                 />
                 
-                {/* Line Numbers */}
+                
                 <div className="absolute left-0 top-0 p-6 text-slate-600 font-mono text-lg pointer-events-none">
                     {code.split('\n').map((_, i) => (
                         <div key={i} className="h-6 leading-6">
@@ -269,7 +269,7 @@ const UltraCodeEditor = ({ code, setCode, language = 'javascript' }) => {
     );
 };
 
-// Enhanced Problem Description
+
 const UltraProblemDescription = ({ problem }) => {
     const descRef = useRef(null);
 
@@ -343,7 +343,7 @@ const UltraProblemDescription = ({ problem }) => {
     );
 };
 
-// Enhanced Test Results
+
 const UltraTestResults = ({ results, isRunning }) => {
     const resultsRef = useRef(null);
 
@@ -464,7 +464,7 @@ function UltraProblemPage() {
                 const response = await axiosClient.get(`/problem/getproblem/${problemid}`);
                 setProblem(response.data);
                 
-                // Set default code based on problem
+               
                 setCode(`// Solution for ${response.data.title}
 function solution() {
     // Your code here
@@ -486,10 +486,10 @@ function solution() {
     const handleRun = async () => {
         setIsRunning(true);
         try {
-            // Simulate API call
+        
             await new Promise(resolve => setTimeout(resolve, 2000));
             
-            // Mock test results
+           
             setResults([
                 { passed: true, input: "nums = [2,7,11,15], target = 9", expected: "[0,1]", actual: "[0,1]" },
                 { passed: true, input: "nums = [3,2,4], target = 6", expected: "[1,2]", actual: "[1,2]" },
@@ -505,10 +505,10 @@ function solution() {
     const handleSubmit = async () => {
         setIsSubmitting(true);
         try {
-            // Simulate API call
+           
             await new Promise(resolve => setTimeout(resolve, 3000));
             
-            // Mock submission result
+          
             alert('Code submitted successfully!');
         } catch (error) {
             console.error('Error submitting code:', error);
@@ -569,12 +569,12 @@ function solution() {
 
                 <div className="container mx-auto px-4 py-8">
                     <div className="grid lg:grid-cols-2 gap-8">
-                        {/* Left Column - Problem Description */}
+                       
                         <div className="space-y-8">
                             <UltraProblemDescription problem={problem} />
                         </div>
 
-                        {/* Right Column - Code Editor and Results */}
+                        
                         <div className="space-y-8">
                             <UltraCodeEditor 
                                 code={code}

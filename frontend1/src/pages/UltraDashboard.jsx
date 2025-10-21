@@ -14,10 +14,10 @@ import axiosClient from '../utils/axiosClient';
 import Header from '../components/dashboard/Header';
 import AIChatAssistant from '../components/AIChatAssistant';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-// Floating Badge System
+
 const FloatingBadge = ({ type, count, delay = 0 }) => {
     const badgeRef = useRef(null);
 
@@ -32,7 +32,7 @@ const FloatingBadge = ({ type, count, delay = 0 }) => {
             }
         );
 
-        // Continuous floating animation
+    
         gsap.to(badgeRef.current, {
             y: -10,
             duration: 2 + delay,
@@ -98,7 +98,7 @@ const FloatingBadge = ({ type, count, delay = 0 }) => {
                 <div className="text-sm text-white/80 font-medium">{config.text}</div>
             </div>
             
-            {/* Floating particles around badge */}
+          
             <div className="absolute inset-0 pointer-events-none">
                 {[...Array(6)].map((_, i) => (
                     <motion.div
@@ -124,7 +124,7 @@ const FloatingBadge = ({ type, count, delay = 0 }) => {
     );
 };
 
-// Enhanced Stats Card with Advanced Animations
+
 const UltraStatsCard = ({ icon, title, value, subtitle, color = "cyan", delay = 0, index = 0 }) => {
     const cardRef = useRef(null);
 
@@ -144,7 +144,7 @@ const UltraStatsCard = ({ icon, title, value, subtitle, color = "cyan", delay = 
             }
         );
 
-        // Continuous floating animation
+        
         gsap.to(cardRef.current, {
             y: -8,
             duration: 3 + index * 0.3,
@@ -154,7 +154,7 @@ const UltraStatsCard = ({ icon, title, value, subtitle, color = "cyan", delay = 
             delay: index * 0.1
         });
 
-        // Glow effect
+      
         gsap.to(cardRef.current, {
             boxShadow: "0 20px 40px rgba(6, 182, 212, 0.2)",
             duration: 2,
@@ -184,7 +184,7 @@ const UltraStatsCard = ({ icon, title, value, subtitle, color = "cyan", delay = 
             }}
             className="group relative p-8 bg-slate-900/60 border border-slate-800 rounded-3xl backdrop-blur-sm hover:border-cyan-400/50 transition-all duration-700 overflow-hidden"
         >
-            {/* Animated background layers */}
+        
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
             
@@ -206,7 +206,7 @@ const UltraStatsCard = ({ icon, title, value, subtitle, color = "cyan", delay = 
     );
 };
 
-// Enhanced Progress Ring
+
 const ProgressRing = ({ progress, size = 120, strokeWidth = 8, color = "cyan" }) => {
     const radius = (size - strokeWidth) / 2;
     const circumference = radius * 2 * Math.PI;
@@ -252,7 +252,7 @@ const ProgressRing = ({ progress, size = 120, strokeWidth = 8, color = "cyan" })
     );
 };
 
-// Enhanced Activity Feed
+
 const UltraActivityFeed = ({ activities }) => {
     const feedRef = useRef(null);
 
@@ -281,7 +281,7 @@ const UltraActivityFeed = ({ activities }) => {
                     whileHover={{ x: 10, scale: 1.02 }}
                     className="group relative flex items-center gap-6 p-6 bg-slate-900/60 border border-slate-800 rounded-2xl hover:border-cyan-400/50 transition-all duration-500 overflow-hidden"
                 >
-                    {/* Animated background */}
+                   
                     <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
@@ -320,7 +320,7 @@ const UltraActivityFeed = ({ activities }) => {
     );
 };
 
-// Main Ultra Dashboard Component
+
 function UltraDashboard() {
     const { user } = useSelector(state => state.auth);
     const [stats, setStats] = useState(null);
@@ -329,7 +329,7 @@ function UltraDashboard() {
     const [badges, setBadges] = useState([]);
     const [activities, setActivities] = useState([]);
 
-    // Fetch dashboard data
+
     useEffect(() => {
         const fetchDashboardData = async () => {
             if (!user) {
@@ -339,10 +339,16 @@ function UltraDashboard() {
             setLoading(true);
             setError(null);
             try {
-                const { data } = await axiosClient.get(`/user/${user.id}/dashboard-pro`);
+                
+                if (!user.id) {
+                    throw new Error('User ID is missing');
+                }
+                
+                const response = await axiosClient.get(`/user/${user.id}/dashboard-pro`);
+                const data = response.data;
                 setStats(data);
                 
-                // Generate mock badges based on stats
+                
                 setBadges([
                     { type: 'streak', count: data.currentStreak || 0 },
                     { type: 'solved', count: data.solvedCount || 0 },
@@ -350,7 +356,7 @@ function UltraDashboard() {
                     { type: 'rank', count: data.rank || 'N/A' }
                 ]);
 
-                // Generate mock activities
+             
                 setActivities([
                     {
                         id: 1,
@@ -382,7 +388,34 @@ function UltraDashboard() {
                 ]);
             } catch (err) {
                 console.error("Failed to fetch dashboard data:", err);
-                setError(err);
+                
+                setError({
+                    message: "Unable to load dashboard data. Please try again later.",
+                    originalError: err
+                });
+                
+                
+                setStats({
+                    solvedCount: 0,
+                    easyCount: 0,
+                    mediumCount: 0,
+                    hardCount: 0,
+                    totalSubmissions: 0,
+                    acceptedSubmissions: 0,
+                    currentStreak: 0,
+                    longestStreak: 0,
+                    rank: 'N/A'
+                });
+                
+                setBadges([
+                    { type: 'streak', count: 0 },
+                    { type: 'solved', count: 0 },
+                    { type: 'submissions', count: 0 },
+                    { type: 'rank', count: 'N/A' }
+                ]);
+                
+               
+                setActivities([]);
             } finally {
                 setLoading(false);
             }
@@ -448,7 +481,7 @@ function UltraDashboard() {
             <AIChatAssistant />
             
             <main className="container mx-auto px-4 py-12">
-                {/* Hero Section */}
+              
                 <motion.div 
                     className="text-center mb-16"
                     initial={{ opacity: 0, y: 50 }}
@@ -463,7 +496,7 @@ function UltraDashboard() {
                     </p>
                 </motion.div>
 
-                {/* Badges Section */}
+             
                 <motion.div 
                     className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16"
                     initial={{ opacity: 0, y: 50 }}
@@ -480,7 +513,7 @@ function UltraDashboard() {
                     ))}
                 </motion.div>
 
-                {/* Stats Grid */}
+             
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
                     <UltraStatsCard
                         icon={<Code size={40} className="text-white" />}
@@ -520,9 +553,9 @@ function UltraDashboard() {
                     />
                 </div>
 
-                {/* Progress and Activity Section */}
+              
                 <div className="grid lg:grid-cols-2 gap-12">
-                    {/* Progress Section */}
+                   
                     <motion.div
                         className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 backdrop-blur-sm"
                         initial={{ opacity: 0, x: -50 }}
@@ -587,7 +620,7 @@ function UltraDashboard() {
                         </div>
                     </motion.div>
 
-                    {/* Activity Feed */}
+                    
                     <motion.div
                         className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 backdrop-blur-sm"
                         initial={{ opacity: 0, x: 50 }}
@@ -607,6 +640,39 @@ function UltraDashboard() {
 }
 
 export default UltraDashboard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

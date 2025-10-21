@@ -16,10 +16,10 @@ import axiosClient from '../utils/axiosClient';
 import Header from '../components/dashboard/Header';
 import DiscussionForm from '../components/DiscussionForm';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-// Utility function to format time ago
+
 const formatTimeAgo = (timestamp) => {
     const now = new Date().getTime();
     const diff = now - timestamp;
@@ -40,7 +40,7 @@ const formatTimeAgo = (timestamp) => {
     }
 };
 
-// Enhanced Floating Discussion Particles with GSAP
+
 const FloatingParticles = () => {
     const containerRef = useRef(null);
     const canvasRef = useRef(null);
@@ -193,7 +193,7 @@ const FloatingParticles = () => {
     );
 };
 
-// Discussion Post Card
+
 const DiscussionPost = ({ post, index, onLike, onBookmark, onDelete, currentUser, onAddReply }) => {
     const cardRef = useRef(null);
     const [showReplyForm, setShowReplyForm] = useState(false);
@@ -469,7 +469,7 @@ const DiscussionPost = ({ post, index, onLike, onBookmark, onDelete, currentUser
     );
 };
 
-// Search and Filter Bar
+
 const DiscussionSearchBar = ({ searchTerm, setSearchTerm, sortBy, setSortBy, filterBy, setFilterBy }) => {
     const searchRef = useRef(null);
 
@@ -531,7 +531,7 @@ const DiscussionSearchBar = ({ searchTerm, setSearchTerm, sortBy, setSortBy, fil
     );
 };
 
-// Main Enhanced Discuss Page Component
+
 function EnhancedDiscussPage() {
     const { user } = useSelector(state => state.auth);
     const navigate = useNavigate();
@@ -615,7 +615,6 @@ function EnhancedDiscussPage() {
         }
     };
 
-    // Update timestamps periodically
     useEffect(() => {
         const updateTimestamps = () => {
             setPosts(prev => prev.map(post => ({
@@ -628,12 +627,12 @@ function EnhancedDiscussPage() {
             })));
         };
 
-        // Update every minute
+    
         const interval = setInterval(updateTimestamps, 60000);
         return () => clearInterval(interval);
     }, []);
 
-    // Load discussions from localStorage and add mock data
+   
     useEffect(() => {
         const savedDiscussions = JSON.parse(localStorage.getItem('discussions') || '[]');
         
@@ -715,10 +714,10 @@ function EnhancedDiscussPage() {
         setLoading(false);
     }, []);
 
-    // Enhanced GSAP Animations
+
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Only animate if refs exist
+            
             if (titleRef.current) {
                 gsap.to(titleRef.current, {
                     text: "Discussion Forum",
@@ -823,7 +822,7 @@ function EnhancedDiscussPage() {
                             lineHeight: '0.9'
                         }}
                     >
-                        {/* Text will be filled by GSAP */}
+                   
                     </motion.h1>
                     
                     <motion.p 

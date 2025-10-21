@@ -23,7 +23,7 @@ const ProblemPicker = ({ isOpen, onClose, onSelectProblem, currentProblemId }) =
             setProblems(response.data || []);
         } catch (error) {
             console.error('Error fetching problems:', error);
-            // Fallback mock data
+           
             setProblems([
                 {
                     _id: '1',
@@ -91,7 +91,7 @@ const ProblemPicker = ({ isOpen, onClose, onSelectProblem, currentProblemId }) =
                         className="absolute inset-4 bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Header */}
+                        
                         <div className="flex items-center justify-between p-6 border-b border-slate-800">
                             <div>
                                 <h2 className="text-2xl font-bold text-white">Problem Picker</h2>
@@ -105,10 +105,10 @@ const ProblemPicker = ({ isOpen, onClose, onSelectProblem, currentProblemId }) =
                             </button>
                         </div>
 
-                        {/* Search and Filters */}
+                       
                         <div className="p-6 border-b border-slate-800">
                             <div className="flex flex-col lg:flex-row gap-4">
-                                {/* Search */}
+                               
                                 <div className="flex-1">
                                     <div className="relative">
                                         <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
@@ -122,7 +122,7 @@ const ProblemPicker = ({ isOpen, onClose, onSelectProblem, currentProblemId }) =
                                     </div>
                                 </div>
 
-                                {/* Difficulty Filter */}
+                               
                                 <div className="lg:w-48">
                                     <select
                                         value={difficultyFilter}
@@ -136,7 +136,7 @@ const ProblemPicker = ({ isOpen, onClose, onSelectProblem, currentProblemId }) =
                                     </select>
                                 </div>
 
-                                {/* Tag Filter */}
+                            
                                 <div className="lg:w-48">
                                     <select
                                         value={tagFilter}
@@ -152,7 +152,7 @@ const ProblemPicker = ({ isOpen, onClose, onSelectProblem, currentProblemId }) =
                             </div>
                         </div>
 
-                        {/* Problems List */}
+                       
                         <div className="flex-1 overflow-y-auto p-6">
                             {loading ? (
                                 <div className="flex items-center justify-center py-12">

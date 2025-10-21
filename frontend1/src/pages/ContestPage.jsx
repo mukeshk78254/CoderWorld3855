@@ -1,227 +1,17 @@
-// // src/pages/ContestPage.jsx
-// import { useState } from 'react';
-// import { NavLink } from 'react-router-dom';
-// // import axiosClient from '../utils/axiosClient'; // Uncomment if fetching real data
 
-// function ContestPage() {
-//   const [contestData, setContestData] = useState({
-//     title: '',
-//     description: '',
-//     startDate: '',
-//     endDate: '',
-//     problems: '', // Changed to string for simpler input example
-//     isPublic: true,
-//   });
-//   const [loading, setLoading] = useState(false);
-//   const [message, setMessage] = useState('');
-
-//   const handleChange = (e) => {
-//     const { name, value, type, checked } = e.target;
-//     setContestData(prev => ({
-//       ...prev,
-//       [name]: type === 'checkbox' ? checked : value
-//     }));
-//   };
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setLoading(true);
-//     setMessage('');
-    
-//     // Process problems string into an array if needed for backend
-//     const problemsArray = contestData.problems.split(',').map(s => s.trim()).filter(s => s.length > 0);
-//     const dataToSend = { ...contestData, problems: problemsArray };
-
-//     console.log("Creating contest:", dataToSend);
-//     try {
-//       // await axiosClient.post('/contest/create', dataToSend); // Example API call
-//       await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
-//       setMessage('Contest created successfully!');
-//       setContestData({ title: '', description: '', startDate: '', endDate: '', problems: '', isPublic: true }); // Reset form
-//     } catch (error) {
-//       console.error('Failed to create contest:', error);
-//       setMessage('Failed to create contest. Please try again.');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div
-//       className="min-h-screen text-slate-200 bg-slate-950 font-sans p-8 animate-fade-in"
-//       style={{
-//         backgroundImage: `
-//           radial-gradient(circle at 10% 90%, rgba(99, 102, 241, 0.05), transparent 60%),
-//           radial-gradient(circle at 90% 10%, rgba(139, 92, 246, 0.04), transparent 50%),
-//           radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.01), transparent 80%)
-//         `,
-//         backgroundAttachment: 'fixed',
-//       }}
-//     >
-//       {/* Inline styles for custom animations and effects */}
-//       <style>
-//         {`
-//         /* General fade-in for page loading */
-//         @keyframes fadeIn {
-//           from { opacity: 0; }
-//           to { opacity: 1; }
-//         }
-//         .animate-fade-in {
-//           animation: fadeIn 0.5s ease-in forwards;
-//         }
-
-//         /* For elements fading in from bottom */
-//         @keyframes fadeInUp {
-//           from { opacity: 0; transform: translateY(20px); }
-//           to { opacity: 1; transform: translateY(0); }
-//         }
-//         .animate-fade-in-up {
-//           animation: fadeInUp 0.6s ease-out forwards;
-//         }
-
-//         /* Spinner animation (for loading states) */
-//         @keyframes spin-slow {
-//           from { transform: rotate(0deg); }
-//           to { transform: rotate(360deg); }
-//         }
-//         .animate-spin-slow {
-//           animation: spin-slow 0.8s linear infinite;
-//         }
-//         `}
-//       </style>
-
-//       {/* Floating CodeArena watermark */}
-//       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-9xl opacity-[0.015] select-none pointer-events-none font-extrabold tracking-widest text-gray-700 z-0">
-//         CODEARENA
-//       </div>
-
-//       <div className="container mx-auto max-w-3xl bg-gray-900/60 p-8 rounded-xl shadow-2xl border border-gray-700 animate-fade-in-up relative z-10" style={{ animationDelay: '0.3s' }}>
-//         <h1 className="text-4xl font-bold text-transparent bg-clip-text mb-6 text-center"
-//             style={{ backgroundImage: 'linear-gradient(to right, #6366F1, #EC4899)', textShadow: '0 0 15px rgba(99,102,241,0.4)' }}>
-//             Create New Contest
-//         </h1>
-
-//         <form onSubmit={handleSubmit} className="space-y-6">
-//           <div className="form-control">
-//             <label className="label">
-//               <span className="label-text text-gray-300 font-semibold">Contest Title</span>
-//             </label>
-//             <input
-//               type="text"
-//               name="title"
-//               value={contestData.title}
-//               onChange={handleChange}
-//               placeholder="e.g., Weekly Algorithm Challenge"
-//               className="input input-bordered w-full bg-gray-800 border-gray-700 text-slate-200 focus:border-indigo-500 focus:ring-indigo-500"
-//               required
-//             />
-//           </div>
-
-//           <div className="form-control">
-//             <label className="label">
-//               <span className="label-text text-gray-300 font-semibold">Description</span>
-//             </label>
-//             <textarea
-//               name="description"
-//               value={contestData.description}
-//               onChange={handleChange}
-//               placeholder="Provide a brief description of the contest..."
-//               className="textarea textarea-bordered h-24 w-full bg-gray-800 border-gray-700 text-slate-200 focus:border-indigo-500 focus:ring-indigo-500 custom-scrollbar"
-//               required
-//             ></textarea>
-//           </div>
-
-//           <div className="grid md:grid-cols-2 gap-4">
-//             <div className="form-control">
-//               <label className="label">
-//                 <span className="label-text text-gray-300 font-semibold">Start Date & Time</span>
-//               </label>
-//               <input
-//                 type="datetime-local"
-//                 name="startDate"
-//                 value={contestData.startDate}
-//                 onChange={handleChange}
-//                 className="input input-bordered w-full bg-gray-800 border-gray-700 text-slate-200 focus:border-indigo-500 focus:ring-indigo-500"
-//                 required
-//               />
-//             </div>
-//             <div className="form-control">
-//               <label className="label">
-//                 <span className="label-text text-gray-300 font-semibold">End Date & Time</span>
-//               </label>
-//               <input
-//                 type="datetime-local"
-//                 name="endDate"
-//                 value={contestData.endDate}
-//                 onChange={handleChange}
-//                 className="input input-bordered w-full bg-gray-800 border-gray-700 text-slate-200 focus:border-indigo-500 focus:ring-indigo-500"
-//                 required
-//               />
-//             </div>
-//           </div>
-
-//           <div className="form-control">
-//             <label className="label cursor-pointer">
-//               <span className="label-text text-gray-300 font-semibold">Public Contest</span>
-//               <input
-//                 type="checkbox"
-//                 name="isPublic"
-//                 checked={contestData.isPublic}
-//                 onChange={handleChange}
-//                 className="checkbox checkbox-primary bg-gray-700 border-gray-600 checked:bg-indigo-500"
-//               />
-//             </label>
-//           </div>
-
-//           <div className="form-control">
-//             <label className="label">
-//               <span className="label-text text-gray-300 font-semibold">Problems (IDs, comma-separated)</span>
-//             </label>
-//             <input
-//               type="text"
-//               name="problems"
-//               value={contestData.problems}
-//               onChange={handleChange}
-//               placeholder="problemId1, problemId2, ..."
-//               className="input input-bordered w-full bg-gray-800 border-gray-700 text-slate-200 focus:border-indigo-500 focus:ring-indigo-500"
-//             />
-//             <p className="text-gray-500 text-xs mt-1">Enter problem IDs separated by commas (e.g., `654321abcd, 987654efgh`).</p>
-//           </div>
-
-//           <button
-//             type="submit"
-//             className="btn w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg text-lg shadow-md transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-//             disabled={loading}
-//           >
-//             {loading && <span className="loading loading-spinner loading-sm text-white animate-spin-slow"></span>}
-//             {loading ? 'Creating...' : 'Create Contest'}
-//           </button>
-//         </form>
-
-//         {message && (
-//           <div className={`mt-6 p-4 rounded-lg text-center ${message.includes('successfully') ? 'bg-emerald-800/50 text-emerald-300' : 'bg-red-800/50 text-red-300'} border border-current`}>
-//             {message}
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default ContestPage;
 import { useState, useEffect, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../authSlice';
-import axiosClient from '../utils/axiosClient'; // Import axiosClient for problems fetch
+import axiosClient from '../utils/axiosClient'; 
 
-// Helper function for difficulty colors (using default Tailwind colors)
+
 function getDifficultyColor(difficulty) {
   const normalizedDifficulty = difficulty ? String(difficulty).toLowerCase().trim() : '';
   switch (normalizedDifficulty) {
-    case 'easy': return 'text-emerald-400'; // Tailwind green
-    case 'medium': return 'text-amber-400'; // Tailwind amber
-    case 'hard': return 'text-red-400';     // Tailwind red
+    case 'easy': return 'text-emerald-400'; 
+    case 'medium': return 'text-amber-400'; 
+    case 'hard': return 'text-red-400';    
     default: return 'text-gray-400';
   }
 }
@@ -238,18 +28,18 @@ function ContestPage() {
     problems: '',
     isPublic: true,
   });
-  const [loading, setLoading] = useState(true); // Initial loading for fetching contests
-  const [formLoading, setFormLoading] = useState(false); // Loading for form submission
+  const [loading, setLoading] = useState(true); 
+  const [formLoading, setFormLoading] = useState(false); 
   const [message, setMessage] = useState('');
-  const [allContests, setAllContests] = useState([]); // Store all contests fetched
-  const [contestSearchTerm, setContestSearchTerm] = useState(''); // New state for contest search
-  const [problems, setProblems] = useState([]); // New state for problems list (for dropdown)
+  const [allContests, setAllContests] = useState([]); 
+  const [contestSearchTerm, setContestSearchTerm] = useState(''); 
+  const [problems, setProblems] = useState([]); 
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Fetch contests
+        
         const mockContests = [
           { id: 'c1', title: 'Weekly Algorithm Battle', description: 'Solve 3 problems in 2 hours. High stakes, high rewards!', startDate: '2024-08-10T10:00:00Z', endDate: '2024-08-10T12:00:00Z', problems: 3, participants: 120, status: 'upcoming' },
           { id: 'c2', title: 'Data Structures Sprint', description: 'Master Arrays and Linked Lists in this intense 2-day sprint!', startDate: '2024-07-25T14:00:00Z', endDate: '2024-07-27T14:00:00Z', problems: 5, participants: 80, status: 'ended' },
@@ -272,11 +62,11 @@ function ContestPage() {
         });
         setAllContests(processedContests); 
 
-        // Fetch problems for the dropdown
+       
         const probRes = await axiosClient.get('/problem/getallproblem');
         setProblems(probRes.data || []);
 
-        await new Promise(resolve => setTimeout(resolve, 800)); // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 800)); 
       } catch (error) {
         console.error('Failed to fetch data:', error);
         setMessage('Failed to load data. Please try again.');
@@ -318,12 +108,11 @@ function ContestPage() {
 
     console.log("Creating contest:", dataToSend);
     try {
-      // await axiosClient.post('/contest/create', dataToSend); // Example API call
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+   
+      await new Promise(resolve => setTimeout(resolve, 1500)); 
       setMessage('Contest created successfully!');
-      setContestData({ title: '', description: '', startDate: '', endDate: '', problems: '', isPublic: true }); // Reset form
-      // In a real app, you'd trigger a refetch of contests here:
-      // fetchContests(); 
+      setContestData({ title: '', description: '', startDate: '', endDate: '', problems: '', isPublic: true }); 
+      
     } catch (error) {
       console.error('Failed to create contest:', error);
       setMessage('Failed to create contest. Please try again.');
@@ -334,7 +123,7 @@ function ContestPage() {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    // No setSolvedProblemIds here as it's Homepage specific, but dispatch is global
+   
   };
 
   const getContestStatusColor = (status) => {
@@ -365,7 +154,7 @@ function ContestPage() {
         backgroundAttachment: 'fixed',
       }}
     >
-      {/* Inline styles for custom animations and effects */}
+    
       <style>
         {`
         /* General fade-in for page loading */
@@ -421,17 +210,17 @@ function ContestPage() {
         `}
       </style>
 
-      {/* Floating CodeArena watermark */}
+    
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-9xl opacity-[0.015] select-none pointer-events-none font-extrabold tracking-widest text-gray-700 z-0">
         CoderWorld
       </div>
 
-      {/* Navbar (Copied from Homepage for consistency) */}
+      
       <nav className="navbar sticky top-0 z-50 backdrop-blur-lg bg-gray-900/70 px-6 border-b border-gray-700 shadow-md animate-fade-in-down">
-        {/* Left section (Logo) */}
+        
         <div className="flex-1">
           <NavLink to="/" className="flex items-center gap-3 group">
-            {/* Enhanced Logo Icon */}
+           
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.6, ease: "easeInOut" }}
@@ -457,7 +246,7 @@ function ContestPage() {
               </motion.div>
             </motion.div>
             
-            {/* Logo Text */}
+           
             <div className="flex flex-col">
               <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 group-hover:from-cyan-300 group-hover:to-purple-400 transition-all duration-300" style={{ fontFamily: "'Orbitron', sans-serif" }}>
                 CoderWorld
@@ -469,10 +258,10 @@ function ContestPage() {
           </NavLink>
         </div>
 
-        {/* Center section (Nav links) */}
+       
         <div className="flex-none hidden md:flex flex-grow justify-center">
           <ul className="menu menu-horizontal px-1 text-lg font-semibold">
-            {/* Problems Dropdown - Added to ContestPage */}
+           
             <li className="dropdown dropdown-hover">
               <div tabIndex={0} role="button" className="hover:text-indigo-400 transition-colors cursor-pointer py-2 px-3">
                 Problems
@@ -500,7 +289,7 @@ function ContestPage() {
           </ul>
         </div>
 
-        {/* Right section (User Avatar) */}
+    
         <div className="flex-none">
           <div className="dropdown dropdown-end ml-4">
             <div tabIndex={0} className="btn btn-ghost btn-circle avatar border-2 border-indigo-500 ring-offset-gray-900 ring-offset-2 hover:scale-105 transition-transform duration-200 shadow-lg">
@@ -659,7 +448,7 @@ function ContestPage() {
           </div>
         )}
 
-        {/* Search for contests */}
+    
         <div className="form-control mb-8">
           <label className="label">
             <span className="label-text text-gray-300 font-semibold">Search Contests</span>
@@ -718,7 +507,7 @@ function ContestPage() {
                     className="btn btn-block bg-blue-800 text-blue-300 font-semibold py-2 px-4 rounded-lg mt-6 text-sm cursor-not-allowed">
                     Upcoming
                   </button>
-                ) : ( // Ended
+                ) : ( 
                   <NavLink to={`/contest/${contest.id}/results`}
                     className="btn btn-block bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-2 px-4 rounded-lg mt-6 text-sm transition-all duration-300 transform hover:scale-105 active:scale-95">
                     View Results

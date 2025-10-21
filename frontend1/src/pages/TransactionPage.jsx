@@ -22,7 +22,7 @@ function TransactionPage() {
                 setTransactions(response.data || []);
             } catch (error) {
                 console.error('Error fetching transactions:', error);
-                // Mock data for development
+                
                 const mockTransactions = [
                     {
                         id: 1,
@@ -141,7 +141,7 @@ function TransactionPage() {
             <Header />
             
             <main className="container mx-auto px-4 py-8">
-                {/* Header */}
+                
                 <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 mb-8">
                     <div className="flex items-center justify-between">
                         <div>
@@ -157,7 +157,7 @@ function TransactionPage() {
                     </div>
                 </div>
 
-                {/* Stats Cards */}
+               
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-6">
                         <div className="flex items-center gap-4">
@@ -196,7 +196,7 @@ function TransactionPage() {
                     </div>
                 </div>
 
-                {/* Filters and Search */}
+               
                 <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 mb-6">
                     <div className="flex flex-col md:flex-row gap-4">
                         <div className="flex-1 relative">
@@ -222,7 +222,7 @@ function TransactionPage() {
                     </div>
                 </div>
 
-                {/* Transactions List */}
+               
                 <div className="bg-slate-900/60 border border-slate-800 rounded-xl overflow-hidden">
                     <div className="p-4 border-b border-slate-700">
                         <h3 className="text-lg font-semibold text-white">Recent Transactions</h3>

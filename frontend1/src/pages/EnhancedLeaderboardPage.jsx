@@ -15,10 +15,10 @@ import {
 import axiosClient from '../utils/axiosClient';
 import Header from '../components/dashboard/Header';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-// Enhanced Trophy & Achievement-Themed Animated Background
+
 const AnimatedBackground = () => {
     const canvasRef = useRef(null);
     const animationRef = useRef(null);
@@ -124,7 +124,7 @@ const AnimatedBackground = () => {
             ctx.shadowBlur = 15;
             ctx.shadowColor = particle.color;
             
-            // Draw medal shape (circle with inner circle)
+            
             ctx.beginPath();
             ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
             ctx.fill();
@@ -152,7 +152,7 @@ const AnimatedBackground = () => {
             ctx.arc(ring.x, ring.y, currentRadius, 0, Math.PI * 2);
             ctx.stroke();
             
-            // Add achievement sparkles
+            
             for (let i = 0; i < 8; i++) {
                 const angle = (i / 8) * Math.PI * 2;
                 const sparkleX = ring.x + Math.cos(angle) * currentRadius;
@@ -185,13 +185,13 @@ const AnimatedBackground = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             time += 0.01;
 
-            // Draw star field
+           
             starField.forEach(star => {
                 drawStar(star);
                 star.twinkle += 0.02;
             });
 
-            // Draw achievement rings
+            
             achievementRings.forEach(ring => {
                 drawAchievementRing(ring);
                 ring.progress += ring.speed;
@@ -202,7 +202,7 @@ const AnimatedBackground = () => {
                 }
             });
 
-            // Draw medal particles
+           
             medalParticles.forEach(particle => {
                 particle.x += particle.vx;
                 particle.y += particle.vy;
@@ -216,7 +216,7 @@ const AnimatedBackground = () => {
                 drawMedalParticle(particle);
             });
 
-            // Draw trophy icons
+            
             trophyIcons.forEach(trophy => {
                 trophy.x += trophy.vx;
                 trophy.y += trophy.vy;
@@ -230,7 +230,7 @@ const AnimatedBackground = () => {
                 drawTrophyIcon(trophy.x, trophy.y, trophy.icon, trophy.size, trophy.color, trophy.opacity, trophy.rotation);
             });
 
-            // Add golden glow effect
+       
             const gradient = ctx.createRadialGradient(
                 canvas.width / 2, canvas.height / 2, 0,
                 canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) / 2
@@ -279,7 +279,7 @@ const AnimatedBackground = () => {
     );
 };
 
-// Leaderboard Entry Component
+
 const LeaderboardEntry = ({ user, rank, index, isCurrentUser }) => {
     const entryRef = useRef(null);
 
@@ -340,12 +340,12 @@ const LeaderboardEntry = ({ user, rank, index, isCurrentUser }) => {
                 perspective: '1000px'
             }}
         >
-            {/* Animated background */}
+           
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
             
             <div className="relative z-10">
                 <div className="flex items-center gap-6">
-                    {/* Rank */}
+                  
                     <div className="flex items-center gap-3">
                         <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${getRankColor(rank)} flex items-center justify-center text-white font-bold text-lg`}>
                             {rank}
@@ -355,7 +355,7 @@ const LeaderboardEntry = ({ user, rank, index, isCurrentUser }) => {
                         </div>
                     </div>
 
-                    {/* User Info */}
+                    
                     <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                             <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
@@ -384,7 +384,7 @@ const LeaderboardEntry = ({ user, rank, index, isCurrentUser }) => {
                         </div>
                     </div>
 
-                    {/* Stats */}
+                    
                     <div className="grid grid-cols-3 gap-6 text-center">
                         <div>
                             <div className="text-2xl font-bold text-white group-hover:text-cyan-400 transition-colors duration-300" style={{ fontFamily: "'JetBrains Mono', 'Fira Code', monospace", fontWeight: 700 }}>
@@ -406,7 +406,7 @@ const LeaderboardEntry = ({ user, rank, index, isCurrentUser }) => {
                         </div>
                     </div>
 
-                    {/* Badges */}
+                    
                     <div className="flex items-center gap-2">
                         {user.badges.map((badge, badgeIndex) => (
                             <motion.div
@@ -422,7 +422,7 @@ const LeaderboardEntry = ({ user, rank, index, isCurrentUser }) => {
                     </div>
                 </div>
 
-                {/* Progress Bar */}
+                
                 <div className="mt-4">
                     <div className="flex items-center justify-between text-sm text-slate-400 mb-2" style={{ fontFamily: "'Source Code Pro', 'Fira Code', monospace", fontWeight: 400 }}>
                         <span>Progress to next level</span>
@@ -439,7 +439,7 @@ const LeaderboardEntry = ({ user, rank, index, isCurrentUser }) => {
                 </div>
             </div>
 
-            {/* Enhanced floating particles around entry */}
+            
             <div className="absolute inset-0 pointer-events-none">
                 {[...Array(6)].map((_, i) => (
                     <motion.div
@@ -464,7 +464,7 @@ const LeaderboardEntry = ({ user, rank, index, isCurrentUser }) => {
                     />
                 ))}
                 
-                {/* Special trophy/medal symbols floating around */}
+               
                 {['🏆', '🥇', '⭐', '💎'].map((symbol, i) => (
                     <motion.div
                         key={`symbol-${i}`}
@@ -494,7 +494,7 @@ const LeaderboardEntry = ({ user, rank, index, isCurrentUser }) => {
     );
 };
 
-// Stats Overview Component
+
 const LeaderboardStatsOverview = ({ stats }) => {
     const statsRef = useRef(null);
 
@@ -543,7 +543,7 @@ const LeaderboardStatsOverview = ({ stats }) => {
     );
 };
 
-// Filter and Sort Bar
+
 const LeaderboardFilterBar = ({ timeFilter, setTimeFilter, sortBy, setSortBy }) => {
     const filterRef = useRef(null);
 
@@ -560,7 +560,7 @@ const LeaderboardFilterBar = ({ timeFilter, setTimeFilter, sortBy, setSortBy }) 
             className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 backdrop-blur-sm mb-8"
         >
             <div className="flex flex-col lg:flex-row gap-4">
-                {/* Time Filter */}
+                
                 <div className="flex gap-2">
                     {[
                         { key: 'all', label: 'All Time', icon: Calendar },
@@ -584,7 +584,7 @@ const LeaderboardFilterBar = ({ timeFilter, setTimeFilter, sortBy, setSortBy }) 
                     ))}
                 </div>
 
-                {/* Sort By */}
+               
                 <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
@@ -601,7 +601,7 @@ const LeaderboardFilterBar = ({ timeFilter, setTimeFilter, sortBy, setSortBy }) 
     );
 };
 
-// Main Enhanced Leaderboard Page Component
+
 function EnhancedLeaderboardPage() {
     const { user } = useSelector(state => state.auth);
     const navigate = useNavigate();
@@ -615,7 +615,7 @@ function EnhancedLeaderboardPage() {
     const headerRef = useRef(null);
     const titleRef = useRef(null);
 
-    // Mock data for leaderboard
+    
     useEffect(() => {
         const mockLeaderboard = [
             {
@@ -716,7 +716,7 @@ function EnhancedLeaderboardPage() {
             }
         ];
 
-        // Add current user to leaderboard
+        
         const currentUser = {
             id: 999,
             name: user?.firstname + ' ' + user?.lastname || 'You',
@@ -733,7 +733,7 @@ function EnhancedLeaderboardPage() {
         const allUsers = [...mockLeaderboard, currentUser];
         allUsers.sort((a, b) => b.rating - a.rating);
         
-        // Add rank to each user
+       
         const rankedUsers = allUsers.map((user, index) => ({
             ...user,
             rank: index + 1
@@ -749,16 +749,16 @@ function EnhancedLeaderboardPage() {
         setLoading(false);
     }, [user]);
 
-    // Enhanced GSAP Animations with Page Transitions
+    
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Page entrance animation
+            
             gsap.fromTo("body", 
                 { opacity: 0, scale: 0.95 },
                 { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }
             );
 
-            // Title typing effect with enhanced styling
+           
             gsap.to(titleRef.current, {
                 text: "Leaderboard",
                 duration: 2.5,
@@ -766,7 +766,7 @@ function EnhancedLeaderboardPage() {
                 delay: 0.8
             });
 
-            // Header animation with stagger
+            
             gsap.fromTo(headerRef.current,
                 { y: -100, opacity: 0, scale: 0.8 },
                 { 
@@ -779,13 +779,13 @@ function EnhancedLeaderboardPage() {
                 }
             );
 
-            // Animated background entrance
+            
             gsap.fromTo(".animated-bg",
                 { opacity: 0, scale: 1.1 },
                 { opacity: 1, scale: 1, duration: 2, ease: "power2.out", delay: 0.2 }
             );
 
-            // Staggered content animation
+            
             gsap.fromTo(".content-section",
                 { y: 50, opacity: 0 },
                 { 
@@ -798,7 +798,7 @@ function EnhancedLeaderboardPage() {
                 }
             );
 
-            // Continuous floating animation for main container
+            
             gsap.to(".main-container", {
                 y: -10,
                 duration: 6,
@@ -819,7 +819,7 @@ function EnhancedLeaderboardPage() {
             case 'contests':
                 return b.contests - a.contests;
             case 'recent':
-                return Math.random() - 0.5; // Mock recent activity
+                return Math.random() - 0.5; 
             default:
                 return b.rating - a.rating;
         }
@@ -849,7 +849,7 @@ function EnhancedLeaderboardPage() {
             <Header />
             
             <main className="main-container container mx-auto px-4 py-8 relative z-10">
-                {/* Back Button */}
+              
                 <motion.div 
                     className="mb-8"
                     initial={{ opacity: 0, x: -50 }}
@@ -865,7 +865,7 @@ function EnhancedLeaderboardPage() {
                     </button>
                 </motion.div>
 
-                {/* Header */}
+               
                 <motion.div 
                     ref={headerRef}
                     className="text-center mb-12"
@@ -881,7 +881,7 @@ function EnhancedLeaderboardPage() {
                             letterSpacing: '-0.02em'
                         }}
                     >
-                        {/* Text will be filled by GSAP */}
+                        
                     </motion.h1>
                     
                     <p className="text-2xl text-slate-400 max-w-4xl mx-auto leading-relaxed" style={{ fontFamily: "'Source Code Pro', 'Fira Code', monospace", fontWeight: 400 }}>
@@ -889,12 +889,12 @@ function EnhancedLeaderboardPage() {
                     </p>
                 </motion.div>
 
-                {/* Stats Overview */}
+              
                 <div className="content-section">
                     <LeaderboardStatsOverview stats={stats} />
                 </div>
 
-                {/* Filter and Sort */}
+               
                 <div className="content-section">
                     <LeaderboardFilterBar
                         timeFilter={timeFilter}
@@ -904,7 +904,7 @@ function EnhancedLeaderboardPage() {
                     />
                 </div>
 
-                {/* Leaderboard */}
+               
                 <motion.div 
                     className="content-section space-y-4"
                     initial={{ opacity: 0 }}

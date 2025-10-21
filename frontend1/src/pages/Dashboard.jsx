@@ -1,15 +1,14 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import axiosClient from '../utils/axiosClient';
-import { AlertTriangle } from 'lucide-react'; // Removed WifiOff as it wasn't used
+import { AlertTriangle } from 'lucide-react';
 import Header from '../components/dashboard/Header';
 import MainContent from '../components/dashboard/MainContent';
 import ProfileSidebar from '../components/dashboard/ProfileSidebar';
+import ProfileImageTest from '../components/ProfileImageTest';
 
-// ✨ ENHANCED: Interactive Particle Background Component
-// This is now more dynamic. For better organization, you can move this to its own file, 
-// e.g., src/components/ui/InteractiveParticles.js
+
 const InteractiveParticles = () => {
     const canvasRef = useRef(null);
     const mouse = useRef({ x: null, y: null, radius: 150 });
@@ -120,48 +119,92 @@ const InteractiveParticles = () => {
     return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full z-0" />;
 };
 
-// ✨ NEW: Reusable custom hook for fetching dashboard data
+
 const useDashboardStats = (user) => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchDashboardData = async () => {
-            if (!user) {
-                setLoading(false);
-                return;
-            }
-            setLoading(true);
-            setError(null);
-            try {
-                // Artificial delay to prevent loader flashing during fast loads
-                await new Promise(res => setTimeout(res, 500));
-                // Ensure user.id is correctly passed from Redux store
-                const { data } = await axiosClient.get(`/user/${user.id}/dashboard-pro`);
-                setStats(data);
-            } catch (err) {
+   
+    const fetchDashboardData = useCallback(async () => {
+        if (!user) {
+            setLoading(false);
+            return;
+        }
+        setLoading(true);
+        setError(null);
+        try {
+           
+            await new Promise(res => setTimeout(res, 500));
+      
+            const response = await axiosClient.get(`/user/${user.id}/dashboard-pro`);
+            const data = response.data;
+            
+            console.log('📊 Dashboard Data Received:');
+            console.log('═══════════════════════════════════════');
+            console.log('✅ Total Unique Problems Solved:', data.solvedCount);
+            console.log('🟢 Easy:', data.easyCount);
+            console.log('🟡 Medium:', data.mediumCount);
+            console.log('🔴 Hard:', data.hardCount);
+            console.log('═══════════════════════════════════════');
+            console.log('Solved Stats:', data.solvedStats);
+            console.log('Total Stats:', data.totalStats);
+            console.log('Total Submissions:', data.totalSubmissions);
+            console.log('Successful Submissions:', data.successfulSubmissions);
+            console.log('═══════════════════════════════════════');
+            
+            setStats(data);
+        } catch (err) {
                 console.error("Failed to fetch dashboard data:", err);
-                setError(err);
+                setError({
+                    message: "Unable to load dashboard data. Please try again later.",
+                    originalError: err
+                });
+                
+                
+                setStats({
+                    solvedCount: 0,
+                    easyCount: 0,
+                    mediumCount: 0,
+                    hardCount: 0,
+                    totalSubmissions: 0,
+                    acceptedSubmissions: 0,
+                    currentStreak: 0,
+                    longestStreak: 0,
+                    solvedTags: [
+                        'Array', 'String', 'Hash Table', 'Dynamic Programming', 
+                        'Math', 'Sorting', 'Greedy', 'Depth-First Search',
+                        'Binary Search', 'Tree', 'Breadth-First Search', 'Matrix'
+                    ],
+                    solvedStats: {
+                        'array': 0,
+                        'string': 0,
+                        'hash table': 0,
+                        'dynamic programming': 0
+                    }
+                });
             } finally {
                 setLoading(false);
             }
-        };
-        fetchDashboardData();
-    }, [user]); // Re-fetch if user object changes (e.g., after login/logout)
+    }, [user]);
 
-    return { stats, loading, error };
+    
+    useEffect(() => {
+        fetchDashboardData();
+    }, [fetchDashboardData]);
+
+    return { stats, loading, error, refetch: fetchDashboardData };
 };
 
-// ✨ Main Dashboard Component Refactored
+
 function Dashboard() {
-    // Get the user object from Redux store
+
     const { user } = useSelector(state => state.auth);
-    // Use the custom hook to fetch dashboard stats
-    const { stats, loading, error } = useDashboardStats(user);
+   
+    const { stats, loading, error, refetch } = useDashboardStats(user);
 
     const renderContent = () => {
-        // If no user is logged in, redirect to login
+       
         if (!user) {
             return (
                 <motion.div 
@@ -195,36 +238,69 @@ function Dashboard() {
                     <AlertTriangle size={48} className="mb-4" />
                     <h2 className="text-2xl font-bold text-white mb-2">Failed to Load Dashboard</h2>
                     <p className="text-slate-400">Please check your connection and try again.</p>
-                    {/* Optionally display more detailed error for development */}
+                   
                     <p className="text-xs text-slate-500 mt-2">{error.message || 'Unknown error'}</p>
                 </motion.div>
             );
         }
 
-        // Only render content if stats are available (not loading, no error)
+       
         if (stats) {
             return (
                 <motion.div
                     key="content"
-                    className="container mx-auto p-4 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
+                    className="min-h-screen"
                     initial="hidden" animate="visible" exit={{ opacity: 0 }}
                     variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } }}
                 >
-                    <div className="lg:col-span-3"><ProfileSidebar user={user} stats={stats} /></div>
-                    <div className="lg:col-span-9"><MainContent stats={stats} /></div>
+                    
+                    <div className="w-full px-6 py-8">
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-center mb-8"
+                        >
+                            <h1 className="text-4xl md:text-6xl font-black text-white mb-4 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+                                Coding Dashboard
+                            </h1>
+                            <p className="text-xl text-slate-300 font-medium">
+                                Track your progress, analyze your skills, and achieve your coding goals
+                            </p>
+                        </motion.div>
+                    </div>
+
+                   
+                    <div className="w-full px-6 pb-8">
+                        <div className="max-w-7xl mx-auto space-y-8">
+                           
+                            <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+                                <div className="xl:col-span-1">
+                                    <ProfileSidebar user={user} stats={stats} />
+                                </div>
+                                <div className="xl:col-span-3">
+                                    <MainContent stats={stats} refetch={refetch} />
+                                </div>
+                            </div>
+                            
+                           
+                            <div className="mt-8">
+                                <ProfileImageTest />
+                            </div>
+                        </div>
+                    </div>
                 </motion.div>
             );
         }
         
-        // This case should ideally not be reached if `user` is null initially and then `loading` becomes false.
-        // It handles the initial state where `user` might be null and `stats` is null, without showing a loader or error.
+       
         return null; 
     };
 
     return (
         <div className="min-h-screen bg-slate-950 text-gray-300 font-sans overflow-x-hidden">
             <InteractiveParticles />
-            {/* Background gradient for visual appeal */}
+          
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_100%_50%_at_50%_0%,rgba(56,189,248,0.1),transparent)]"></div>
 
             <div className="relative z-10">

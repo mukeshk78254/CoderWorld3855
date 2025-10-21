@@ -106,11 +106,27 @@ try{
 
     await submittedresult.save();  // db me isko save krdo jo result aaya hai ye jruri hai 
 
-    //problem id ko dal kr dekhenge problemsolved user schema me agr wh present nhi to insert krenge  nhi to igmore
-    //re.ans1 me user ka info rhta hai
-    if( !req.ans1.problemsolved.includes(problemid)) { // agr iske andr nhi hai top upush kr do
-        req.ans1.problemsolved.push(problemid)
-        await req.ans1.save();}   // db me save kro 
+    // Only mark problem as solved if status is "accepted"
+    if (status === 'accepted') {
+        // Get fresh user data to ensure we have the most up-to-date problemsSolved array
+        const currentUser = await user.findById(userid);
+        
+        console.log(' Accepted submission for user:', userid, 'problem:', problemid);
+        console.log('Current problemsSolved before update:', currentUser.problemsSolved);
+        
+        // Check if this problem is already in the user's solved problems
+        if (!currentUser.problemsSolved || !currentUser.problemsSolved.some(p => p.toString() === problemid)) {
+            // Add the problem to user's solved problems
+            const updatedUser = await user.findByIdAndUpdate(
+                userid,
+                { $addToSet: { problemsSolved: problemid } },
+                { new: true }
+            );
+            console.log('✨ Added new problem to problemsSolved. Total unique problems:', updatedUser.problemsSolved.length);
+        } else {
+            console.log('  Problem already in problemsSolved array');
+        }
+    }
 
     res.status(201).send(submittedresult);
 
@@ -118,7 +134,7 @@ try{
 catch(err){
     console.error("Submit code error:", err);
     
-    // If MongoDB is not connected, return error instead of mock
+    
     if (err.name === 'MongoNetworkError' || err.message.includes('connect')) {
         return res.status(500).send("Database connection failed. Please try again later.");
     }
@@ -200,7 +216,43 @@ catch(err){
 }
 
 
+const getAllSubmissions = async (req, res) => {
+    try {
+        const userid = req.ans1.id;
+        
+      
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        
+       
+        const totalSubmissions = await submission.countDocuments({ userid });
+        
+        
+        const submissions = await submission.find({ userid })
+            .populate({
+                path: 'problemid',
+                select: 'title difficulty tags'
+            })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+        
+        return res.status(200).json({
+            submissions,
+            pagination: {
+                total: totalSubmissions,
+                page,
+                limit,
+                totalPages: Math.ceil(totalSubmissions / limit)
+            }
+        });
+    } catch (err) {
+        console.error("Get all submissions error:", err);
+        return res.status(500).json({ error: "Failed to retrieve submissions" });
+    }
+};
 
 
 
-module.exports={submitcode,runcode}
+module.exports={submitcode, runcode, getAllSubmissions}

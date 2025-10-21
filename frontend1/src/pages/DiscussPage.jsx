@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axiosClient from '../utils/axiosClient';
-import Header from '../components/dashboard/Header'; // Reusing the header
+import Header from '../components/dashboard/Header'; 
 
 function DiscussPage() {
   const { user } = useSelector(state => state.auth);
@@ -30,7 +30,7 @@ function DiscussPage() {
 
     try {
       const response = await axiosClient.post('/api/discuss/posts', {
-        title: 'New Discussion Post', // Title can be made dynamic
+        title: 'New Discussion Post', 
         content: newPostContent,
         category: 'General'
       });
@@ -47,7 +47,7 @@ function DiscussPage() {
       <div className="container mx-auto p-4 lg:p-8">
         <h1 className="text-4xl font-bold text-white mb-8">Discuss</h1>
 
-        {/* New Post Form */}
+      
         <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 mb-8">
           <h2 className="text-xl font-semibold text-white mb-4">Create a New Post</h2>
           <form onSubmit={handlePostSubmit}>
@@ -62,7 +62,7 @@ function DiscussPage() {
           </form>
         </div>
 
-        {/* Posts List */}
+      
         {loading ? (
           <div className="text-center">Loading posts...</div>
         ) : (

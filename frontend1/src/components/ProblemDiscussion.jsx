@@ -43,29 +43,27 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
 
     console.log('ProblemDiscussion: Component loaded', { problemId, problemTitle, user });
 
-    // Load discussions for this specific problem
     useEffect(() => {
         loadDiscussions();
     }, [problemId]);
 
     const loadDiscussions = () => {
         console.log('Loading discussions for problem:', problemId);
-        
-        // Get discussions from localStorage
+     
         const savedDiscussions = JSON.parse(localStorage.getItem(`problem_discussions_${problemId}`) || '[]');
         console.log('Loaded from localStorage:', savedDiscussions);
         
-        // Filter out any mock data (discussions with fake usernames)
+        
         const realDiscussions = savedDiscussions.filter(discussion => 
             !['CodeMaster123', 'AlgoNinja', 'DPExpert', 'HashMapPro', 'BeginnerCoder'].includes(discussion.author)
         );
         
-        // Update localStorage with only real discussions
+     
         if (realDiscussions.length !== savedDiscussions.length) {
             localStorage.setItem(`problem_discussions_${problemId}`, JSON.stringify(realDiscussions));
         }
         
-        // Set discussions from localStorage (no mock data)
+       
         setDiscussions(realDiscussions);
     };
 
@@ -91,7 +89,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                 isBookmarked: false
             };
 
-            // Add to discussions and save to localStorage
+          
             const updatedDiscussions = [discussionData, ...discussions];
             setDiscussions(updatedDiscussions);
             localStorage.setItem(`problem_discussions_${problemId}`, JSON.stringify(updatedDiscussions));
@@ -117,7 +115,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
             return discussion;
         }));
 
-        // Update localStorage
+        
         const updatedDiscussions = discussions.map(discussion => {
             if (discussion.id === discussionId) {
                 const isLiked = discussion.isLiked;
@@ -155,7 +153,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
             return discussion;
         }));
 
-        // Update localStorage
+   
         const updatedDiscussions = discussions.map(discussion => {
             if (discussion.id === discussionId) {
                 return {
@@ -169,7 +167,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
         setShowReplyForm(null);
     };
 
-    // Enhanced delete functionality
+ 
     const handleDeleteDiscussion = (discussionId) => {
         const updatedDiscussions = discussions.filter(d => d.id !== discussionId);
         setDiscussions(updatedDiscussions);
@@ -188,7 +186,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
             return discussion;
         }));
 
-        // Update localStorage
+     
         const updatedDiscussions = discussions.map(discussion => {
             if (discussion.id === discussionId) {
                 return {
@@ -201,7 +199,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
         localStorage.setItem(`problem_discussions_${problemId}`, JSON.stringify(updatedDiscussions));
     };
 
-    // Enhanced edit functionality
+    
     const handleEditDiscussion = (discussionId, newContent) => {
         setDiscussions(prev => prev.map(discussion => {
             if (discussion.id === discussionId) {
@@ -215,7 +213,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
             return discussion;
         }));
 
-        // Update localStorage
+       
         const updatedDiscussions = discussions.map(discussion => {
             if (discussion.id === discussionId) {
                 return {
@@ -246,7 +244,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
             return discussion;
         }));
 
-        // Update localStorage
+       
         const updatedDiscussions = discussions.map(discussion => {
             if (discussion.id === discussionId) {
                 return {
@@ -264,7 +262,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
         setEditingReply(null);
     };
 
-    // Enhanced like functionality for replies
+   
     const handleReplyLike = (discussionId, replyId) => {
         setDiscussions(prev => prev.map(discussion => {
             if (discussion.id === discussionId) {
@@ -286,7 +284,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
             return discussion;
         }));
 
-        // Update localStorage
+       
         const updatedDiscussions = discussions.map(discussion => {
             if (discussion.id === discussionId) {
                 return {
@@ -331,7 +329,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
 
     return (
         <div className="space-y-6">
-            {/* Header */}
+            
             <div className="flex items-center justify-between">
                 <div>
                     <h3 className="text-2xl font-bold text-cyan-400 flex items-center gap-2">
@@ -347,7 +345,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                 </div>
             </div>
 
-            {/* Search and Filter */}
+          
             <div className="flex gap-4 items-center">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -370,7 +368,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                 </select>
             </div>
 
-            {/* New Discussion Form */}
+          
             <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
                 <h4 className="text-lg font-semibold mb-4 text-cyan-400">Start a Discussion</h4>
                 <textarea
@@ -403,7 +401,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                 </div>
             </div>
 
-            {/* Discussions List */}
+           
             <div className="space-y-4">
                 {filteredDiscussions.length === 0 ? (
                     <div className="text-center py-16 text-gray-400">
@@ -425,7 +423,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                 ) : (
                     filteredDiscussions.map((discussion) => (
                         <div key={discussion.id} className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-                            {/* Enhanced Discussion Header */}
+                           
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
@@ -444,7 +442,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                                 </div>
                                 
                                 <div className="flex items-center gap-2">
-                                    {/* Like Button */}
+                                 
                                     <motion.button
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
@@ -459,7 +457,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                                         {discussion.likes}
                                     </motion.button>
                                     
-                                    {/* Action Menu */}
+                                    
                                     <div className="relative">
                                         <motion.button
                                             whileHover={{ scale: 1.05 }}
@@ -469,7 +467,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                                             <MoreVertical className="w-4 h-4" />
                                         </motion.button>
                                         
-                                        {/* Dropdown Menu */}
+                                      
                                         <div className="absolute right-0 top-full mt-1 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                                             <div className="py-1">
                                                 {(user?.id === discussion.authorId || user?._id === discussion.authorId) && (
@@ -500,7 +498,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                                 </div>
                             </div>
 
-                            {/* Enhanced Discussion Content */}
+                            
                             <div className="mb-4">
                                 {editingDiscussion === discussion.id ? (
                                     <EditForm
@@ -513,7 +511,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                                 )}
                             </div>
 
-                            {/* Discussion Actions */}
+                          
                             <div className="flex items-center gap-4 pt-4 border-t border-gray-700">
                                 <button
                                     onClick={() => setShowReplyForm(showReplyForm === discussion.id ? null : discussion.id)}
@@ -524,7 +522,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                                 </button>
                             </div>
 
-                            {/* Reply Form */}
+                          
                             {showReplyForm === discussion.id && (
                                 <div className="mt-4 pt-4 border-t border-gray-700">
                                     <ReplyForm
@@ -534,7 +532,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                                 </div>
                             )}
 
-                            {/* Enhanced Replies */}
+                         
                             {discussion.replies && discussion.replies.length > 0 && (
                                 <div className="mt-4 space-y-3">
                                     {discussion.replies.map((reply) => (
@@ -559,7 +557,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                                                 </div>
                                                 
                                                 <div className="flex items-center gap-2">
-                                                    {/* Reply Like Button */}
+                                                   
                                                     <motion.button
                                                         whileHover={{ scale: 1.05 }}
                                                         whileTap={{ scale: 0.95 }}
@@ -574,7 +572,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                                                         {reply.likes || 0}
                                                     </motion.button>
                                                     
-                                                    {/* Reply Actions */}
+                                                  
                                                     {(user?.id === reply.authorId || user?._id === reply.authorId) && (
                                                         <div className="flex items-center gap-1">
                                                             <motion.button
@@ -598,7 +596,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                                                 </div>
                                             </div>
                                             
-                                            {/* Reply Content */}
+                                           
                                             {editingReply?.discussionId === discussion.id && editingReply?.replyId === reply.id ? (
                                                 <EditForm
                                                     initialContent={reply.content}
@@ -617,7 +615,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
                 )}
             </div>
 
-            {/* Delete Confirmation Modal */}
+           
             <AnimatePresence>
                 {showDeleteConfirm && (
                     <motion.div
@@ -675,7 +673,7 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
     );
 };
 
-// Reply Form Component
+
 const ReplyForm = ({ onSubmit, onCancel }) => {
     const [replyText, setReplyText] = useState('');
 
@@ -719,7 +717,7 @@ const ReplyForm = ({ onSubmit, onCancel }) => {
     );
 };
 
-// Edit Form Component
+
 const EditForm = ({ initialContent, onSubmit, onCancel }) => {
     const [editText, setEditText] = useState(initialContent);
 
