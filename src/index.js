@@ -1,177 +1,46 @@
-// const express= require('express');
-// const app=express();
-// require("dotenv").config(); 
-// const main=require('./db')
-// const cookieparser=require("cookie-parser");
-// const authrouter=require("./routes/userauth")
-// const redisclient=require("./redis/redis");
-// const problemrouter = require("./routes/probcreator");
-// const submitrouter = require("./routes/submit");
-// const aiRouter = require("./routes/aiChatting")
-// const videoRouter = require("./routes/videoCreator");
-
-// const cors=require('cors');
-// // isse btan padega ki kaun se location ko kewal access de rhe hai it protect from cors policy
-// app.use(cors({
-//     origin: 'http://localhost:5174',
-//     credentials: true 
-// }))
-
-
-
-// app.use(express.json());
-// app.use(cookieparser());
-// app.use('/user',authrouter);
-// app.use('/problem',problemrouter);
-// app.use('/submission',submitrouter);
-// app.use('/ai',aiRouter);
-// app.use("/video",videoRouter);
-
-
-
-
-
-// const initiliseconnection=async()=>{
-//     try{
-     
-        
-//         await Promise.all([redisclient.connect(),main()]);
-//         console.log("connected to db"); 
-  
-//         app.listen(process.env.PORT,()=>{
-//           console.log("listening at port no " + process.env.PORT);
-//       })
-    
-  
-//     }
-    
-//     catch(err){
-//       console.log("error"+err.message);
-//     }
-//   }
-//   initiliseconnection();
-
-// // // 1
-
-// // const express = require('express');
-// // const app = express();
-// // require("dotenv").config();
-// // const main = require('./db'); // Assuming this connects to MongoDB
-// // const cookieparser = require("cookie-parser");
-// // const authrouter = require("./routes/userauth");
-// // const redisclient = require("./redis/redis");
-// // const problemrouter = require("./routes/probcreator");
-// // const submitrouter = require("./routes/submit");
-// // const aiRouter = require("./routes/aiChatting");
-// // const videoRouter = require("./routes/videoCreator");
-// // // Import the new router
-// // const discussRoutes = require('./routes/discussRoutes');
-
-// // // ... app.use(express.json()), etc.
-
-// // app.use('/api/discuss', discussRoutes);
-
-// // // ... (app.use for your other routers)
-
-
-// // const cors = require('cors');
-
-// // // Your CORS setup is correct
-// // app.use(cors({
-// //     origin: 'http://localhost:5173', // Your frontend URL
-// //     credentials: true
-// // }));
-
-// // app.use(express.json());
-// // app.use(cookieparser());
-// // app.use('/user', authrouter);
-// // app.use('/problem', problemrouter);
-// // app.use('/submission', submitrouter);
-// // app.use('/ai', aiRouter);
-// // app.use("/video", videoRouter);
-
-// // const initiliseconnection = async () => {
-// //     try {
-// //         await Promise.all([redisclient.connect(), main()]);
-// //         console.log("Connected to Redis and DB");
-
-// //         app.listen(process.env.PORT, () => {
-// //             console.log("Listening at port no " + process.env.PORT);
-// //         });
-
-// //     }
-// //     catch (err) {
-// //         console.log("Connection error: " + err.message);
-// //     }
-// // }
-
-// // initiliseconnection();
-
-// // const express = require('express');
-// // const app = express();
-// // require("dotenv").config(); 
-// // const main = require('./db');
-// // const cookieparser = require("cookie-parser");
-// // const cors = require('cors');
-// // const session = require('express-session'); // <-- ADD THIS
-// // const passport = require('passport');     // <-- ADD THIS
-// // require('./config/passport');             // <-- ADD THIS to run the config
-
-// // const authrouter = require("./routes/userauth");
-// // const redisclient = require("./redis/redis");
-// // const problemrouter = require("./routes/probcreator");
-// // const submitrouter = require("./routes/submit");
-// // const aiRouter = require("./routes/aiChatting");
-// // const videoRouter = require("./routes/videoCreator");
-
-// // app.use(cors({
-// //     origin: process.env.CLIENT_URL || 'http://localhost:5173',
-// //     credentials: true 
-// // }));
-
-// // app.use(express.json());
-// // app.use(cookieparser());
-
-// // // --- ADD PASSPORT & SESSION MIDDLEWARE ---
-// // app.use(session({
-// //     secret: process.env.JWT_KEY, // Use a strong secret
-// //     resave: false,
-// //     saveUninitialized: false
-// // }));
-// // app.use(passport.initialize());
-// // // ----------------------------------------
-
-// // app.use('/user', authrouter);
-// // app.use('/problem', problemrouter);
-// // app.use('/submission', submitrouter);
-// // app.use('/ai', aiRouter);
-// // app.use("/video", videoRouter);
-
-// // const initiliseconnection = async () => {
-// //     try {
-// //         await Promise.all([redisclient.connect(), main()]);
-// //         console.log("Connected to DB and Redis"); 
-// //         app.listen(process.env.PORT || 3000, () => {
-// //           console.log("Listening at port no " + (process.env.PORT || 3000));
-// //         });
-// //     } catch(err) {
-// //       console.log("error"+err.message);
-// //     }
-// // };
-
-// // initiliseconnection();
-
-
-
-//simple 
+// Core Dependencies
 const express = require('express');
-const app = express();
-require("dotenv").config(); 
-const main = require('./db');
-const cookieparser = require("cookie-parser");
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
 const cors = require('cors');
+const cookieparser = require("cookie-parser");
 
-// Import Routers
+// Authentication & Security
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const passport = require('passport');
+const crypto = require('crypto');
+
+// Payment Gateway
+const Razorpay = require('razorpay');
+
+// Database & Caching
+const { createClient } = require('redis');
+
+// Utilities
+const axios = require('axios');
+const validator = require('validator');
+const nodemailer = require('nodemailer');
+
+// AI Integration
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
+// Media Upload
+const cloudinary = require('cloudinary').v2;
+
+// Session Management
+const session = require('express-session');
+
+// Initialize dotenv
+dotenv.config();
+
+// Initialize Express App
+const app = express();
+
+// Database Connection
+const main = require('./db');
+
+
 const authrouter = require("./routes/userauth");
 const userRoutes = require('./routes/userRoutes');
 const problemrouter = require("./routes/probcreator");
@@ -185,7 +54,13 @@ const migrationRoutes = require('./routes/migrationRoutes');
 const paymentRoutes = require('./routes/payment'); 
 
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'], // Allow all frontend ports
+    origin: [
+        'http://localhost:5173', 
+        'http://localhost:5174', 
+        'http://localhost:3000',
+        'https://coderworld3855.vercel.app',
+        'https://coderworld3855-5.onrender.com'
+    ], 
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
