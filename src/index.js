@@ -54,10 +54,34 @@ const migrationRoutes = require('./routes/migrationRoutes');
 const paymentRoutes = require('./routes/payment'); 
 
 app.use(cors({
-    origin: [
-        'http://localhost:5173' || process.env.CLIENT_URL , 
+    origin: function(origin, callback) {
+        const allowedOrigins = [
+            'http://localhost:5173',
+            'http://localhost:5174',
+            'http://localhost:3000',
+            process.env.CLIENT_URL
+        ].filter(Boolean); // Remove undefined values
         
-    ], 
+        // Allow if no origin (mobile apps, Postman, etc.)
+        if (!origin) return callback(null, true);
+        
+        // Allow if in allowed list
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        
+        // Allow all Vercel deployments
+        if (origin.endsWith('.vercel.app')) {
+            return callback(null, true);
+        }
+        
+        // Allow your Render backend
+        if (origin.includes('onrender.com')) {
+            return callback(null, true);
+        }
+        
+        callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
