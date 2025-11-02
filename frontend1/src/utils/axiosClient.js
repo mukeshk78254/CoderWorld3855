@@ -1,8 +1,10 @@
 
 import axios from 'axios';
 
+const backend_URL=process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: backend_URL,
   withCredentials: true, 
 });
 
