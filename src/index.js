@@ -69,7 +69,24 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieparser());
-
+// Add after line 74 (after cookieparser middleware)
+app.get('/', (req, res) => {
+    res.json({
+        status: 'Server is running',
+        message: 'CoderWorld API',
+        endpoints: {
+            auth: '/user',
+            problems: '/problem',
+            submissions: '/submission',
+            ai: '/ai',
+            video: '/video',
+            discuss: '/api/discuss',
+            profile: '/profile',
+            notifications: '/api/notifications',
+            payment: '/payment'
+        }
+    });
+});
 
 app.use('/user', authrouter);
 app.use('/user', userRoutes);
