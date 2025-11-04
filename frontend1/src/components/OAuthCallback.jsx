@@ -19,11 +19,11 @@ const OAuthCallback = () => {
       return;
     }
 
-    // If token is in URL, store it and verify
+    // If token is in URL, store it and redirect immediately to home
     if (token) {
       localStorage.setItem('token', token);
-      setStatus('Login successful! Redirecting...');
-      setTimeout(() => navigate('/'), 2000);
+      // Redirect immediately without showing any message
+      window.location.href = '/home';
       return;
     }
 
@@ -34,7 +34,7 @@ const OAuthCallback = () => {
         const resultAction = await dispatch(checkAuth()).unwrap();
         if (resultAction) {
          
-          navigate('/');
+          window.location.href = '/home';
         } else {
           
           setStatus('Authentication failed');
