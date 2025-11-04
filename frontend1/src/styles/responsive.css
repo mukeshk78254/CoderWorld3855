@@ -1,0 +1,519 @@
+/* ===================================
+   GLOBAL RESPONSIVE STYLES
+   Mobile-First Approach
+   =================================== */
+
+/* Base Mobile Styles (320px - 640px) */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Container Max Width */
+.container {
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Responsive Images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive Tables */
+table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  table {
+    font-size: 0.875rem;
+  }
+  
+  table thead {
+    display: none;
+  }
+  
+  table tr {
+    display: block;
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+  }
+  
+  table td {
+    display: block;
+    text-align: right;
+    padding: 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  
+  table td:before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 600;
+  }
+}
+
+/* Responsive Typography */
+h1 {
+  font-size: clamp(1.75rem, 5vw, 3rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+}
+
+h4 {
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+}
+
+p {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+/* Navigation Menu Responsive */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+  }
+  
+  nav ul {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  nav li {
+    width: 100%;
+    text-align: center;
+    padding: 0.5rem 0;
+  }
+}
+
+/* Card/Grid Layouts */
+.grid-container {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+@media (max-width: 640px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Flexbox Helpers */
+@media (max-width: 768px) {
+  .flex-row-desktop {
+    flex-direction: column;
+  }
+  
+  .flex-wrap-mobile {
+    flex-wrap: wrap;
+  }
+}
+
+/* Spacing Adjustments for Mobile */
+@media (max-width: 640px) {
+  .section-padding {
+    padding: 2rem 1rem !important;
+  }
+  
+  .section-margin {
+    margin: 1rem 0 !important;
+  }
+}
+
+/* Button Responsive */
+button, .btn {
+  min-height: 44px; /* Touch target size */
+  padding: 0.75rem 1.5rem;
+}
+
+@media (max-width: 640px) {
+  button, .btn {
+    width: 100%;
+    font-size: 0.875rem;
+  }
+}
+
+/* Form Elements */
+input, textarea, select {
+  width: 100%;
+  font-size: 16px; /* Prevents zoom on iOS */
+  min-height: 44px;
+}
+
+@media (max-width: 640px) {
+  input, textarea, select {
+    padding: 0.75rem;
+  }
+}
+
+/* Modal/Dialog Responsive */
+.modal, .dialog {
+  max-width: 95vw !important;
+  max-height: 90vh !important;
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .modal, .dialog {
+    max-width: 600px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .modal, .dialog {
+    max-width: 800px !important;
+  }
+}
+
+/* Code Editor Responsive */
+.code-editor, .monaco-editor {
+  min-height: 300px !important;
+}
+
+@media (max-width: 768px) {
+  .code-editor, .monaco-editor {
+    min-height: 200px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* Sidebar Responsive */
+.sidebar {
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 1024px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 100;
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Problem List / Cards */
+.problem-card {
+  padding: 1rem;
+}
+
+@media (max-width: 640px) {
+  .problem-card {
+    padding: 0.75rem;
+  }
+  
+  .problem-card h3 {
+    font-size: 1rem;
+  }
+}
+
+/* Split View (Editor + Output) */
+.split-view {
+  display: flex;
+  gap: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .split-view {
+    flex-direction: column;
+  }
+}
+
+/* Tabs Responsive */
+.tabs {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabs::-webkit-scrollbar {
+  height: 4px;
+}
+
+@media (max-width: 640px) {
+  .tabs button {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Hide elements on mobile */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Show only on mobile */
+.show-mobile {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .show-mobile {
+    display: block !important;
+  }
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.hamburger-menu span {
+  width: 25px;
+  height: 3px;
+  background: currentColor;
+  margin: 3px 0;
+  border-radius: 3px;
+  transition: 0.3s;
+}
+
+@media (max-width: 768px) {
+  .hamburger-menu {
+    display: flex;
+  }
+}
+
+/* Loading Spinner Responsive */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+}
+
+@media (max-width: 640px) {
+  .loading-spinner {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* Stat Cards */
+.stat-card {
+  padding: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .stat-card {
+    padding: 1rem;
+  }
+  
+  .stat-card .value {
+    font-size: 1.5rem;
+  }
+}
+
+/* Video Player */
+video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Chart/Graph Responsive */
+.chart-container {
+  position: relative;
+  height: 400px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    height: 300px;
+  }
+}
+
+@media (max-width: 640px) {
+  .chart-container {
+    height: 250px;
+  }
+}
+
+/* Profile Page */
+.profile-header {
+  flex-direction: column;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .profile-header {
+    flex-direction: row;
+    text-align: left;
+  }
+}
+
+/* Discussion/Comments */
+.comment-thread {
+  padding-left: 0;
+}
+
+@media (min-width: 768px) {
+  .comment-thread {
+    padding-left: 2rem;
+  }
+}
+
+/* Pricing Cards */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+@media (max-width: 640px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Footer */
+footer {
+  padding: 2rem 1rem;
+}
+
+@media (max-width: 768px) {
+  footer .footer-columns {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  footer .footer-column {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* Utility Classes */
+@media (max-width: 640px) {
+  .text-responsive {
+    font-size: 0.875rem !important;
+  }
+  
+  .px-responsive {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .py-responsive {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  .gap-responsive {
+    gap: 0.5rem !important;
+  }
+}
+
+/* Scroll containers */
+.scroll-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+/* Safe Area for iOS Notch */
+@supports (padding: env(safe-area-inset-left)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Prevent text selection issues on mobile */
+.no-select-mobile {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* Touch-friendly spacing */
+@media (max-width: 768px) {
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Responsive Container Max Widths */
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1536px;
+  }
+}

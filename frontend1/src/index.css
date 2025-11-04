@@ -1,2 +1,5 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+/* Import Global Responsive Styles */
+@import "./styles/responsive.css";
