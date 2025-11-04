@@ -50,7 +50,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import TestLogin from './pages/TestLogin'; 
 import OTPVerification from './pages/OTPVerification';
 import PremiumPage from './pages/PremiumPage'; 
-import MobileBottomNav from './components/MobileBottomNav'; 
 
 const AppContent = () => {
   const dispatch = useDispatch();
@@ -169,9 +168,6 @@ const AppContent = () => {
           </LogoutModalProvider>
         </SettingsProvider>
       </ThemeProvider>
-      
-      {/* Mobile Bottom Navigation - Only show when authenticated */}
-      {isAuthenticated && <MobileBottomNav />}
       
      
       <AuthModal 
