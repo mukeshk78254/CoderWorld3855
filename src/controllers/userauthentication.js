@@ -749,7 +749,7 @@ const googleOAuthCallback = async (req, res) => {
         const { code } = req.query;
         
         if (!code) {
-            return res.redirect('http://localhost:5173/login?error=no_code');
+            return res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/login?error=no_code`);
         }
 
        
@@ -774,7 +774,7 @@ const googleOAuthCallback = async (req, res) => {
         
         if (!tokenData.access_token) {
             console.error('[OAuth][Google] No access token received:', tokenData);
-            return res.redirect('http://localhost:5173/login?error=no_token');
+            return res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/login?error=no_token`);
         }
 
        
@@ -822,11 +822,11 @@ const googleOAuthCallback = async (req, res) => {
         });
 
         console.log('[OAuth][Google] Success! Redirecting to OAuth callback');
-        res.redirect('http://localhost:5173/oauth-callback');
+        res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/oauth-callback`);
 
     } catch (error) {
         console.error('Google OAuth error:', error);
-        res.redirect('http://localhost:5173/login?error=auth_failed');
+        res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/login?error=auth_failed`);
     }
 };
 
@@ -836,7 +836,7 @@ const facebookOAuthCallback = async (req, res) => {
         const { code } = req.query;
         
         if (!code) {
-            return res.redirect('http://localhost:5173/login?error=no_code');
+            return res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/login?error=no_code`);
         }
 
     
@@ -893,11 +893,11 @@ const facebookOAuthCallback = async (req, res) => {
             sameSite: 'lax'
         });
 
-        res.redirect('http://localhost:5173/oauth-callback');
+        res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/oauth-callback`);
 
     } catch (error) {
         console.error('Facebook OAuth error:', error);
-        res.redirect('http://localhost:5173/login?error=auth_failed');
+        res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/login?error=auth_failed`);
     }
 };
 
@@ -907,7 +907,7 @@ const socialLogin = async (req, res) => {
         const { code } = req.query;
         
         if (!code) {
-            return res.redirect('http://localhost:5173/login?error=no_code');
+            return res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/login?error=no_code`);
         }
 
         
@@ -928,7 +928,7 @@ const socialLogin = async (req, res) => {
         const tokenData = await tokenResponse.json();
         
         if (!tokenData.access_token) {
-            return res.redirect('http://localhost:5173/login?error=no_token');
+            return res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/login?error=no_token`);
         }
 
       
@@ -982,11 +982,11 @@ const socialLogin = async (req, res) => {
             sameSite: 'lax'
         });
 
-        res.redirect('http://localhost:5173/oauth-callback');
+        res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/oauth-callback`);
 
     } catch (error) {
         console.error('GitHub OAuth error:', error);
-        res.redirect('http://localhost:5173/login?error=auth_failed');
+        res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/login?error=auth_failed`);
     }
 };
 
