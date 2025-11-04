@@ -11,10 +11,19 @@ const OAuthCallback = () => {
 
   useEffect(() => {
     const error = searchParams.get('error');
+    const token = searchParams.get('token');
     
     if (error) {
       setStatus(`Authentication error: ${error}`);
       setTimeout(() => navigate('/login'), 2000);
+      return;
+    }
+
+    // If token is in URL, store it and verify
+    if (token) {
+      localStorage.setItem('token', token);
+      setStatus('Login successful! Redirecting...');
+      setTimeout(() => navigate('/'), 2000);
       return;
     }
 
@@ -25,7 +34,7 @@ const OAuthCallback = () => {
         const resultAction = await dispatch(checkAuth()).unwrap();
         if (resultAction) {
          
-          navigate('/home');
+          navigate('/');
         } else {
           
           setStatus('Authentication failed');
