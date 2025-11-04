@@ -821,8 +821,8 @@ const googleOAuthCallback = async (req, res) => {
             sameSite: 'lax'
         });
 
-        console.log('[OAuth][Google] Success! Redirecting to OAuth callback');
-        res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/oauth-callback`);
+        console.log('[OAuth][Google] Success! Redirecting to home');
+        res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}`);
 
     } catch (error) {
         console.error('Google OAuth error:', error);
@@ -893,7 +893,7 @@ const facebookOAuthCallback = async (req, res) => {
             sameSite: 'lax'
         });
 
-        res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/oauth-callback`);
+        res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}`);
 
     } catch (error) {
         console.error('Facebook OAuth error:', error);
@@ -982,7 +982,7 @@ const socialLogin = async (req, res) => {
             sameSite: 'lax'
         });
 
-        res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/oauth-callback`);
+        res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}`);
 
     } catch (error) {
         console.error('GitHub OAuth error:', error);
