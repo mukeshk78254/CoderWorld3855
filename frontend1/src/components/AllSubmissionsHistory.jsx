@@ -87,8 +87,8 @@ const AllSubmissionsHistory = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-6">Your Submission History</h2>
+    <div className="container mx-auto p-2 sm:p-4">
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Your Submission History</h2>
       
       {submissions.length === 0 ? (
         <div className="alert alert-info shadow-lg">
@@ -96,12 +96,13 @@ const AllSubmissionsHistory = () => {
             <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <span>You haven't submitted any solutions yet.</span>
+            <span className="text-sm sm:text-base">You haven't submitted any solutions yet.</span>
           </div>
         </div>
       ) : (
         <>
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="table table-zebra w-full">
               <thead>
                 <tr>
@@ -157,6 +158,59 @@ const AllSubmissionsHistory = () => {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3">
+            {submissions.map((submission, index) => (
+              <div key={submission._id} className="bg-slate-800 rounded-lg p-4 shadow-md border border-slate-700">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-base mb-1">
+                      {submission.problemid?.title || 'Problem not found'}
+                    </h3>
+                    {submission.problemid && (
+                      <div className="flex gap-2 flex-wrap">
+                        <span className={`badge ${submission.problemid.difficulty === 'easy' ? 'badge-success' : 
+                          submission.problemid.difficulty === 'medium' ? 'badge-warning' : 'badge-error'} badge-sm`}>
+                          {submission.problemid.difficulty}
+                        </span>
+                        <span className={`badge ${getStatusColor(submission.status)} badge-sm`}>
+                          {submission.status}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <span className="badge badge-neutral badge-sm ml-2">#{(pagination.page - 1) * pagination.limit + index + 1}</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-sm mb-3">
+                  <div>
+                    <span className="text-slate-400">Language:</span>
+                    <div className="font-medium">{submission.language}</div>
+                  </div>
+                  <div>
+                    <span className="text-slate-400">Runtime:</span>
+                    <div className="font-medium">{submission.runtime} ms</div>
+                  </div>
+                  <div>
+                    <span className="text-slate-400">Memory:</span>
+                    <div className="font-medium">{submission.memory} KB</div>
+                  </div>
+                  <div>
+                    <span className="text-slate-400">Submitted:</span>
+                    <div className="font-medium text-xs">{formatDate(submission.createdAt)}</div>
+                  </div>
+                </div>
+
+                <button 
+                  className="btn btn-sm btn-primary w-full"
+                  onClick={() => window.location.href = `/problem/${submission.problemid?._id}`}
+                >
+                  View Problem
+                </button>
+              </div>
+            ))}
+          </div>
           
           <div className="mt-6 flex justify-center">
             <Pagination 
@@ -166,7 +220,7 @@ const AllSubmissionsHistory = () => {
             />
           </div>
           
-          <div className="mt-4 text-center text-sm">
+          <div className="mt-4 text-center text-xs sm:text-sm">
             Showing {(pagination.page - 1) * pagination.limit + 1}-
             {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} submissions
           </div>
