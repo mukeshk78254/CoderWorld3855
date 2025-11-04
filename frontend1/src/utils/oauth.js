@@ -1,24 +1,21 @@
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_URL || import.meta.env.VITE_URL || 'http://localhost:5000';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your-google-client-id';
-const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI || 'http://localhost:5000/user/auth/google/callback';
-
+const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI || `${BACKEND_URL}/user/auth/google/callback`;
 
 const FACEBOOK_APP_ID = import.meta.env.VITE_FACEBOOK_APP_ID || 'your-facebook-app-id';
-const FACEBOOK_REDIRECT_URI = import.meta.env.VITE_FACEBOOK_REDIRECT_URI || 'http://localhost:5000/user/auth/facebook/callback';
-
+const FACEBOOK_REDIRECT_URI = import.meta.env.VITE_FACEBOOK_REDIRECT_URI || `${BACKEND_URL}/user/auth/facebook/callback`;
 
 const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID || 'your-github-client-id';
-const GITHUB_REDIRECT_URI = import.meta.env.VITE_GITHUB_REDIRECT_URI || 'http://localhost:5000/user/auth/github/callback';
-
+const GITHUB_REDIRECT_URI = import.meta.env.VITE_GITHUB_REDIRECT_URI || `${BACKEND_URL}/user/auth/github/callback`;
 
 export const initiateGoogleLogin = () => {
-
-  window.location.href = 'http://localhost:5000/user/auth/google';
+  window.location.href = `${BACKEND_URL}/user/auth/google`;
 };
 
 export const handleGoogleCallback = async (code) => {
   try {
-    const response = await fetch('http://localhost:5000/user/auth/google/callback', {
+    const response = await fetch(`${BACKEND_URL}/user/auth/google/callback`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -36,13 +33,12 @@ export const handleGoogleCallback = async (code) => {
 
 
 export const initiateFacebookLogin = () => {
- 
-  window.location.href = 'http://localhost:5000/user/auth/facebook';
+  window.location.href = `${BACKEND_URL}/user/auth/facebook`;
 };
 
 export const handleFacebookCallback = async (code) => {
   try {
-    const response = await fetch('http://localhost:5000/user/auth/facebook/callback', {
+    const response = await fetch(`${BACKEND_URL}/user/auth/facebook/callback`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -60,8 +56,7 @@ export const handleFacebookCallback = async (code) => {
 
 
 export const initiateGitHubLogin = () => {
-  
-  window.location.href = 'http://localhost:5000/user/auth/github';
+  window.location.href = `${BACKEND_URL}/user/auth/github`;
 };
 
 export const handleGitHubCallback = async (code) => {
