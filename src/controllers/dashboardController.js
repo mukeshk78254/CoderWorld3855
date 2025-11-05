@@ -290,19 +290,21 @@ function calculatePerformanceData(submissions, days) {
     const submissionCountsByDay = {};
 
     submissions.forEach(sub => {
-        const date = new Date(sub.createdAt).toDateString();
-        submissionCountsByDay[date] = (submissionCountsByDay[date] || 0) + 1;
+        const date = new Date(sub.createdAt);
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        submissionCountsByDay[dateKey] = (submissionCountsByDay[dateKey] || 0) + 1;
     });
 
     for (let i = days - 1; i >= 0; i--) {
         const date = new Date();
         date.setDate(date.getDate() - i);
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-        const count = submissionCountsByDay[date.toDateString()] || 0;
+        const count = submissionCountsByDay[dateKey] || 0;
         performanceData.push({ 
             name: dayName, 
             submissions: count,
-            date: date.toDateString()
+            date: dateKey // Use ISO format YYYY-MM-DD
         });
     }
 

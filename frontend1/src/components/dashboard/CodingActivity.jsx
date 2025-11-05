@@ -10,8 +10,14 @@ const CodingActivity = ({ submissionActivity = [], yearlyProgress = null, weekly
   
   if (yearlyProgress && yearlyProgress.heatmapData) {
     // Use the enhanced backend data
+    console.log('📊 Using backend yearlyProgress data:', {
+      heatmapKeys: Object.keys(yearlyProgress.heatmapData).length,
+      sampleDates: Object.keys(yearlyProgress.heatmapData).slice(0, 5),
+      totalDaysActive: yearlyProgress.totalDaysActive
+    });
     submissionMap = yearlyProgress.heatmapData;
   } else {
+    console.log('⚠️ No yearlyProgress.heatmapData - using fallback');
     // Fallback to processing submission timestamps
     submissionMap = submissionActivity.reduce((acc, timestamp) => {
       const date = new Date(timestamp).toISOString().split('T')[0];
@@ -25,6 +31,10 @@ const CodingActivity = ({ submissionActivity = [], yearlyProgress = null, weekly
   
   if (weeklyData && weeklyData.length > 0) {
     // Use backend's weekly data
+    console.log('📊 Using backend weeklyData:', {
+      days: weeklyData.length,
+      sampleDay: weeklyData[0]
+    });
     dayData = weeklyData.map(day => ({
       date: new Date(day.date),
       dateString: day.date,
@@ -36,6 +46,7 @@ const CodingActivity = ({ submissionActivity = [], yearlyProgress = null, weekly
       isFuture: false
     }));
   } else {
+    console.log('⚠️ No weeklyData - generating from submissionMap');
     // Fallback: Generate 7-day data from submissionMap
     for (let i = 6; i >= 0; i--) {
       const date = new Date();

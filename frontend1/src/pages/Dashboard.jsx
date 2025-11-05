@@ -141,6 +141,20 @@ const useDashboardStats = (user) => {
             const response = await axiosClient.get(`/user/${user.id}/dashboard-pro`);
             const data = response.data;
             
+            // Verify data structure
+            if (data && data.yearlyProgress) {
+                console.log('✅ Dashboard Data Loaded:', {
+                    solvedCount: data.solvedCount,
+                    totalSubmissions: data.totalSubmissions,
+                    currentStreak: data.currentStreak,
+                    hasYearlyProgress: !!data.yearlyProgress,
+                    hasHeatmapData: !!data.yearlyProgress?.heatmapData,
+                    heatmapKeys: data.yearlyProgress?.heatmapData ? Object.keys(data.yearlyProgress.heatmapData).length : 0,
+                    hasWeeklyData: !!data.weeklyData,
+                    weeklyDataLength: data.weeklyData?.length || 0
+                });
+            }
+            
             setStats(data);
         } catch (err) {
                 setError({
