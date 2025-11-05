@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
-const CodingActivity = ({ submissionActivity = [], totalSubmissions = 0, streak = 0 }) => {
+const CodingActivity = ({ submissionActivity = [], yearlyProgress = null, totalSubmissions = 0, streak = 0 }) => {
   const [viewMode, setViewMode] = useState('year'); // 'year' or 'week'
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   
-  // 1. Process submission data into a map of { 'YYYY-MM-DD': count }
-  const submissionMap = submissionActivity.reduce((acc, timestamp) => {
-    const date = new Date(timestamp).toISOString().split('T')[0];
-    acc[date] = (acc[date] || 0) + 1;
-    return acc;
-  }, {});
+  // 1. Use yearlyProgress data from backend if available, otherwise fallback to old method
+  let submissionMap = {};
+  
+  if (yearlyProgress && yearlyProgress.heatmapData) {
+    // Use the enhanced backend data
+    submissionMap = yearlyProgress.heatmapData;
+    console.log('📊 Using yearlyProgress data from backend:', yearlyProgress);
+    console.log('📅 Heatmap data:', submissionMap);
+    console.log('✅ Accepted submission dates:', yearlyProgress.acceptedDates);
+  } else {
+    // Fallback to processing submission timestamps
+    submissionMap = submissionActivity.reduce((acc, timestamp) => {
+      const date = new Date(timestamp).toISOString().split('T')[0];
+      acc[date] = (acc[date] || 0) + 1;
+      return acc;
+    }, {});
+    console.log('⚠️ Falling back to submissionActivity processing');
+  }
 
   // 2. Generate GitHub-style heatmap data
   const today = new Date();

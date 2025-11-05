@@ -36,7 +36,8 @@ function MainContent({ stats }) {
             {/* Full-width sections with better spacing */}
             <div className="space-y-8">
                 <CodingActivity 
-                    submissionActivity={stats.submissionActivity || []} 
+                    submissionActivity={stats.submissionActivity || []}
+                    yearlyProgress={stats.yearlyProgress || null}
                     totalSubmissions={stats.totalSubmissions || 0}
                     streak={stats.longestStreak || 0}
                 />
