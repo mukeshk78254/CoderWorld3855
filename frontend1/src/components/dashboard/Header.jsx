@@ -53,9 +53,6 @@ function Header({ user, problem, refreshing, onRefresh }) {
     };
 
     const handleNavigation = (path) => {
-        console.log('Navigating to:', path);
-        console.log('Current user:', currentUser);
-        console.log('User role:', currentUser?.role);
         navigate(path);
         setIsDropdownOpen(false);
     };
@@ -63,9 +60,7 @@ function Header({ user, problem, refreshing, onRefresh }) {
     // Handle click outside to close dropdown
     useEffect(() => {
         const handleClickOutside = (event) => {
-            console.log('Click outside detected, dropdown open:', isDropdownOpen);
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                console.log('Clicking outside dropdown, closing it');
                 setIsDropdownOpen(false);
             }
         };
@@ -117,7 +112,6 @@ function Header({ user, problem, refreshing, onRefresh }) {
                             <NavLink 
                                 to="/dashboard" 
                                 className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
-                                onClick={() => console.log('Dashboard clicked - navigating to /dashboard')}
                             >
                                 <LayoutDashboard size={18} />
                                 Dashboard
@@ -125,7 +119,6 @@ function Header({ user, problem, refreshing, onRefresh }) {
                             <NavLink 
                                 to="/problems" 
                                 className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
-                                onClick={() => console.log('Problems clicked - navigating to /problems')}
                             >
                                 <Code size={18} />
                                 Problems
@@ -133,7 +126,6 @@ function Header({ user, problem, refreshing, onRefresh }) {
                             <NavLink 
                                 to="/contests" 
                                 className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
-                                onClick={() => console.log('Contests clicked - navigating to /contests')}
                             >
                                 <Trophy size={18} />
                                 Contests
@@ -141,7 +133,6 @@ function Header({ user, problem, refreshing, onRefresh }) {
                             <NavLink 
                                 to="/discuss" 
                                 className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
-                                onClick={() => console.log('Discuss clicked - navigating to /discuss')}
                             >
                                 <MessageSquare size={18} />
                                 Discuss
@@ -149,7 +140,6 @@ function Header({ user, problem, refreshing, onRefresh }) {
                             <NavLink 
                                 to="/leaderboard" 
                                 className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
-                                onClick={() => console.log('Leaderboard clicked - navigating to /leaderboard')}
                             >
                                 <Users size={18} />
                                 Leaderboard
@@ -224,13 +214,16 @@ function Header({ user, problem, refreshing, onRefresh }) {
                                         className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
                                         onClick={() => console.log('Mobile Dashboard clicked - navigating to /dashboard')}
                                     >
+                                    <NavLink 
+                                        to="/dashboard" 
+                                        className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
+                                    >
                                         <LayoutDashboard size={18} />
                                         Dashboard
                                     </NavLink>
                                     <NavLink 
                                         to="/problems" 
                                         className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
-                                        onClick={() => console.log('Mobile Problems clicked - navigating to /problems')}
                                     >
                                         <Code size={18} />
                                         Problems
@@ -238,7 +231,6 @@ function Header({ user, problem, refreshing, onRefresh }) {
                                     <NavLink 
                                         to="/contests" 
                                         className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
-                                        onClick={() => console.log('Mobile Contests clicked - navigating to /contests')}
                                     >
                                         <Trophy size={18} />
                                         Contests
@@ -246,7 +238,6 @@ function Header({ user, problem, refreshing, onRefresh }) {
                                     <NavLink 
                                         to="/discuss" 
                                         className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
-                                        onClick={() => console.log('Mobile Discuss clicked - navigating to /discuss')}
                                     >
                                         <MessageSquare size={18} />
                                         Discuss
@@ -254,25 +245,16 @@ function Header({ user, problem, refreshing, onRefresh }) {
                                     <NavLink 
                                         to="/leaderboard" 
                                         className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
-                                        onClick={() => console.log('Mobile Leaderboard clicked - navigating to /leaderboard')}
                                     >
                                         <Users size={18} />
                                         Leaderboard
-                                    </NavLink>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Profile Dropdown */}
+                                    </NavLink>/}
                         <div ref={dropdownRef} className="relative">
                             <div 
                                 tabIndex={0} 
                                 role="button" 
                                 className="flex items-center space-x-2 cursor-pointer hover:bg-slate-800/50 rounded-lg p-2 transition-colors"
-                                onClick={() => {
-                                    console.log('Profile clicked, current state:', isDropdownOpen);
-                                    setIsDropdownOpen(!isDropdownOpen);
-                                }}
+                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                             >
                                 <div className="avatar">
                                     <div className={`w-8 h-8 md:w-9 md:h-9 rounded-full ring-2 ring-offset-2 ring-offset-slate-900 transition-all ${
@@ -293,10 +275,7 @@ function Header({ user, problem, refreshing, onRefresh }) {
                                     {/* Backdrop */}
                                     <div 
                                         className="fixed inset-0 z-[59] bg-black/20"
-                                        onClick={() => {
-                                            console.log('Backdrop clicked, closing dropdown');
-                                            setIsDropdownOpen(false);
-                                        }}
+                                        onClick={() => setIsDropdownOpen(false)}
                                     />
                                     {/* Dropdown */}
                                     <div className="absolute right-0 mt-4 z-[60] w-64 overflow-hidden rounded-xl bg-slate-900/95 backdrop-blur-xl border border-slate-700 shadow-2xl">
@@ -310,10 +289,7 @@ function Header({ user, problem, refreshing, onRefresh }) {
                                         <div className="p-2 space-y-1">
                                              {currentUser?.role === 'admin' && (
                                                 <button 
-                                                    onClick={() => {
-                                                        console.log('Admin button clicked');
-                                                        handleNavigation('/admin');
-                                                    }}
+                                                    onClick={() => handleNavigation('/admin')}
                                                     className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-lg text-gray-300 hover:bg-indigo-500/20 hover:text-white transition-colors duration-200"
                                                 >
                                                     <Shield size={18} />
@@ -321,30 +297,21 @@ function Header({ user, problem, refreshing, onRefresh }) {
                                                 </button>
                                             )}
                                             <button 
-                                                onClick={() => {
-                                                    console.log('Profile Dropdown Dashboard button clicked');
-                                                    handleNavigation('/dashboard');
-                                                }}
+                                                onClick={() => handleNavigation('/dashboard')}
                                                 className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
                                             >
                                                 <LayoutDashboard size={18} />
                                                 <span>Dashboard</span>
                                             </button>
                                             <button 
-                                                onClick={() => {
-                                                    console.log('Profile Dropdown Profile button clicked');
-                                                    handleNavigation('/profile');
-                                                }}
+                                                onClick={() => handleNavigation('/profile')}
                                                 className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
                                             >
                                                 <UserCircle size={18} />
                                                 <span>My Profile</span>
                                             </button>
                                             <button 
-                                                onClick={() => {
-                                                    console.log('Settings button clicked');
-                                                    handleNavigation('/settings');
-                                                }}
+                                                onClick={() => handleNavigation('/settings')}
                                                 className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
                                             >
                                                 <Settings size={18} />

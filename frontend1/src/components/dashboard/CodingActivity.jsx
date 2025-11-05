@@ -11,9 +11,6 @@ const CodingActivity = ({ submissionActivity = [], yearlyProgress = null, weekly
   if (yearlyProgress && yearlyProgress.heatmapData) {
     // Use the enhanced backend data
     submissionMap = yearlyProgress.heatmapData;
-    console.log('📊 Using yearlyProgress data from backend:', yearlyProgress);
-    console.log('📅 Heatmap data:', submissionMap);
-    console.log('✅ Accepted submission dates:', yearlyProgress.acceptedDates);
   } else {
     // Fallback to processing submission timestamps
     submissionMap = submissionActivity.reduce((acc, timestamp) => {
@@ -21,7 +18,6 @@ const CodingActivity = ({ submissionActivity = [], yearlyProgress = null, weekly
       acc[date] = (acc[date] || 0) + 1;
       return acc;
     }, {});
-    console.log('⚠️ Falling back to submissionActivity processing');
   }
 
   // 2. Generate 7-day data - use weeklyData from backend if available
@@ -29,7 +25,6 @@ const CodingActivity = ({ submissionActivity = [], yearlyProgress = null, weekly
   
   if (weeklyData && weeklyData.length > 0) {
     // Use backend's weekly data
-    console.log('📊 Using weeklyData from backend:', weeklyData);
     dayData = weeklyData.map(day => ({
       date: new Date(day.date),
       dateString: day.date,

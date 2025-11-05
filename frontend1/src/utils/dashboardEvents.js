@@ -32,7 +32,6 @@ export const dashboardEvents = new DashboardEventEmitter();
 
 // Helper function to notify dashboard of updates
 export const notifyDashboardUpdate = (submissionData) => {
-    console.log('📊 Notifying dashboard of submission:', submissionData);
     dashboardEvents.emit({
         type: 'SUBMISSION_SUCCESS',
         data: submissionData,

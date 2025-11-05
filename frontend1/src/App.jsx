@@ -57,11 +57,6 @@ const AppContent = () => {
   const { isOpen, mode, redirectPath, closeAuthModal } = useAuthModal();
   const location = useLocation();
 
-  
-  useEffect(() => {
-    console.log('Current location:', location.pathname);
-  }, [location.pathname]);
-
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);

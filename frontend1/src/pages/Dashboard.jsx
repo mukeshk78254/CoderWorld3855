@@ -141,22 +141,8 @@ const useDashboardStats = (user) => {
             const response = await axiosClient.get(`/user/${user.id}/dashboard-pro`);
             const data = response.data;
             
-            console.log('📊 Dashboard Data Received:');
-            console.log('═══════════════════════════════════════');
-            console.log('✅ Total Unique Problems Solved:', data.solvedCount);
-            console.log('🟢 Easy:', data.easyCount);
-            console.log('🟡 Medium:', data.mediumCount);
-            console.log('🔴 Hard:', data.hardCount);
-            console.log('═══════════════════════════════════════');
-            console.log('Solved Stats:', data.solvedStats);
-            console.log('Total Stats:', data.totalStats);
-            console.log('Total Submissions:', data.totalSubmissions);
-            console.log('Successful Submissions:', data.successfulSubmissions);
-            console.log('═══════════════════════════════════════');
-            
             setStats(data);
         } catch (err) {
-                console.error("Failed to fetch dashboard data:", err);
                 setError({
                     message: "Unable to load dashboard data. Please try again later.",
                     originalError: err
@@ -196,10 +182,8 @@ const useDashboardStats = (user) => {
 
     // Listen for submission events to auto-refresh dashboard
     useEffect(() => {
-        console.log('📊 Dashboard: Setting up submission event listener');
         const unsubscribe = dashboardEvents.subscribe((event) => {
             if (event.type === 'SUBMISSION_SUCCESS') {
-                console.log('📊 Dashboard: Received submission event, refreshing data...');
                 // Wait a bit for backend to process
                 setTimeout(() => {
                     fetchDashboardData();

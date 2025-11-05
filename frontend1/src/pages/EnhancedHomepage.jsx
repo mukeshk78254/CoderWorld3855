@@ -253,8 +253,9 @@ function EnhancedHomepage() {
     useEffect(() => {
         if (!gsap) return;
         
+        let ctx;
         try {
-            const ctx = gsap.context(() => {
+            ctx = gsap.context(() => {
             
             gsap.to(titleRef.current, {
                 text: "Master Coding with CodeFlow",
@@ -276,14 +277,14 @@ function EnhancedHomepage() {
             );
             }, heroRef);
         } catch (error) {
-            console.log('GSAP animation error in EnhancedHomepage:', error);
+            // GSAP animation error - silent fail
         }
 
         return () => {
             try {
-                ctx.revert();
+                if (ctx) ctx.revert();
             } catch (error) {
-                console.log('GSAP cleanup error:', error);
+                // Silent cleanup
             }
         };
     }, []);
