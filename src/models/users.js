@@ -32,6 +32,14 @@ const userSchema = new Schema({
         }],
         default: []
     },
+    totalSubmissions: {
+        type: Number,
+        default: 0
+    },
+    lastSubmissionDate: {
+        type: Date,
+        default: null
+    },
     password: {
         type: String,
         

@@ -106,6 +106,9 @@ const getDashboardData = async (req, res) => {
         
        
         const submissionActivity = allSubmissions.map(sub => sub.createdAt);
+        
+        // Calculate yearly progress with daily submission data
+        const yearlyProgress = calculateYearlyProgress(allSubmissions);
 
       
         const successRateByDifficulty = calculateSuccessRateByDifficulty(allSubmissions);
@@ -152,6 +155,9 @@ const getDashboardData = async (req, res) => {
             submissionsToday: getSubmissionsForDay(allSubmissions, new Date()),
             submissionsThisWeek: getSubmissionsForWeek(allSubmissions),
             submissionsThisMonth: getSubmissionsForMonth(allSubmissions),
+            
+            // Yearly progress data for calendar view with green marks on submission dates
+            yearlyProgress,
         };
 
         res.status(200).json(dashboardData);
@@ -406,6 +412,62 @@ function getSubmissionsForMonth(submissions) {
     return submissions.filter(sub => 
         new Date(sub.createdAt) >= monthAgo
     ).length;
+}
+
+
+function calculateYearlyProgress(submissions) {
+    const yearAgo = new Date();
+    yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+    
+    // Get all submissions from the last year
+    const yearlySubmissions = submissions.filter(sub => 
+        new Date(sub.createdAt) >= yearAgo
+    );
+    
+    // Create a map of dates with submission counts
+    const dailySubmissions = {};
+    const dailyAcceptedSubmissions = {};
+    
+    yearlySubmissions.forEach(sub => {
+        const date = new Date(sub.createdAt);
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        
+        // Count all submissions
+        dailySubmissions[dateKey] = (dailySubmissions[dateKey] || 0) + 1;
+        
+        // Count accepted submissions
+        if (sub.status === 'accepted') {
+            dailyAcceptedSubmissions[dateKey] = (dailyAcceptedSubmissions[dateKey] || 0) + 1;
+        }
+    });
+    
+    // Generate array of all days in the year with counts
+    const yearlyData = [];
+    const today = new Date();
+    
+    for (let i = 364; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        
+        yearlyData.push({
+            date: dateKey,
+            dayOfWeek: date.getDay(), // 0-6 (Sunday-Saturday)
+            month: date.getMonth(), // 0-11
+            submissions: dailySubmissions[dateKey] || 0,
+            acceptedSubmissions: dailyAcceptedSubmissions[dateKey] || 0,
+            hasActivity: (dailySubmissions[dateKey] || 0) > 0
+        });
+    }
+    
+    return {
+        dailyData: yearlyData,
+        totalDaysActive: Object.keys(dailySubmissions).length,
+        totalSubmissions: yearlySubmissions.length,
+        totalAccepted: yearlySubmissions.filter(s => s.status === 'accepted').length,
+        heatmapData: dailySubmissions, // For easy lookup: { "2024-01-15": 5, ... }
+        acceptedDates: Object.keys(dailyAcceptedSubmissions) // Array of dates with accepted submissions
+    };
 }
 
 module.exports = {

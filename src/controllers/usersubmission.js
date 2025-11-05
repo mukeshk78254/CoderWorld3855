@@ -111,21 +111,43 @@ try{
         // Get fresh user data to ensure we have the most up-to-date problemsSolved array
         const currentUser = await user.findById(userid);
         
-        console.log(' Accepted submission for user:', userid, 'problem:', problemid);
-        console.log('Current problemsSolved before update:', currentUser.problemsSolved);
+        console.log('✅ Accepted submission for user:', userid, 'problem:', problemid);
+        console.log('📊 Current problemsSolved before update:', currentUser.problemsSolved);
         
         // Check if this problem is already in the user's solved problems
         if (!currentUser.problemsSolved || !currentUser.problemsSolved.some(p => p.toString() === problemid)) {
-            // Add the problem to user's solved problems
+            // Add the problem to user's solved problems using $addToSet to prevent duplicates
             const updatedUser = await user.findByIdAndUpdate(
                 userid,
-                { $addToSet: { problemsSolved: problemid } },
+                { 
+                    $addToSet: { problemsSolved: problemid },
+                    $inc: { totalSubmissions: 1 }, // Increment total submissions
+                    lastSubmissionDate: new Date() // Track last submission
+                },
                 { new: true }
             );
             console.log('✨ Added new problem to problemsSolved. Total unique problems:', updatedUser.problemsSolved.length);
+            console.log('📈 Dashboard data updated - ready for real-time refresh');
         } else {
-            console.log('  Problem already in problemsSolved array');
+            // Even if problem was already solved, update submission stats
+            await user.findByIdAndUpdate(
+                userid,
+                { 
+                    $inc: { totalSubmissions: 1 },
+                    lastSubmissionDate: new Date()
+                }
+            );
+            console.log('✔️ Problem already in problemsSolved array, updated submission stats');
         }
+    } else {
+        // Track failed submissions too for analytics
+        await user.findByIdAndUpdate(
+            userid,
+            { 
+                $inc: { totalSubmissions: 1 },
+                lastSubmissionDate: new Date()
+            }
+        );
     }
 
     res.status(201).send(submittedresult);
