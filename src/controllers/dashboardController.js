@@ -289,19 +289,12 @@ function calculatePerformanceData(submissions, days) {
     const performanceData = [];
     const submissionCountsByDay = {};
 
-    // Debug: Log submission dates
-    console.log(`📊 Calculating ${days}-day performance from ${submissions.length} submissions`);
-    
     submissions.forEach(sub => {
         const date = new Date(sub.createdAt);
         // Format date key as YYYY-MM-DD for consistent mapping with heatmap
         const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
         submissionCountsByDay[dateKey] = (submissionCountsByDay[dateKey] || 0) + 1;
     });
-    
-    // Debug: Log what dates have submissions
-    console.log('📅 Submission dates found:', Object.keys(submissionCountsByDay).slice(0, 10));
-    console.log('📊 Sample counts:', Object.entries(submissionCountsByDay).slice(0, 5));
 
     for (let i = days - 1; i >= 0; i--) {
         const date = new Date();
@@ -315,11 +308,6 @@ function calculatePerformanceData(submissions, days) {
             date: dateKey // Use ISO format YYYY-MM-DD
         });
     }
-    
-    // Debug: Log generated performance data
-    console.log(`✅ Generated ${performanceData.length} days of performance data`);
-    console.log('📊 First 5 days:', performanceData.slice(0, 5));
-    console.log('📊 Last 5 days:', performanceData.slice(-5));
 
     return performanceData;
 }

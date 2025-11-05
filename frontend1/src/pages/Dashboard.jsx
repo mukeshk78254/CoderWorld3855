@@ -141,15 +141,6 @@ const useDashboardStats = (user) => {
             const response = await axiosClient.get(`/user/${user.id}/dashboard-pro`);
             const data = response.data;
             
-            // Verify performanceData is included
-            console.log('📊 Dashboard API Response:', {
-                hasPerformanceData: !!data.performanceData,
-                performanceDataLength: data.performanceData?.length,
-                performanceSample: data.performanceData?.slice(0, 3),
-                hasWeeklyData: !!data.weeklyData,
-                weeklyDataLength: data.weeklyData?.length
-            });
-            
             setStats(data);
         } catch (err) {
                 setError({

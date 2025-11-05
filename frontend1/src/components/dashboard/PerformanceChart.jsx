@@ -23,13 +23,6 @@ const CustomTooltip = ({ active, payload, label }) => {
 function PerformanceChart({ data }) {
     const period = data.length > 0 ? data.length : 30;
 
-    // Debug: Log the performance data
-    console.log('📊 PerformanceChart received data:', {
-        dataLength: data?.length,
-        sampleData: data?.slice(0, 5),
-        totalSubmissions: data?.reduce((sum, day) => sum + (day.submissions || 0), 0)
-    });
-
     if (!data || data.length === 0) {
         return (
             <motion.div
@@ -43,8 +36,8 @@ function PerformanceChart({ data }) {
         );
     }
 
-    // Generate a key based on the last data point's submission count to force redraw
-    const chartKey = data[data.length - 1].submissions + data[data.length - 1].date;
+    // Generate a key based on total submissions to force chart redraw when data changes
+    const chartKey = `chart-${data.reduce((sum, day) => sum + day.submissions, 0)}-${data.length}`;
 
     return (
         <motion.div
