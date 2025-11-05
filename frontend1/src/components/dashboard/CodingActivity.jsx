@@ -76,17 +76,26 @@ const CodingActivity = ({ submissionActivity = [], yearlyProgress = null, weekly
     const startDate = new Date(selectedYear, 0, 1); // Start from January 1st of selected year
     startDate.setDate(startDate.getDate() - startDate.getDay()); // Start from Sunday
     
+    console.log('📅 Generating calendar grid for year:', selectedYear);
+    console.log('📊 SubmissionMap sample:', Object.entries(submissionMap).slice(0, 10));
+    
     for (let week = 0; week < 53; week++) {
       const weekDays = [];
       for (let day = 0; day < 7; day++) {
         const currentDate = new Date(startDate);
         currentDate.setDate(startDate.getDate() + (week * 7) + day);
-      const dateString = currentDate.toISOString().split('T')[0];
+        const dateString = currentDate.toISOString().split('T')[0];
+        const submissionCount = submissionMap[dateString] || 0;
+        
+        // Log first few matches
+        if (submissionCount > 0 && week < 5) {
+          console.log(`✅ Found ${submissionCount} submissions on ${dateString}`);
+        }
         
         weekDays.push({
           date: currentDate,
           dateString: dateString,
-          submissions: submissionMap[dateString] || 0,
+          submissions: submissionCount,
           isFuture: currentDate > today,
           isSelectedYear: currentDate.getFullYear() === selectedYear
         });
