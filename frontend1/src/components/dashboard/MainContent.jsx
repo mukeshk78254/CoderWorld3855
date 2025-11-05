@@ -38,6 +38,7 @@ function MainContent({ stats }) {
                 <CodingActivity 
                     submissionActivity={stats.submissionActivity || []}
                     yearlyProgress={stats.yearlyProgress || null}
+                    weeklyData={stats.weeklyData || []}
                     totalSubmissions={stats.totalSubmissions || 0}
                     streak={stats.longestStreak || 0}
                 />

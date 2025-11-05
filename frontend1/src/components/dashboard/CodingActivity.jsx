@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
-const CodingActivity = ({ submissionActivity = [], yearlyProgress = null, totalSubmissions = 0, streak = 0 }) => {
+const CodingActivity = ({ submissionActivity = [], yearlyProgress = null, weeklyData = [], totalSubmissions = 0, streak = 0 }) => {
   const [viewMode, setViewMode] = useState('year'); // 'year' or 'week'
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   
@@ -24,31 +24,43 @@ const CodingActivity = ({ submissionActivity = [], yearlyProgress = null, totalS
     console.log('⚠️ Falling back to submissionActivity processing');
   }
 
-  // 2. Generate GitHub-style heatmap data
-  const today = new Date();
-  const dayData = [];
+  // 2. Generate 7-day data - use weeklyData from backend if available
+  let dayData = [];
   
-  // Generate data based on view mode
-  const daysToShow = viewMode === 'week' ? 7 : 365;
-  
-  for (let i = daysToShow - 1; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    const dateString = date.toISOString().split('T')[0];
-    const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-    const monthName = date.toLocaleDateString('en-US', { month: 'short' });
-    const dayNumber = date.getDate();
-    
-    dayData.push({
-      date: date,
-      dateString: dateString,
-      dayName: dayName,
-      monthName: monthName,
-      dayNumber: dayNumber,
-      submissions: submissionMap[dateString] || 0,
-      isToday: i === 0,
-      isFuture: date > today
-    });
+  if (weeklyData && weeklyData.length > 0) {
+    // Use backend's weekly data
+    console.log('📊 Using weeklyData from backend:', weeklyData);
+    dayData = weeklyData.map(day => ({
+      date: new Date(day.date),
+      dateString: day.date,
+      dayName: day.name,
+      monthName: new Date(day.date).toLocaleDateString('en-US', { month: 'short' }),
+      dayNumber: new Date(day.date).getDate(),
+      submissions: day.submissions,
+      isToday: new Date(day.date).toDateString() === new Date().toDateString(),
+      isFuture: false
+    }));
+  } else {
+    // Fallback: Generate 7-day data from submissionMap
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateString = date.toISOString().split('T')[0];
+      const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+      const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+      const dayNumber = date.getDate();
+      
+      dayData.push({
+        date: date,
+        dateString: dateString,
+        dayName: dayName,
+        monthName: monthName,
+        dayNumber: dayNumber,
+        submissions: submissionMap[dateString] || 0,
+        isToday: i === 0,
+        isFuture: false
+      });
+    }
   }
 
   // Generate GitHub-style calendar grid for year view
