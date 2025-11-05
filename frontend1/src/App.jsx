@@ -43,15 +43,13 @@ import { NotificationManager } from './components/NotificationSystem';
 import { ThemeProvider } from './context/ThemeContext'; 
 import { SettingsProvider } from './context/SettingsContext';
 import { LogoutModalProvider } from './context/LogoutModalContext';
-import { AuthModalProvider, useAuthModal } from './context/AuthModalContext';
-import { SubmissionProvider } from './context/SubmissionContext'; 
+import { AuthModalProvider, useAuthModal } from './context/AuthModalContext'; 
 import AuthModal from './components/AuthModal';
 import ProtectedRouteWithModal from './components/ProtectedRouteWithModal';
 import ProtectedRoute from './components/ProtectedRoute'; 
 import TestLogin from './pages/TestLogin'; 
 import OTPVerification from './pages/OTPVerification';
-import PremiumPage from './pages/PremiumPage';
-import MobileSidebar from './components/MobileSidebar'; 
+import PremiumPage from './pages/PremiumPage'; 
 
 const AppContent = () => {
   const dispatch = useDispatch();
@@ -95,10 +93,8 @@ const AppContent = () => {
       <ThemeProvider>
         <SettingsProvider>
           <LogoutModalProvider>
-            <SubmissionProvider>
-              <NotificationManager />
-              <MobileSidebar />
-              <Routes>
+            <NotificationManager />
+            <Routes>
         <Route path="/" element={<LandingPage />} />
        
         <Route path="/login" element={<Login />} />
@@ -169,7 +165,6 @@ const AppContent = () => {
             </div>
         } />
             </Routes>
-            </SubmissionProvider>
           </LogoutModalProvider>
         </SettingsProvider>
       </ThemeProvider>

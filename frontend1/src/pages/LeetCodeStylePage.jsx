@@ -10,7 +10,6 @@ import Editorial from "../components/Editorial";
 import ChatAi from "../components/ChatAi";
 import ProblemDiscussion from "../components/ProblemDiscussion";
 import { gsap } from "gsap";
-import { useSubmission } from "../context/SubmissionContext";
 
 const langMap = { cpp: "C++", java: "Java", javascript: "JavaScript" };
 
@@ -25,7 +24,6 @@ function LeetCodeStylePage() {
     const editorRef = useRef(null);
     const containerRef = useRef(null);
     const { isAuthenticated } = useSelector((state) => state.auth);
-    const { notifySubmissionSuccess } = useSubmission();
     
     console.log("Authentication status:", isAuthenticated);
     
@@ -238,15 +236,6 @@ function LeetCodeStylePage() {
                
                 localStorage.setItem('lastSubmittedCode', code);
                 localStorage.setItem('lastSubmittedLanguage', selectedLanguage);
-                
-                // Notify dashboard to refresh
-                notifySubmissionSuccess({
-                    problemId: problemid,
-                    language: selectedLanguage,
-                    status: 'accepted',
-                    submittedAt: new Date().toISOString()
-                });
-                console.log('✅ Submission success notification sent to dashboard');
             }
         } catch {
             setSubmitResult({ status: "error", message: "Submission failed." });
