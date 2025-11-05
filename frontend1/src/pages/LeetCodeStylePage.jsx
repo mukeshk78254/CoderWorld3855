@@ -10,6 +10,8 @@ import Editorial from "../components/Editorial";
 import ChatAi from "../components/ChatAi";
 import ProblemDiscussion from "../components/ProblemDiscussion";
 import { gsap } from "gsap";
+import { notifyDashboardUpdate } from "../utils/dashboardEvents";
+import '../styles/leetcode-responsive.css';
 
 const langMap = { cpp: "C++", java: "Java", javascript: "JavaScript" };
 
@@ -236,6 +238,14 @@ function LeetCodeStylePage() {
                
                 localStorage.setItem('lastSubmittedCode', code);
                 localStorage.setItem('lastSubmittedLanguage', selectedLanguage);
+                
+                // Notify dashboard to update
+                notifyDashboardUpdate({
+                    problemId: problemid,
+                    status: 'accepted',
+                    language: selectedLanguage,
+                    timestamp: new Date()
+                });
             }
         } catch {
             setSubmitResult({ status: "error", message: "Submission failed." });
@@ -469,7 +479,7 @@ function LeetCodeStylePage() {
     console.log("Fixed referenceUnavailable:", referenceUnavailable);
     
     return (
-        <div className={`min-h-screen flex bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] text-white font-mono ${isFullScreen ? "fixed inset-0 z-50" : ""}`}>
+        <div className={`leetcode-container min-h-screen flex bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] text-white font-mono ${isFullScreen ? "fixed inset-0 z-50" : ""}`}>
             <style>{`
                 .tab-active { border-bottom: 2px solid cyan; }
                 .fade-in { animation: fadeIn 0.3s ease-in-out; }
@@ -480,7 +490,7 @@ function LeetCodeStylePage() {
            
             <div ref={containerRef} className="relative z-10 flex w-full">
             
-                <div className="w-1/2 p-4 space-y-3 overflow-y-auto relative">
+                <div className="leetcode-left-panel w-1/2 p-4 space-y-3 overflow-y-auto relative">
                     <div className="flex justify-between items-center">
                        
                         <Logo 
@@ -708,21 +718,21 @@ function LeetCodeStylePage() {
                 </div>
 
          
-                <div className="w-1/2 p-4 flex flex-col gap-3">
-                    <div className="flex flex-wrap justify-between items-center gap-2">
+                <div className="leetcode-right-panel w-1/2 p-4 flex flex-col gap-3">
+                    <div className="language-selector-container flex flex-wrap justify-between items-center gap-2">
                         <div className="flex items-center gap-3">
-                            <select value={selectedLanguage} onChange={e => setSelectedLanguage(e.target.value)} className="bg-gray-800 border border-gray-600 p-2 rounded text-white">
+                            <select value={selectedLanguage} onChange={e => setSelectedLanguage(e.target.value)} className="language-selector bg-gray-800 border border-gray-600 p-2 rounded text-white">
                                 {Object.entries(langMap).map(([k, v]) => (
                                     <option key={k} value={k}>{v}</option>
                                 ))}
                             </select>
                            
-                            <div className="flex items-center gap-1 bg-gray-800 border border-gray-600 rounded">
+                            <div className="font-size-controls flex items-center gap-1 bg-gray-800 border border-gray-600 rounded">
                                 <motion.button 
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={handleZoomOut} 
-                                    className="px-2 py-1 text-white hover:bg-gray-700 rounded-l transition-colors duration-200" 
+                                    className="font-size-btn px-2 py-1 text-white hover:bg-gray-700 rounded-l transition-colors duration-200" 
                                     title="Zoom Out"
                                 >
                                     -
@@ -732,7 +742,7 @@ function LeetCodeStylePage() {
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={handleZoomIn} 
-                                    className="px-2 py-1 text-white hover:bg-gray-700 rounded-r transition-colors duration-200" 
+                                    className="font-size-btn px-2 py-1 text-white hover:bg-gray-700 rounded-r transition-colors duration-200" 
                                     title="Zoom In"
                                 >
                                     +
@@ -758,12 +768,12 @@ function LeetCodeStylePage() {
                             </div>
                         )}
                         
-                        <div className="flex flex-wrap gap-2">
+                        <div className="action-buttons-container flex flex-wrap gap-2">
                             <motion.button 
                                 whileHover={{ scale: 1.05, y: -2 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleRun} 
-                                className="btn btn-info btn-sm transition-all duration-200 font-bold"
+                                className="action-button btn btn-info btn-sm transition-all duration-200 font-bold"
                             >
                                 Run
                             </motion.button>
@@ -771,7 +781,7 @@ function LeetCodeStylePage() {
                                 whileHover={{ scale: 1.05, y: -2 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleSubmit} 
-                                className="btn btn-success btn-sm transition-all duration-200 font-bold"
+                                className="action-button btn btn-success btn-sm transition-all duration-200 font-bold"
                             >
                                 Submit
                             </motion.button>
@@ -828,7 +838,7 @@ function LeetCodeStylePage() {
                         </div>
                     </div>
 
-                    <div className="flex-grow border border-gray-700 rounded overflow-hidden">
+                    <div className="monaco-editor-container flex-grow border border-gray-700 rounded overflow-hidden">
                         <Editor
                             language={selectedLanguage}
                             value={code}
@@ -851,7 +861,7 @@ function LeetCodeStylePage() {
                     </div>
 
                 
-                    <div className="mt-2 bg-gray-900 border border-gray-700 rounded p-3">
+                    <div className="test-cases-section mt-2 bg-gray-900 border border-gray-700 rounded p-3">
                         <div className="flex items-center justify-between mb-3">
                             <h4 className="text-sm font-semibold text-gray-200">Custom Test</h4>
                             <div className="flex items-center gap-2">

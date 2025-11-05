@@ -7,6 +7,7 @@ import Header from '../components/dashboard/Header';
 import MainContent from '../components/dashboard/MainContent';
 import ProfileSidebar from '../components/dashboard/ProfileSidebar';
 import ProfileImageTest from '../components/ProfileImageTest';
+import { dashboardEvents } from '../utils/dashboardEvents';
 
 
 const InteractiveParticles = () => {
@@ -191,6 +192,22 @@ const useDashboardStats = (user) => {
     
     useEffect(() => {
         fetchDashboardData();
+    }, [fetchDashboardData]);
+
+    // Listen for submission events to auto-refresh dashboard
+    useEffect(() => {
+        console.log('📊 Dashboard: Setting up submission event listener');
+        const unsubscribe = dashboardEvents.subscribe((event) => {
+            if (event.type === 'SUBMISSION_SUCCESS') {
+                console.log('📊 Dashboard: Received submission event, refreshing data...');
+                // Wait a bit for backend to process
+                setTimeout(() => {
+                    fetchDashboardData();
+                }, 1500);
+            }
+        });
+
+        return () => unsubscribe();
     }, [fetchDashboardData]);
 
     return { stats, loading, error, refetch: fetchDashboardData };
