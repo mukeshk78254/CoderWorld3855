@@ -109,7 +109,7 @@ cd CoderWorld3855
 npm install
 ```
 
-3️⃣ **Create `.env` file in root directory** (see [Environment Variables](#-environment-variables))
+3️⃣ **Create `.env` file in root directory** 
 
 4️⃣ **Start the backend server:**
 ```bash
@@ -134,7 +134,7 @@ npm install
 
 3️⃣ **Create `.env` file in frontend1 directory:**
 ```env
-VITE_API_URL=http://localhost:5000
+VITE_API_URL=http://localhost:5000    (For local server)
 VITE_RAZORPAY_KEY_ID=your_razorpay_key_id
 ```
 
@@ -152,55 +152,50 @@ Frontend will run on `http://localhost:5173`
 ### Backend `.env` (Root Directory)
 
 ```env
-# Server Configuration
+
 PORT=5000
 CLIENT_URL=http://localhost:5173
 
-# Database
+
 DB_CONNECT_STRING=mongodb+srv://username:password@cluster.mongodb.net/database
 
-# Authentication
+
 JWT_KEY=your_super_secret_jwt_key_min_32_characters
 
-# Redis Cache
+
 REDIS_PASS=your_redis_password
 
-# AI Integration
+
 GEMINI_KEY=your_google_gemini_api_key
 
-# Cloudinary (Image/Video Upload)
+
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
-# Email Service (Gmail)
+
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_app_specific_password
 
-# OAuth - Google
+
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 GOOGLE_REDIRECT_URI=http://localhost:5000/user/auth/google/callback
 
-# OAuth - GitHub
+
 GITHUB_CLIENT_ID=your_github_client_id
 GITHUB_CLIENT_SECRET=your_github_client_secret
 GITHUB_REDIRECT_URI=http://localhost:5000/user/auth/github/callback
 
-# OAuth - Facebook
+
 FACEBOOK_APP_ID=your_facebook_app_id
 FACEBOOK_APP_SECRET=your_facebook_app_secret
 FACEBOOK_REDIRECT_URI=http://localhost:5000/user/auth/facebook/callback
 
-# Payment Gateway - Razorpay
+
 RAZORPAY_KEY_ID=your_razorpay_key_id
 RAZORPAY_KEY_SECRET=your_razorpay_key_secret
 
-# Payment Gateway - Stripe
-STRIPE_SECRET=your_stripe_secret_key
-STRIPE_PUBLISHABLE=your_stripe_publishable_key
-STRIPE_PRICE_CHAT_AI=your_stripe_price_id
-```
 
 ### Frontend `.env` (frontend1 Directory)
 
@@ -216,13 +211,13 @@ VITE_RAZORPAY_KEY_ID=your_razorpay_key_id
 ### 🔐 Authentication (`/user`)
 | Method | Endpoint | Description | Auth |
 |--------|----------|-------------|------|
-| POST | `/user/create` | Register new user | ❌ |
-| POST | `/user/login` | User login | ❌ |
-| POST | `/user/verify-otp` | Verify email OTP | ❌ |
-| POST | `/user/forgot-password` | Request password reset | ❌ |
-| GET | `/user/auth/google` | Google OAuth | ❌ |
-| GET | `/user/auth/github` | GitHub OAuth | ❌ |
-| GET | `/user/auth/facebook` | Facebook OAuth | ❌ |
+| POST | `/user/create` | Register new user | ✅ |
+| POST | `/user/login` | User login | ✅ |
+| POST | `/user/verify-otp` | Verify email OTP | ✅ |
+| POST | `/user/forgot-password` | Request password reset | ✅ |
+| GET | `/user/auth/google` | Google OAuth | ✅ |
+| GET | `/user/auth/github` | GitHub OAuth | ✅ |
+| GET | `/user/auth/facebook` | Facebook OAuth | ✅ |
 
 ### 📝 Problems (`/prob`)
 | Method | Endpoint | Description | Auth |
@@ -262,9 +257,9 @@ VITE_RAZORPAY_KEY_ID=your_razorpay_key_id
 
 ## 🚀 Deployment
 
-For detailed deployment instructions for **Render**, **Vercel**, **Railway**, **AWS**, and **DigitalOcean**, see:
 
-👉 **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)**
+
+
 
 ### Quick Deploy Options
 
@@ -329,9 +324,9 @@ The `.gitignore` protects:
 ### Premium Subscription Plans
 | Plan | Price | Features |
 |------|-------|----------|
-| 🆓 Free | ₹0 | 100 problems, 5 AI queries/day |
-| 💎 Monthly | ₹299/month | All problems, unlimited AI |
-| 👑 Yearly | ₹2,999/year | Save 17%, all features |
+| 🆓 Free | ₹0 
+| 💎 Monthly | ₹1/month | All problems, unlimited AI |
+| 👑 Yearly | ₹2/year | Save 17%, all features |
 
 ---
 
@@ -402,7 +397,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 **⭐ Star this repo if you find it helpful!**
 
-**Built with ❤️ by the CoderWorld Team**
+**Built with ❤️ by the CoderWorld Team**  
 
 ![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red?style=for-the-badge)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
