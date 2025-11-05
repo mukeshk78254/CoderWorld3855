@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Label } from 'recharts';
 import { BarChart3 } from 'lucide-react';
 
 const cardVariants = {
@@ -13,8 +13,28 @@ const CustomTooltip = ({ active, payload, label }) => {
         return (
             <div className="bg-slate-800/80 p-3 rounded-lg border border-slate-700 backdrop-blur-md shadow-lg">
                 <p className="label text-sm text-cyan-400">{`${label}`}</p>
-                <p className="intro text-sm text-white">{`Submissions : ${payload[0].value}`}</p>
+                <p className="intro text-sm text-white font-bold">{`Submissions: ${payload[0].value}`}</p>
             </div>
+        );
+    }
+    return null;
+};
+
+// Custom label to show values on the chart
+const CustomLabel = (props) => {
+    const { x, y, value } = props;
+    if (value > 0) {
+        return (
+            <text 
+                x={x} 
+                y={y - 10} 
+                fill="#22d3ee" 
+                fontSize={11} 
+                fontWeight="bold"
+                textAnchor="middle"
+            >
+                {value}
+            </text>
         );
     }
     return null;
@@ -71,7 +91,9 @@ function PerformanceChart({ data }) {
                             fontSize={12} 
                             tickLine={false} 
                             axisLine={false} 
-                            width={20}
+                            width={30}
+                            allowDecimals={false}
+                            domain={[0, 'auto']}
                         />
                         <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                         <Tooltip content={<CustomTooltip />} />
@@ -81,7 +103,10 @@ function PerformanceChart({ data }) {
                             stroke="#22d3ee" 
                             strokeWidth={2} 
                             fillOpacity={1} 
-                            fill="url(#chartGradient)" 
+                            fill="url(#chartGradient)"
+                            dot={{ fill: '#22d3ee', strokeWidth: 2, r: 3 }}
+                            activeDot={{ r: 5, fill: '#06b6d4' }}
+                            label={<CustomLabel />}
                         />
                     </AreaChart>
                 </ResponsiveContainer>
