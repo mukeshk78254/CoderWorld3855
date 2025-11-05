@@ -21,6 +21,31 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 function PerformanceChart({ data }) {
+    const period = data.length > 0 ? data.length : 30;
+
+    // Debug: Log the performance data
+    console.log('📊 PerformanceChart received data:', {
+        dataLength: data?.length,
+        sampleData: data?.slice(0, 5),
+        totalSubmissions: data?.reduce((sum, day) => sum + (day.submissions || 0), 0)
+    });
+
+    if (!data || data.length === 0) {
+        return (
+            <motion.div
+                variants={cardVariants}
+                className="bg-slate-900/60 p-6 rounded-2xl border border-slate-800/50 backdrop-blur-xl h-full flex flex-col justify-center items-center text-center"
+            >
+                <BarChart3 className="text-cyan-400 mb-2" size={24} />
+                <h3 className="font-black text-white text-lg mb-1">📈 30-Day Performance</h3>
+                <p className="text-gray-500 text-sm">No submission data available for the last 30 days.</p>
+            </motion.div>
+        );
+    }
+
+    // Generate a key based on the last data point's submission count to force redraw
+    const chartKey = data[data.length - 1].submissions + data[data.length - 1].date;
+
     return (
         <motion.div
             variants={cardVariants}
@@ -29,10 +54,11 @@ function PerformanceChart({ data }) {
         >
             <div className="flex items-center gap-3 mb-4">
                 <BarChart3 className="text-cyan-400" size={20} />
-                <h3 className="font-black text-white text-lg">📈 7-Day Performance</h3>
+                <h3 className="font-black text-white text-lg">📈 {period}-Day Performance Trend</h3> 
             </div>
             <div style={{ width: '100%', height: 200 }}>
-                <ResponsiveContainer>
+                {/* Add key to force remount when data changes */}
+                <ResponsiveContainer key={chartKey}> 
                     <AreaChart data={data} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
                         <defs>
                             <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">

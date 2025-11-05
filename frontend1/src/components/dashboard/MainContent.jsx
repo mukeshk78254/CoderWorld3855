@@ -38,7 +38,7 @@ function MainContent({ stats }) {
                 <CodingActivity 
                     submissionActivity={stats.submissionActivity || []}
                     yearlyProgress={stats.yearlyProgress || null}
-                    weeklyData={stats.weeklyData || []}
+                    weeklyData={stats.weeklyData || []} // Used for 7-day cards within CodingActivity
                     totalSubmissions={stats.totalSubmissions || 0}
                     streak={stats.longestStreak || 0}
                 />
@@ -53,7 +53,8 @@ function MainContent({ stats }) {
             
             {/* Bottom section - Performance and Recent Activity */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mt-8">
-                <PerformanceChart data={stats.performanceData || []} />
+                {/* FIX REVERTED: Passing 30-day performanceData for the monthly trend chart */}
+                <PerformanceChart data={stats.performanceData || []} /> 
                 <RecentActivity activities={stats.recentActivity || []} solvedStats={stats.solvedStats || {}} />
             </div>
         </motion.main>

@@ -126,7 +126,7 @@ const useDashboardStats = (user) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-   
+    
     const fetchDashboardData = useCallback(async () => {
         if (!user) {
             setLoading(false);
@@ -135,25 +135,20 @@ const useDashboardStats = (user) => {
         setLoading(true);
         setError(null);
         try {
-           
+            
             await new Promise(res => setTimeout(res, 500));
-      
+        
             const response = await axiosClient.get(`/user/${user.id}/dashboard-pro`);
             const data = response.data;
             
-            // Verify data structure
-            if (data && data.yearlyProgress) {
-                console.log('✅ Dashboard Data Loaded:', {
-                    solvedCount: data.solvedCount,
-                    totalSubmissions: data.totalSubmissions,
-                    currentStreak: data.currentStreak,
-                    hasYearlyProgress: !!data.yearlyProgress,
-                    hasHeatmapData: !!data.yearlyProgress?.heatmapData,
-                    heatmapKeys: data.yearlyProgress?.heatmapData ? Object.keys(data.yearlyProgress.heatmapData).length : 0,
-                    hasWeeklyData: !!data.weeklyData,
-                    weeklyDataLength: data.weeklyData?.length || 0
-                });
-            }
+            // Verify performanceData is included
+            console.log('📊 Dashboard API Response:', {
+                hasPerformanceData: !!data.performanceData,
+                performanceDataLength: data.performanceData?.length,
+                performanceSample: data.performanceData?.slice(0, 3),
+                hasWeeklyData: !!data.weeklyData,
+                weeklyDataLength: data.weeklyData?.length
+            });
             
             setStats(data);
         } catch (err) {
@@ -198,7 +193,7 @@ const useDashboardStats = (user) => {
     useEffect(() => {
         const unsubscribe = dashboardEvents.subscribe((event) => {
             if (event.type === 'SUBMISSION_SUCCESS') {
-                // Wait a bit for backend to process
+                // Wait a bit for backend to process the submission before refetching
                 setTimeout(() => {
                     fetchDashboardData();
                 }, 1500);
@@ -215,11 +210,11 @@ const useDashboardStats = (user) => {
 function Dashboard() {
 
     const { user } = useSelector(state => state.auth);
-   
+    
     const { stats, loading, error, refetch } = useDashboardStats(user);
 
     const renderContent = () => {
-       
+        
         if (!user) {
             return (
                 <motion.div 
@@ -253,13 +248,13 @@ function Dashboard() {
                     <AlertTriangle size={48} className="mb-4" />
                     <h2 className="text-2xl font-bold text-white mb-2">Failed to Load Dashboard</h2>
                     <p className="text-slate-400">Please check your connection and try again.</p>
-                   
+                    
                     <p className="text-xs text-slate-500 mt-2">{error.message || 'Unknown error'}</p>
                 </motion.div>
             );
         }
 
-       
+        
         if (stats) {
             return (
                 <motion.div
@@ -285,10 +280,10 @@ function Dashboard() {
                         </motion.div>
                     </div>
 
-                   
+                    
                     <div className="w-full px-6 pb-8">
                         <div className="max-w-7xl mx-auto space-y-8">
-                           
+                            
                             <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
                                 <div className="xl:col-span-1">
                                     <ProfileSidebar user={user} stats={stats} />
@@ -298,7 +293,7 @@ function Dashboard() {
                                 </div>
                             </div>
                             
-                           
+                            
                             <div className="mt-8">
                                 <ProfileImageTest />
                             </div>
@@ -308,7 +303,7 @@ function Dashboard() {
             );
         }
         
-       
+        
         return null; 
     };
 
