@@ -27,6 +27,10 @@ const SimpleProfilePage = lazy(() => import("./pages/SimpleProfilePage"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const HelpSupportPage = lazy(() => import("./pages/HelpSupportPage"));
 const OAuthCallback = lazy(() => import("./components/OAuthCallback"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsConditions = lazy(() => import("./pages/TermsConditions"));
+const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
+const ContactUs = lazy(() => import("./pages/ContactUs"));
 const ProblemPage = lazy(() => import('./pages/ProblemPage'));
 const EnhancedProblemPage = lazy(() => import('./pages/EnhancedProblemPage'));
 const SimplifiedProblemPage = lazy(() => import('./pages/SimplifiedProblemPage'));
@@ -129,6 +133,12 @@ const AppContent = () => {
         <Route path="/help" element={<HelpSupportPage />} />
         <Route path="/support" element={<HelpSupportPage />} />
         <Route path="/oauth-callback" element={<OAuthCallback />} />
+        
+        {/* Policy Pages for Razorpay Compliance */}
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsConditions />} />
+        <Route path="/refund" element={<RefundPolicy />} />
+        <Route path="/contact" element={<ContactUs />} />
         {/* <Route path="/problem/:problemid" element={<LeetCodeStylePage/>} /> */}
         
       

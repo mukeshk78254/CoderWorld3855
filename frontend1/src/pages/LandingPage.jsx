@@ -573,7 +573,7 @@ const LandingPage = () => {
      
       <footer className="bg-black/40 backdrop-blur-sm border-t border-white/10 py-16 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-8 items-start">
             <div>
               <div className="flex items-center space-x-3 mb-6">
                 <div className="p-2 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-xl">
@@ -637,6 +637,16 @@ const LandingPage = () => {
                 <li><Link to="/signup" className="text-gray-400 hover:text-cyan-400 transition-colors">Sign Up</Link></li>
                 <li><Link to="/profile" className="text-gray-400 hover:text-cyan-400 transition-colors">Profile</Link></li>
                 <li><Link to="/settings" className="text-gray-400 hover:text-cyan-400 transition-colors">Settings</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-white font-semibold mb-6 text-lg">Legal</h3>
+              <ul className="space-y-3">
+                <li><Link to="/privacy" className="text-gray-400 hover:text-cyan-400 transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms" className="text-gray-400 hover:text-cyan-400 transition-colors">Terms & Conditions</Link></li>
+                <li><Link to="/refund" className="text-gray-400 hover:text-cyan-400 transition-colors">Refund Policy</Link></li>
+                <li><Link to="/contact" className="text-gray-400 hover:text-cyan-400 transition-colors">Contact Us</Link></li>
               </ul>
             </div>
           </div>
