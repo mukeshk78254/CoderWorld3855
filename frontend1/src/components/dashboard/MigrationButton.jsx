@@ -22,7 +22,7 @@ const MigrationButton = ({ onMigrationComplete }) => {
 
         try {
             const response = await axiosClient.post(`/api/migration/migrate-problems-solved/${user.id}`);
-            console.log('✅ Migration successful:', response.data);
+
             setResult(response.data);
             
             // Callback to refresh dashboard data

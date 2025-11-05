@@ -214,7 +214,7 @@ const OTPVerification = () => {
       localStorage.removeItem('devOtp');
       setTimeout(() => {
         const from = location.state?.from || '/home';
-        console.log('OTP verification successful, redirecting to:', from);
+
         navigate(from, { replace: true });
       }, 1000);
       

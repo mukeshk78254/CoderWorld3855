@@ -39,7 +39,7 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
                 tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
             });
             
-            console.log('Discussion posted to backend:', response.data);
+
             
             // Create frontend-compatible discussion object
             const newDiscussion = {
@@ -92,7 +92,7 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
                 timestamp: new Date().toISOString()
             };
             
-            console.log('Using fallback discussion data:', newDiscussion);
+
             onPostSuccess?.(newDiscussion);
             
             // Reset form

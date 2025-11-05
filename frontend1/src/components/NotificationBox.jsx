@@ -579,7 +579,7 @@ const NotificationBox = () => {
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.3);
             } catch (error) {
-                console.log('Notification sound error:', error);
+
             }
         }
     };
@@ -692,7 +692,7 @@ const NotificationBox = () => {
             await axiosClient.delete(`/api/notifications/${user.id}/clear-all`);
             setNotifications([]);
             setUnreadCount(0);
-            console.log('All notifications cleared on frontend.');
+
         } catch (error) {
             console.error('Error clearing all notifications:', error.response?.data || error.message);
         }

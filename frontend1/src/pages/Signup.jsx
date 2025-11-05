@@ -206,7 +206,7 @@ function Signup() {
       ease: "back.out(1.7)"
     }, "<0.3");
     } catch (error) {
-      console.log('GSAP animation error in Signup:', error);
+
     }
   }, []);
 
@@ -367,7 +367,7 @@ function Signup() {
               <OAuthButton 
                 provider="google" 
                 onSuccess={(data) => {
-                  console.log('Google signup success:', data);
+
                   
                 }}
                 onError={(error) => {
@@ -379,7 +379,7 @@ function Signup() {
               <OAuthButton 
                 provider="facebook" 
                 onSuccess={(data) => {
-                  console.log('Facebook signup success:', data);
+
                   
                 }}
                 onError={(error) => {
@@ -391,7 +391,7 @@ function Signup() {
               <OAuthButton 
                 provider="github" 
                 onSuccess={(data) => {
-                  console.log('GitHub signup success:', data);
+
                  
                 }}
                 onError={(error) => {

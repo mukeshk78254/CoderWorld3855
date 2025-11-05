@@ -17,8 +17,8 @@ export const AuthModalProvider = ({ children }) => {
   const [redirectPath, setRedirectPath] = useState(null);
 
   const openAuthModal = (modalMode = 'login', path = null) => {
-    console.log('Opening auth modal for path:', path);
-    console.log('Current location when opening modal:', window.location.pathname);
+
+
     setMode(modalMode);
     setRedirectPath(path);
     setIsOpen(true);

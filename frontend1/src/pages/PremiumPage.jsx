@@ -79,13 +79,13 @@ const PremiumPage = () => {
     };
 
     const handleSubscribe = async (plan) => {
-        console.log(' Subscribe button clicked');
-        console.log('User authenticated:', isAuthenticated);
-        console.log('User data:', user);
-        console.log('Plan selected:', plan);
+
+
+
+
         
         if (!isAuthenticated) {
-            console.log(' User not authenticated, redirecting to login');
+
             navigate('/login', { state: { from: '/premium' } });
             return;
         }
@@ -94,7 +94,7 @@ const PremiumPage = () => {
         setSelectedPlan(plan.id);
 
         try {
-            console.log(' Loading Razorpay script...');
+
             
             const res = await loadRazorpayScript();
             if (!res) {
@@ -103,21 +103,13 @@ const PremiumPage = () => {
                 setLoading(false);
                 return;
             }
-            console.log(' Razorpay script loaded successfully');
 
-            console.log(' Sending create-order request...');
-            console.log('Request data:', {
-                amount: plan.price * 100,
-                planType: plan.id
-            });
-            
-        
             const orderResponse = await axiosClient.post('/payment/create-order', {
                 amount: plan.price * 100, 
                 planType: plan.id
             });
 
-            console.log(' Order response received:', orderResponse.data);
+
 
             const { order, key } = orderResponse.data;
 
@@ -139,7 +131,7 @@ const PremiumPage = () => {
                 },
                 handler: async function (response) {
                     try {
-                        console.log('💳 Payment completed, verifying...');
+
                         
                        
                         const verifyResponse = await axiosClient.post('/payment/verify-payment', {
@@ -150,14 +142,14 @@ const PremiumPage = () => {
                         });
 
                         if (verifyResponse.data.success) {
-                            console.log('✅ Payment verified successfully!');
+
                             
                             
                             try {
                                 const userResponse = await axiosClient.get('/user/check');
                                 if (userResponse.data.user) {
                                     dispatch(loginSuccess(userResponse.data.user));
-                                    console.log('✅ User state updated with premium status');
+
                                 }
                             } catch (error) {
                                 console.error('Error fetching user data:', error);

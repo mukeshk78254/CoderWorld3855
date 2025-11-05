@@ -421,7 +421,7 @@ function ProfilePage() {
                 axiosClient.get(`/user/${user.id}/dashboard-pro`).catch(() => null) // Don't fail if dashboard data unavailable
             ]);
             
-            console.log('📊 Profile Dashboard Stats:', dashboardRes?.data);
+
             
             
             const combinedData = {
@@ -434,7 +434,7 @@ function ProfilePage() {
                 achievements: profileRes.data.achievements || []
             };
             
-            console.log('✅ Combined Profile Data:', combinedData);
+
             
             setProfileData(combinedData);
             setNotificationSettings(profileRes.data.settings?.notifications || DEFAULT_NOTIFICATION_SETTINGS_FRONTEND);
@@ -508,7 +508,7 @@ function ProfilePage() {
             setFetchError('Please enter a report description.');
             return;
         }
-        console.log('Report submitted:', reportText);
+
       
         setShowSuccessMessage(true);
         setReportText('');

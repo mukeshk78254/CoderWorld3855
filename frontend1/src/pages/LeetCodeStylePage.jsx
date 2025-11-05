@@ -16,18 +16,18 @@ import '../styles/leetcode-responsive.css';
 const langMap = { cpp: "C++", java: "Java", javascript: "JavaScript" };
 
 function LeetCodeStylePage() {
-    console.log("=== LeetCodeStylePage COMPONENT INITIALIZED ===");
-    console.log("Current URL:", window.location.href);
+
+
     
     const { problemid } = useParams();
-    console.log("Problem ID from useParams:", problemid);
+
     
     const navigate = useNavigate();
     const editorRef = useRef(null);
     const containerRef = useRef(null);
     const { isAuthenticated } = useSelector((state) => state.auth);
     
-    console.log("Authentication status:", isAuthenticated);
+
     
     const [problem, setProblem] = useState(null);
     const [code, setCode] = useState("");
@@ -77,14 +77,14 @@ function LeetCodeStylePage() {
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            console.log("LeetCodeStylePage mounted - Fetching problem data for ID:", problemid);
-            console.log("URL Path:", window.location.pathname);
-            console.log("URL Search:", window.location.search);
+
+
+
             try {
                 const url = `/problem/public/problembyid/${problemid}`;
-                console.log("Making API request to:", url);
+
                 const response = await axiosClient.get(url);
-                console.log("Problem data received:", response.data);
+
                 
                 setProblem(response.data);
                 
@@ -92,7 +92,7 @@ function LeetCodeStylePage() {
                     selectedLanguage === "cpp" ? ["cpp", "c++"].includes(sc.language) : sc.language === selectedLanguage
                 );
                 setCode(starter?.initialcode || "// No starter code available");
-                console.log("Starter code set for language:", selectedLanguage);
+
             } catch (err) {
                 console.error("Error loading problem:", err);
                
@@ -229,8 +229,8 @@ function LeetCodeStylePage() {
                 language: selectedLanguage === "cpp" ? "c++" : selectedLanguage
             });
             setSubmitResult(data);
-            console.log("Submit result data:", data);
-            console.log("Submit result status:", data.status);
+
+
             
            
             if (data.status === "accepted" || data.status === "Accepted") {
@@ -424,12 +424,12 @@ function LeetCodeStylePage() {
         }
         
         try {
-            console.log("Fetching all problems...");
+
             const url = "/problem/public/getallproblem";
-            console.log("API request to:", url);
+
             
             const res = await axiosClient.get(url);
-            console.log("Problems received:", res.data);
+
             
             if (Array.isArray(res.data) && res.data.length > 0) {
                 setAllProblems(res.data);
@@ -472,11 +472,11 @@ function LeetCodeStylePage() {
     }
 
   
-    console.log("=== LeetCodeStylePage RENDERING ===");
-    console.log("Problem data:", problem);
-    console.log("Problem ID:", problemid);
-    console.log("Custom test variables added: selectedVisibleCase, customInput, customExpected");
-    console.log("Fixed referenceUnavailable:", referenceUnavailable);
+
+
+
+
+
     
     return (
         <div className={`leetcode-container min-h-screen flex bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] text-white font-mono ${isFullScreen ? "fixed inset-0 z-50" : ""}`}>
@@ -528,8 +528,8 @@ function LeetCodeStylePage() {
                                             whileHover={{ scale: 1.02, x: 5 }}
                                             whileTap={{ scale: 0.98 }}
                                             onClick={() => {
-                                                console.log("Problem clicked:", p);
-                                                console.log("Problem ID:", p._id);
+
+
                                                 
                                               
                                                 const a = document.createElement('a');
@@ -789,11 +789,11 @@ function LeetCodeStylePage() {
                                 whileHover={{ scale: 1.05, y: -2 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => {
-                                    console.log("Test navigation to write solution page");
+
                                     const encodedCode = encodeURIComponent(code);
                                     const encodedLanguage = encodeURIComponent(selectedLanguage);
                                     const url = `/problem/${problemid}/write-solution?code=${encodedCode}&language=${encodedLanguage}`;
-                                    console.log("Test URL:", url);
+
                                     navigate(url);
                                 }}
                                 className="btn btn-warning btn-sm transition-all duration-200 font-bold"
@@ -991,13 +991,13 @@ function LeetCodeStylePage() {
                                         <p className="text-sm text-gray-300 mb-3">Would you like to share your solution with the community?</p>
                                         <button 
                                             onClick={() => {
-                                                console.log("Write Solution button clicked");
-                                                console.log("Current code:", code);
-                                                console.log("Current language:", selectedLanguage);
+
+
+
                                                 const encodedCode = encodeURIComponent(code);
                                                 const encodedLanguage = encodeURIComponent(selectedLanguage);
                                                 const url = `/problem/${problemid}/write-solution?code=${encodedCode}&language=${encodedLanguage}`;
-                                                console.log("Navigating to:", url);
+
                                                 navigate(url);
                                             }}
                                             className="btn btn-success btn-sm"

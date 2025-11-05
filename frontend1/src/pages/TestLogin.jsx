@@ -11,7 +11,7 @@ function TestLogin() {
   });
 
   const handleTestLogin = () => {
-    console.log('🧪 Testing login with:', testData);
+
     dispatch(loginUser(testData));
   };
 

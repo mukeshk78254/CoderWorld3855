@@ -41,17 +41,17 @@ const ProblemDiscussion = ({ problemId, problemTitle }) => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
     const [showReplyLikes, setShowReplyLikes] = useState({});
 
-    console.log('ProblemDiscussion: Component loaded', { problemId, problemTitle, user });
+
 
     useEffect(() => {
         loadDiscussions();
     }, [problemId]);
 
     const loadDiscussions = () => {
-        console.log('Loading discussions for problem:', problemId);
+
      
         const savedDiscussions = JSON.parse(localStorage.getItem(`problem_discussions_${problemId}`) || '[]');
-        console.log('Loaded from localStorage:', savedDiscussions);
+
         
         
         const realDiscussions = savedDiscussions.filter(discussion => 

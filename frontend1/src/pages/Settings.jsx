@@ -48,16 +48,16 @@ const Settings = () => {
 
     
     useEffect(() => {
-        console.log('⚙️ Authentic Gear Settings GSAP Background starting...');
-        console.log('backgroundRef.current:', backgroundRef.current);
+
+
         
         if (!backgroundRef.current) {
-            console.log('❌ No backgroundRef.current found!');
+
             return;
         }
 
         const ctx = gsap.context(() => {
-            console.log('✅ Authentic Gear context created, starting animations...');
+
             
             
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark' || 
@@ -146,7 +146,7 @@ const Settings = () => {
                 
                 backgroundRef.current.appendChild(gear);
                 gears.push(gear);
-                console.log(`Created authentic gear ${i + 1} at ${pos.x}%, ${pos.y}%`);
+
             }
 
             
@@ -316,13 +316,13 @@ const Settings = () => {
                     });
             }
 
-            console.log('⚙️ Authentic Gear Settings GSAP animations created successfully!');
+
 
         }, backgroundRef);
 
-        console.log('✅ Authentic Gear animations setup complete!');
+
         return () => {
-            console.log('🧹 Cleaning up authentic gear animations...');
+
             ctx.revert();
         };
     }, []);

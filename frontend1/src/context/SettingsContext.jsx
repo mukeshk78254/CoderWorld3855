@@ -115,7 +115,7 @@ export const SettingsProvider = ({ children }) => {
     };
 
     const updateSetting = (category, key, value) => {
-        console.log('updateSetting called:', { category, key, value });
+
         setSettings(prev => {
             const newSettings = { ...prev };
             
@@ -130,7 +130,7 @@ export const SettingsProvider = ({ children }) => {
                 newSettings[key] = value;
             }
             
-            console.log('Updated settings:', newSettings);
+
             
             
             localStorage.setItem('userSettings', JSON.stringify(newSettings));
@@ -168,7 +168,7 @@ export const SettingsProvider = ({ children }) => {
             setSaveStatus('saved');
             setTimeout(() => setSaveStatus(null), 3000);
             
-            console.log('Settings saved successfully:', settings);
+
         } catch (error) {
             console.error('Error saving settings:', error);
             setSaveStatus('error');

@@ -502,7 +502,7 @@ function EnhancedProfilePage() {
             } catch (err) {
                 console.error('Error fetching profile:', err);
                 
-                console.log('Using fallback profile data');
+
                 
                 setLoading(false);
             } finally {

@@ -106,7 +106,7 @@ function ContestPage() {
     const problemsArray = contestData.problems.split(',').map(s => s.trim()).filter(s => s.length > 0);
     const dataToSend = { ...contestData, problems: problemsArray };
 
-    console.log("Creating contest:", dataToSend);
+
     try {
    
       await new Promise(resolve => setTimeout(resolve, 1500)); 

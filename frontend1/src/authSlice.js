@@ -36,7 +36,7 @@ export const sendOtp = createAsyncThunk(
       
       if (response.data.developmentMode && response.data.otp) {
         localStorage.setItem('devOtp', response.data.otp);
-        console.log('🔑 Development OTP stored:', response.data.otp);
+
       }
       
       return response.data;
@@ -74,7 +74,7 @@ export const resendOtp = createAsyncThunk(
       
       if (response.data.developmentMode && response.data.otp) {
         localStorage.setItem('devOtp', response.data.otp);
-        console.log('🔑 Development OTP stored for resend:', response.data.otp);
+
       }
       
       return response.data;
@@ -108,19 +108,19 @@ export const loginUser = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      console.log('🚀 loginUser thunk: Starting login with credentials:', credentials);
+
       const response = await axiosClient.post('/user/login', credentials);
       
-      console.log('✅ loginUser thunk: Login successful, response:', response.data);
+
       
       
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user)); 
 
-      console.log('💾 loginUser thunk: Stored token and user in localStorage');
+
       return response.data.user; 
     } catch (error) {
-      console.log('❌ loginUser thunk: Login failed:', error);
+
       return rejectWithValue(getSerializableError(error));
     }
   }

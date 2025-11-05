@@ -45,7 +45,7 @@ function ProfileSidebar({ user, stats }) {
                 <div className="flex flex-col items-center text-center">
                     <ProfileCircle user={user} onImageUpdate={(file) => {
                         // Handle image update here
-                        console.log('Image updated:', file);
+
                         // The ProfileCircle component now handles Redux state updates internally
                         // This callback is kept for any additional side effects if needed
                     }} />

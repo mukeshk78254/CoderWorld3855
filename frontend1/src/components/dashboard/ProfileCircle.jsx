@@ -63,7 +63,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
   };
 
   const handleImageUpload = (file) => {
-    console.log('Image upload started:', file.name);
+
     if (!file.type.startsWith('image/')) {
       alert('Please select an image file');
       return;
@@ -76,17 +76,17 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const imageData = e.target.result;
-      console.log('Image processed, updating states');
+
       setPreviewImage(imageData);
       setCurrentImage(imageData);
       
       // Update Redux state with the new image
       dispatch(updateProfileImage(imageData));
-      console.log('Redux state updated');
+
       
       // Also update localStorage for persistence
       localStorage.setItem('profileImage', imageData);
-      console.log('localStorage updated');
+
       
       setIsUploading(false);
       setUploadSuccess(true);
@@ -109,7 +109,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
 
   const handleProfileClick = () => {
     // Show upload options modal when profile is clicked
-    console.log('Profile clicked - showing upload options');
+
     setShowUploadOptions(true);
   };
 
@@ -152,7 +152,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
       onImageUpdate(null);
     }
     
-    console.log('Profile image removed');
+
   };
 
   const getInitials = (name) => {

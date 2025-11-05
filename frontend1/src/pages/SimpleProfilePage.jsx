@@ -70,7 +70,7 @@ function SimpleProfilePage() {
     const handleSave = () => {
         setIsEditing(false);
         
-        console.log('Profile saved:', profileData);
+
     };
 
     const renderContent = () => {

@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children }) => {
   if (!isAuthenticated) {
     
     const intendedPath = location.pathname;
-    console.log('ProtectedRoute: User not authenticated, redirecting to login for path:', intendedPath);
+
     return <Navigate to="/login" state={{ from: intendedPath }} replace />;
   }
 

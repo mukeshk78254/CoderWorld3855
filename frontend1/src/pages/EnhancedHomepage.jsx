@@ -384,8 +384,8 @@ function EnhancedHomepage() {
     }, [problems]);
 
     const handleSolveProblem = (problem) => {
-        console.log("EnhancedHomepage: Navigating to problem with ID:", problem._id);
-        console.log("EnhancedHomepage: Full problem object:", problem);
+
+
         
      
         const link = document.createElement('a');
@@ -400,14 +400,14 @@ function EnhancedHomepage() {
         link.style.zIndex = '9999';
         document.body.appendChild(link);
         
-        console.log("Added test link to DOM:", link);
+
         
        
         navigate(`/problem/${problem._id}`);
         
       
         setTimeout(() => {
-            console.log("Trying window.location as fallback...");
+
             window.location.href = `/problem/${problem._id}`;
         }, 800);
     };

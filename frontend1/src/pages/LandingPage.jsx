@@ -238,7 +238,7 @@ const LandingPage = () => {
         yoyo: true
       });
     } catch (error) {
-      console.log('GSAP animation error in LandingPage:', error);
+
     }
   }, []);
 

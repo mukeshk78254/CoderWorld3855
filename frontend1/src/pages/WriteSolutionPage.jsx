@@ -30,18 +30,18 @@ import {
     EyeOff
 } from "lucide-react";
 
-console.log("WriteSolutionPage: Component imported successfully");
+
 
 const langMap = { cpp: "C++", java: "Java", javascript: "JavaScript" };
 
 function WriteSolutionPage() {
-    console.log("WriteSolutionPage: Component function called");
+
     const { problemid } = useParams();
     const navigate = useNavigate();
     const editorRef = useRef(null);
     const containerRef = useRef(null);
     
-    console.log("WriteSolutionPage: problemid from params:", problemid);
+
     
     const [code, setCode] = useState("");
     const [selectedLanguage, setSelectedLanguage] = useState("javascript");
@@ -51,35 +51,35 @@ function WriteSolutionPage() {
 
     // Load user's submitted code automatically
     useEffect(() => {
-        console.log("WriteSolutionPage: Loading code from URL params");
+
         // Get the user's last submitted code from URL params first
         const urlParams = new URLSearchParams(window.location.search);
         const submittedCode = urlParams.get('code');
         const submittedLanguage = urlParams.get('language');
         
-        console.log("URL params - code:", submittedCode);
-        console.log("URL params - language:", submittedLanguage);
+
+
         
         if (submittedCode) {
             const decodedCode = decodeURIComponent(submittedCode);
-            console.log("Setting code from URL:", decodedCode);
+
             setCode(decodedCode);
         } else {
             // Fallback: try to get from localStorage
             const lastSubmittedCode = localStorage.getItem('lastSubmittedCode');
-            console.log("Fallback - localStorage code:", lastSubmittedCode);
+
             if (lastSubmittedCode) {
                 setCode(lastSubmittedCode);
             }
         }
         
         if (submittedLanguage) {
-            console.log("Setting language from URL:", submittedLanguage);
+
             setSelectedLanguage(submittedLanguage);
         } else {
             // Fallback: try to get from localStorage
             const lastSubmittedLanguage = localStorage.getItem('lastSubmittedLanguage');
-            console.log("Fallback - localStorage language:", lastSubmittedLanguage);
+
             if (lastSubmittedLanguage) {
                 setSelectedLanguage(lastSubmittedLanguage);
             }
@@ -119,7 +119,7 @@ function WriteSolutionPage() {
             };
             
             // Here you would typically send to backend
-            console.log("Submitting solution:", solutionData);
+
             
             // Simulate API call
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -145,13 +145,13 @@ function WriteSolutionPage() {
         navigate(`/problem/${problemid}`);
     };
 
-    console.log("WriteSolutionPage: Rendering component");
-    console.log("WriteSolutionPage: Current code state:", code);
-    console.log("WriteSolutionPage: Current language state:", selectedLanguage);
+
+
+
     
     // Simple test to see if component is rendering
     if (typeof window !== 'undefined') {
-        console.log("WriteSolutionPage: About to render - window object available");
+
     }
     
     return (

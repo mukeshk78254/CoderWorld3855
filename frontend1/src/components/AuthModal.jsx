@@ -46,7 +46,7 @@ const AuthModal = ({ isOpen, onClose, mode = 'login', redirectPath = null }) => 
     if (!isOpen) return;
     if (isAuthenticated) {
       const target = redirectPath || '/home';
-      console.log('User authenticated via AuthModal, redirecting to:', target);
+
       onClose();
       navigate(target, { replace: true });
     }

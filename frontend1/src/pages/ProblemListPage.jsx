@@ -90,7 +90,7 @@ const ProblemSearchBar = ({ searchTerm, setSearchTerm, difficultyFilter, setDiff
                 );
             }
         } catch (error) {
-            console.log('GSAP animation error in SearchSection:', error);
+
         }
     }, []);
 
@@ -172,7 +172,7 @@ const ProblemStatsOverview = ({ stats }) => {
                 );
             }
         } catch (error) {
-            console.log('GSAP animation error in StatsSection:', error);
+
         }
     }, [stats]);
 
@@ -438,11 +438,11 @@ function ProblemListPage() {
                 try {
                     ctx.revert();
                 } catch (error) {
-                    console.log('GSAP cleanup error:', error);
+
                 }
             };
         } catch (error) {
-            console.log('GSAP animation error in ProblemListPage:', error);
+
         }
     }, []);
 
@@ -484,16 +484,16 @@ function ProblemListPage() {
     )).sort();
 
     const handleSolveProblem = (problem) => {
-        console.log("ProblemListPage: Navigating to problem with ID:", problem._id);
-        console.log("ProblemListPage: Full problem object:", problem);
+
+
         
         
-        console.log("Attempting to navigate using navigate()...");
+
         navigate(`/problem/${problem._id}`);
         
         
         setTimeout(() => {
-            console.log("Backup plan: Trying window.location...");
+
             window.location.href = `/problem/${problem._id}`;
         }, 500); 
     };

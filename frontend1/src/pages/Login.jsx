@@ -206,7 +206,7 @@ function Login() {
         el.addEventListener('mouseleave', () => gsap.getTweensOf(el).find(t => t.vars.onHover).play());
       });
     } catch (error) {
-      console.log('GSAP animation error in Login:', error);
+
     }
   }, []); 
 
@@ -353,7 +353,7 @@ function Login() {
 {`// Real-time collaboration
 function solveProblem() {
   const solution = "Hello CoderWorld!";
-  console.log(solution);
+
   return "Success!";
 }
 
@@ -428,7 +428,7 @@ solveProblem();`}
                <OAuthButton 
                  provider="google" 
                  onSuccess={(data) => {
-                   console.log('Google login success:', data);
+
                    
                  }}
                  onError={(error) => {
@@ -440,7 +440,7 @@ solveProblem();`}
                <OAuthButton 
                  provider="facebook" 
                  onSuccess={(data) => {
-                   console.log('Facebook login success:', data);
+
                    
                  }}
                  onError={(error) => {
@@ -452,7 +452,7 @@ solveProblem();`}
                <OAuthButton 
                  provider="github" 
                  onSuccess={(data) => {
-                   console.log('GitHub login success:', data);
+
                    
                  }}
                  onError={(error) => {

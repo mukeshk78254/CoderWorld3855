@@ -28,7 +28,7 @@ export const AdminNotificationPanel = ({ isOpen, onClose }) => {
 
         try {
             // Mock response for now
-            console.log('Sending notification:', notification);
+
             alert('Notification sent successfully!');
             setNotification({ title: '', message: '', type: 'info', targetUsers: 'all' });
             onClose();

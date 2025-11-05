@@ -24,7 +24,7 @@
         
           if (Array.isArray(response.data)) {
             setSubmissions(response.data);
-            console.log("Submissions loaded:", response.data.length);
+
           } else {
            
             console.warn("Expected array but got:", typeof response.data);
