@@ -212,11 +212,6 @@ function Header({ user, problem, refreshing, onRefresh }) {
                                     <NavLink 
                                         to="/dashboard" 
                                         className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
-                                        onClick={() => console.log('Mobile Dashboard clicked - navigating to /dashboard')}
-                                    >
-                                    <NavLink 
-                                        to="/dashboard" 
-                                        className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-colors"
                                     >
                                         <LayoutDashboard size={18} />
                                         Dashboard
@@ -248,7 +243,12 @@ function Header({ user, problem, refreshing, onRefresh }) {
                                     >
                                         <Users size={18} />
                                         Leaderboard
-                                    </NavLink>/}
+                                    </NavLink>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Profile Dropdown */}
                         <div ref={dropdownRef} className="relative">
                             <div 
                                 tabIndex={0} 
@@ -352,9 +352,9 @@ function Header({ user, problem, refreshing, onRefresh }) {
                                         </div>
                                     </>
                                 )}
-                                    </div>
-                                </>
-                            )}
+                            </div>
+                        </>
+                    )}
                         </div>
                     </div>
                 </div>
