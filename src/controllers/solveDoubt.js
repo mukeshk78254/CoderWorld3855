@@ -8,13 +8,9 @@ const solveDoubt = async(req , res)=>{
 
         const {messages,title,description,testcases,startcode} = req.body;
         const ai = new GoogleGenerativeAI(process.env.GEMINI_KEY);
-       
-        async function main() {
-        const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: messages,
-        config: {
-        systemInstruction: `
+        const model = ai.getGenerativeModel({ 
+            model: "gemini-2.0-flash-exp",
+            systemInstruction: `
 You are an expert Data Structures and Algorithms (DSA) tutor specializing in helping users solve coding problems. Your role is strictly limited to DSA-related assistance only.
 
 ## CURRENT PROBLEM CONTEXT:
@@ -81,15 +77,19 @@ You are an expert Data Structures and Algorithms (DSA) tutor specializing in hel
 - Promote best coding practices
 
 Remember: Your goal is to help users learn and understand DSA concepts through the lens of the current problem, not just to provide quick answers.please write the code in monaco editor form if any code reuested by user please.
-`},
-    });
+`
+        });
+       
+        const result = await model.generateContent({
+            contents: messages
+        });
      
-    res.status(201).json({
-        message:response.text
-    });
-    }
-
-    main();
+        const response = result.response;
+        const text = response.text();
+     
+        res.status(201).json({
+            message: text
+        });
       
     }
     catch(err){
