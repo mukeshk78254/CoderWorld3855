@@ -1,55 +1,83 @@
 
 import { Routes, Route, Navigate, useLocation } from "react-router";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import ForgotPassword from "./pages/ForgotPassword";
-import Homepage from "./pages/Homepage";
-import Settings from "./pages/Settings";
-import EnhancedHomepage from "./pages/EnhancedHomepage";
-import ProblemListPage from "./pages/ProblemListPage";
-import EnhancedContestPage from "./pages/EnhancedContestPage";
-import EnhancedDiscussPage from "./pages/EnhancedDiscussPage";
-import EnhancedLeaderboardPage from "./pages/EnhancedLeaderboardPage";
-import EnhancedProfilePage from "./pages/EnhancedProfilePage";
-import SimpleProfilePage from "./pages/SimpleProfilePage";
-import LandingPage from "./pages/LandingPage";
-import HelpSupportPage from "./pages/HelpSupportPage";
-import OAuthCallback from "./components/OAuthCallback";
+import { lazy, Suspense, useEffect } from "react";
 import { checkAuth } from "./authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import ProblemPage from './pages/ProblemPage';
-import EnhancedProblemPage from './pages/EnhancedProblemPage';
-import SimplifiedProblemPage from './pages/SimplifiedProblemPage';
-import LeetCodeStylePage from './pages/LeetCodeStylePage';
-import WriteSolutionPage from './pages/WriteSolutionPage';
-import ContestPage from './pages/ContestPage';
-import LeaderboardPage from './pages/LeaderboardPage'; 
-import AdminPanel from "./components/AdminPanel";
-import Admin from "./pages/Admin";
-import AdminVideo from "./components/AdminVideo";
-import AdminDelete from "./components/AdminDelete";
-import AdminUpload from "./components/AdminUpload";
-import ProfilePage from './pages/ProfilePage';
-import Dashboard from './pages/Dashboard'; 
-import EnhancedDashboard from './pages/EnhancedDashboard'; 
-import RealTimeDashboard from './pages/RealTimeDashboard'; 
-import TransactionPage from './pages/TransactionPage'; 
-import DiscussPage from './pages/DiscussPage'; 
-import ContestOpeningSoon from './pages/ContestOpeningSoon'; 
-import ContestEnded from './pages/ContestEnded'; 
-import SubmissionHistoryPage from './pages/SubmissionHistoryPage'; 
 import { NotificationManager } from './components/NotificationSystem';
 import { ThemeProvider } from './context/ThemeContext'; 
 import { SettingsProvider } from './context/SettingsContext';
 import { LogoutModalProvider } from './context/LogoutModalContext';
 import { AuthModalProvider, useAuthModal } from './context/AuthModalContext'; 
 import AuthModal from './components/AuthModal';
-import ProtectedRouteWithModal from './components/ProtectedRouteWithModal';
-import ProtectedRoute from './components/ProtectedRoute'; 
-import TestLogin from './pages/TestLogin'; 
-import OTPVerification from './pages/OTPVerification';
-import PremiumPage from './pages/PremiumPage'; 
+import ProtectedRoute from './components/ProtectedRoute';
+
+// Lazy load pages for better performance
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const Homepage = lazy(() => import("./pages/Homepage"));
+const Settings = lazy(() => import("./pages/Settings"));
+const EnhancedHomepage = lazy(() => import("./pages/EnhancedHomepage"));
+const ProblemListPage = lazy(() => import("./pages/ProblemListPage"));
+const EnhancedContestPage = lazy(() => import("./pages/EnhancedContestPage"));
+const EnhancedDiscussPage = lazy(() => import("./pages/EnhancedDiscussPage"));
+const EnhancedLeaderboardPage = lazy(() => import("./pages/EnhancedLeaderboardPage"));
+const EnhancedProfilePage = lazy(() => import("./pages/EnhancedProfilePage"));
+const SimpleProfilePage = lazy(() => import("./pages/SimpleProfilePage"));
+const LandingPage = lazy(() => import("./pages/LandingPage"));
+const HelpSupportPage = lazy(() => import("./pages/HelpSupportPage"));
+const OAuthCallback = lazy(() => import("./components/OAuthCallback"));
+const ProblemPage = lazy(() => import('./pages/ProblemPage'));
+const EnhancedProblemPage = lazy(() => import('./pages/EnhancedProblemPage'));
+const SimplifiedProblemPage = lazy(() => import('./pages/SimplifiedProblemPage'));
+const LeetCodeStylePage = lazy(() => import('./pages/LeetCodeStylePage'));
+const WriteSolutionPage = lazy(() => import('./pages/WriteSolutionPage'));
+const ContestPage = lazy(() => import('./pages/ContestPage'));
+const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage'));
+const AdminPanel = lazy(() => import("./components/AdminPanel"));
+const Admin = lazy(() => import("./pages/Admin"));
+const AdminVideo = lazy(() => import("./components/AdminVideo"));
+const AdminDelete = lazy(() => import("./components/AdminDelete"));
+const AdminUpload = lazy(() => import("./components/AdminUpload"));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const EnhancedDashboard = lazy(() => import('./pages/EnhancedDashboard'));
+const RealTimeDashboard = lazy(() => import('./pages/RealTimeDashboard'));
+const TransactionPage = lazy(() => import('./pages/TransactionPage'));
+const DiscussPage = lazy(() => import('./pages/DiscussPage'));
+const ContestOpeningSoon = lazy(() => import('./pages/ContestOpeningSoon'));
+const ContestEnded = lazy(() => import('./pages/ContestEnded'));
+const SubmissionHistoryPage = lazy(() => import('./pages/SubmissionHistoryPage'));
+const ProtectedRouteWithModal = lazy(() => import('./components/ProtectedRouteWithModal'));
+const TestLogin = lazy(() => import('./pages/TestLogin'));
+const OTPVerification = lazy(() => import('./pages/OTPVerification'));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
+    color: '#06b6d4'
+  }}>
+    <div style={{ textAlign: 'center' }}>
+      <div style={{
+        width: '50px',
+        height: '50px',
+        border: '3px solid rgba(6, 182, 212, 0.1)',
+        borderTop: '3px solid #06b6d4',
+        borderRadius: '50%',
+        animation: 'spin 1s linear infinite',
+        margin: '0 auto 1rem'
+      }}></div>
+      <div style={{ fontSize: '1.1rem', fontWeight: '600' }}>Loading...</div>
+    </div>
+  </div>
+);
+
+const PremiumPage = lazy(() => import('./pages/PremiumPage'));
 
 const AppContent = () => {
   const dispatch = useDispatch();
@@ -89,7 +117,8 @@ const AppContent = () => {
         <SettingsProvider>
           <LogoutModalProvider>
             <NotificationManager />
-            <Routes>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
         <Route path="/" element={<LandingPage />} />
        
         <Route path="/login" element={<Login />} />
@@ -159,7 +188,8 @@ const AppContent = () => {
                 </div>
             </div>
         } />
-            </Routes>
+              </Routes>
+            </Suspense>
           </LogoutModalProvider>
         </SettingsProvider>
       </ThemeProvider>

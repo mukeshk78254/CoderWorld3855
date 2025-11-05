@@ -8,8 +8,108 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>CoderWorld - Learn DSA & Coding</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://coderworld3855-5.onrender.com" />
+    <link rel="dns-prefetch" href="https://coderworld3855-5.onrender.com" />
+    
+    <style>
+      /* Initial loading screen styles */
+      #initial-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+      }
+      
+      #initial-loader.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+      
+      .loader-logo {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 2rem;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      
+      .loader-spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(6, 182, 212, 0.1);
+        border-top: 4px solid #06b6d4;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1.5rem;
+      }
+      
+      .loader-text {
+        color: #06b6d4;
+        font-size: 1.2rem;
+        font-weight: 600;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        margin-bottom: 0.5rem;
+      }
+      
+      .loader-subtext {
+        color: #64748b;
+        font-size: 0.9rem;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+      
+      .loader-progress {
+        width: 200px;
+        height: 4px;
+        background: rgba(6, 182, 212, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 1rem;
+      }
+      
+      .loader-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #06b6d4, #0891b2);
+        border-radius: 2px;
+        animation: progress 2s ease-in-out infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.05); }
+      }
+      
+      @keyframes progress {
+        0% { width: 0%; }
+        50% { width: 70%; }
+        100% { width: 100%; }
+      }
+    </style>
   </head>
   <body>
+    <!-- Initial loading screen -->
+    <div id="initial-loader">
+      <div class="loader-spinner"></div>
+      <div class="loader-text">CoderWorld</div>
+      <div class="loader-subtext">Loading your coding journey...</div>
+      <div class="loader-progress">
+        <div class="loader-progress-bar"></div>
+      </div>
+    </div>
+    
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
