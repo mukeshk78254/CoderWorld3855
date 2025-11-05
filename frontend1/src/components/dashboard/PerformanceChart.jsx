@@ -10,18 +10,21 @@ const cardVariants = {
 // Custom Tooltip for the chart for a more branded look
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
-        // Debug: Log what we're receiving
-        console.log('Tooltip payload:', payload[0]);
-        console.log('Label:', label);
-        console.log('Value:', payload[0]?.value);
-        console.log('Payload data:', payload[0]?.payload);
+        // Get the actual data point
+        const dataPoint = payload[0]?.payload;
+        const submissions = dataPoint?.submissions || 0;
+        const date = dataPoint?.date || '';
         
-        // Ensure we get the submissions value correctly
-        const submissions = payload[0]?.payload?.submissions || payload[0]?.value || 0;
+        // Format date nicely
+        const formattedDate = date ? new Date(date).toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric' 
+        }) : label;
+        
         return (
             <div className="bg-slate-800/80 p-3 rounded-lg border border-slate-700 backdrop-blur-md shadow-lg">
-                <p className="label text-sm text-cyan-400">{`${label}`}</p>
-                <p className="intro text-sm text-white font-bold">{`Submissions: ${submissions}`}</p>
+                <p className="label text-sm text-cyan-400">{formattedDate}</p>
+                
             </div>
         );
     }
@@ -92,7 +95,9 @@ function PerformanceChart({ data }) {
                             stroke="#64748b" 
                             fontSize={12} 
                             tickLine={false} 
-                            axisLine={false} 
+                            axisLine={false}
+                            interval="preserveStartEnd"
+                            minTickGap={20}
                         />
                         <YAxis 
                             stroke="#64748b" 
