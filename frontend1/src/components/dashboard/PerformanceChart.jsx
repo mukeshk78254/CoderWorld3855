@@ -10,6 +10,12 @@ const cardVariants = {
 // Custom Tooltip for the chart for a more branded look
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
+        // Debug: Log what we're receiving
+        console.log('Tooltip payload:', payload[0]);
+        console.log('Label:', label);
+        console.log('Value:', payload[0]?.value);
+        console.log('Payload data:', payload[0]?.payload);
+        
         // Ensure we get the submissions value correctly
         const submissions = payload[0]?.payload?.submissions || payload[0]?.value || 0;
         return (
