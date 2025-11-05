@@ -10,10 +10,12 @@ const cardVariants = {
 // Custom Tooltip for the chart for a more branded look
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
+        // Ensure we get the submissions value correctly
+        const submissions = payload[0]?.payload?.submissions || payload[0]?.value || 0;
         return (
             <div className="bg-slate-800/80 p-3 rounded-lg border border-slate-700 backdrop-blur-md shadow-lg">
                 <p className="label text-sm text-cyan-400">{`${label}`}</p>
-                <p className="intro text-sm text-white font-bold">{`Submissions: ${payload[0].value}`}</p>
+                <p className="intro text-sm text-white font-bold">{`Submissions: ${submissions}`}</p>
             </div>
         );
     }
@@ -93,7 +95,8 @@ function PerformanceChart({ data }) {
                             axisLine={false} 
                             width={30}
                             allowDecimals={false}
-                            domain={[0, 'auto']}
+                            domain={[0, 'dataMax + 1']}
+                            tickFormatter={(value) => value === 0 ? '' : value}
                         />
                         <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                         <Tooltip content={<CustomTooltip />} />
