@@ -1,14 +1,16 @@
-# 🚀 CoderWorld - Advanced LeetCode-Style Coding Platform
-
 <div align="center">
 
-![CoderWorld](https://img.shields.io/badge/CoderWorld-Coding%20Platform-blue?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
+# 🚀 CoderWorld - Modern Coding Platform
 
-**A comprehensive full-stack coding platform with premium features, AI assistance, and real-time code execution.**
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://coder-world3855.vercel.app)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/mukeshk78254/CoderWorld3855)
+[![React](https://img.shields.io/badge/React-19.1.0-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-20.x-339933?style=for-the-badge&logo=node.js)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Latest-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
 
-[Live Demo](#) | [Documentation](#installation) | [Report Bug](https://github.com/mukeshk78254/CoderWorld123/issues)
+**A comprehensive LeetCode-style coding platform with real-time code execution, AI assistance, premium features, and competitive programming contests.**
+
+[🌐 Live Website](https://coder-world3855.vercel.app) • [📖 Documentation](#documentation) • [🎯 Features](#features) • [🛠️ Tech Stack](#tech-stack)
 
 </div>
 
@@ -98,8 +100,8 @@
 
 1️⃣ **Clone the repository:**
 ```bash
-git clone https://github.com/mukeshk78254/CoderWorld123.git
-cd CoderWorld123
+git clone https://github.com/mukeshk78254/CoderWorld3855.git
+cd CoderWorld3855
 ```
 
 2️⃣ **Install backend dependencies:**
@@ -336,7 +338,7 @@ The `.gitignore` protects:
 ## 📊 Project Structure
 
 ```
-CoderWorld123/
+CoderWorld3855/
 ├── 📁 src/                    # Backend source code
 │   ├── 📁 controllers/        # Route controllers
 │   ├── 📁 models/             # MongoDB models
@@ -389,10 +391,10 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 📧 Contact & Support
 
-- 🐛 **Report Bugs:** [GitHub Issues](https://github.com/mukeshk78254/CoderWorld123/issues)
-- 💬 **Discussions:** [GitHub Discussions](https://github.com/mukeshk78254/CoderWorld123/discussions)
-- 📧 **Email:** mukeshk78254@gmail.com
-- 🌐 **Website:** [CoderWorld](#)
+- 🐛 **Report Bugs:** [GitHub Issues](https://github.com/mukeshk78254/CoderWorld3855/issues)
+- 💬 **Discussions:** [GitHub Discussions](https://github.com/mukeshk78254/CoderWorld3855/discussions)
+- 📧 **Email:** support@coder-world3855.vercel.app
+- 🌐 **Website:** [CoderWorld](https://coder-world3855.vercel.app)
 
 ---
 
