@@ -7,6 +7,7 @@ import Header from '../components/dashboard/Header';
 import MainContent from '../components/dashboard/MainContent';
 import ProfileSidebar from '../components/dashboard/ProfileSidebar';
 import ProfileImageTest from '../components/ProfileImageTest';
+import { useSubmission } from '../context/SubmissionContext';
 
 
 const InteractiveParticles = () => {
@@ -200,8 +201,19 @@ const useDashboardStats = (user) => {
 function Dashboard() {
 
     const { user } = useSelector(state => state.auth);
+    const { submissionTrigger, lastSubmission } = useSubmission();
    
     const { stats, loading, error, refetch } = useDashboardStats(user);
+
+    // Auto-refetch dashboard when a submission is successful
+    useEffect(() => {
+        if (submissionTrigger > 0 && lastSubmission) {
+            console.log('🔄 Dashboard Auto-Refresh: New submission detected!', lastSubmission);
+            setTimeout(() => {
+                refetch();
+            }, 1000); // Small delay to ensure backend has processed the submission
+        }
+    }, [submissionTrigger, lastSubmission, refetch]);
 
     const renderContent = () => {
        
