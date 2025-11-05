@@ -158,7 +158,7 @@ const ContactUs = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white placeholder-slate-500"
-                    placeholder="John Doe"
+                    placeholder="Mukesh Kumar"
                   />
                 </div>
 
@@ -172,7 +172,7 @@ const ContactUs = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent text-white placeholder-slate-500"
-                    placeholder="john@example.com"
+                    placeholder="mukesh@example.com"
                   />
                 </div>
 
