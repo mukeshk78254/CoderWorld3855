@@ -66,6 +66,7 @@ const CodingActivity = ({ submissionActivity = [], yearlyProgress = null, weekly
   // Generate GitHub-style calendar grid for year view
   const generateCalendarGrid = () => {
     const grid = [];
+    const today = new Date(); // Define today here
     const startDate = new Date(selectedYear, 0, 1); // Start from January 1st of selected year
     startDate.setDate(startDate.getDate() - startDate.getDay()); // Start from Sunday
     
