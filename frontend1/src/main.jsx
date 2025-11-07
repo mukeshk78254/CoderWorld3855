@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router";
 import { Provider } from 'react-redux';
 import { store } from './store/store.js';
 
-// Hide initial loader once React app is ready
+
 const hideInitialLoader = () => {
   const loader = document.getElementById('initial-loader');
   if (loader) {
@@ -20,7 +20,7 @@ const hideInitialLoader = () => {
   }
 };
 
-// Call hide loader after app mounts
+
 setTimeout(hideInitialLoader, 100);
 
 createRoot(document.getElementById('root')).render(

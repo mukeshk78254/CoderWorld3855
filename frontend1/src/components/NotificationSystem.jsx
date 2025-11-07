@@ -27,14 +27,28 @@ export const AdminNotificationPanel = ({ isOpen, onClose }) => {
         }
 
         try {
-            // Mock response for now
+            // Send notification to backend
+            const payload = {
+                title: notification.title,
+                message: notification.message,
+                type: notification.type,
+                targetRole: notification.targetUsers === 'all' ? 'all' : notification.targetUsers,
+                targetUserId: null // null for general notifications
+            };
 
-            alert('Notification sent successfully!');
+            console.log('Sending notification:', payload);
+
+            const response = await axiosClient.post('/api/notifications/send', payload);
+            
+            console.log('Notification sent successfully:', response.data);
+            alert('Notification sent successfully to ' + notification.targetUsers + ' users!');
+            
+            // Reset form
             setNotification({ title: '', message: '', type: 'info', targetUsers: 'all' });
             onClose();
         } catch (error) {
             console.error('Error sending notification:', error);
-            alert('Failed to send notification');
+            alert('Failed to send notification: ' + (error.response?.data?.msg || error.message));
         }
     };
 

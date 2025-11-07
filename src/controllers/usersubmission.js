@@ -4,6 +4,7 @@
 const problem=require("../models/problem");
 const submission=require("../models/submission");
 const user=require("../models/users")
+const SolutionDiscussion = require("../models/solutionDiscussion");
 const {getlanguagebyid,submitbatch,submittoken}=require("../utils/problemutility")
 
 const submitcode=async(req,res)=>{
@@ -275,6 +276,99 @@ const getAllSubmissions = async (req, res) => {
     }
 };
 
+// Post accepted submission as solution discussion
+const postSubmissionAsSolution = async (req, res) => {
+    try {
+        const userid = req.ans1.id;
+        const { submissionId } = req.params;
+        const { title, description, timeComplexity, spaceComplexity, tags } = req.body;
+
+        // Validate title
+        if (!title || title.trim() === '') {
+            return res.status(400).json({ 
+                success: false,
+                error: "Title is required" 
+            });
+        }
+
+        // Find the submission
+        const submissionData = await submission.findById(submissionId);
+        
+        if (!submissionData) {
+            return res.status(404).json({ 
+                success: false,
+                error: "Submission not found" 
+            });
+        }
+
+        // Verify this submission belongs to the user
+        if (submissionData.userid.toString() !== userid.toString()) {
+            return res.status(403).json({ 
+                success: false,
+                error: "You can only post your own submissions" 
+            });
+        }
+
+        // Only allow posting accepted submissions
+        if (submissionData.status !== 'accepted') {
+            return res.status(400).json({ 
+                success: false,
+                error: "Only accepted submissions can be posted as solutions" 
+            });
+        }
+
+        // Check if user already posted this submission
+        const existingSolution = await SolutionDiscussion.findOne({
+            userid,
+            problemid: submissionData.problemid,
+            code: submissionData.code
+        });
+
+        if (existingSolution) {
+            return res.status(400).json({ 
+                success: false,
+                error: "This solution has already been posted" 
+            });
+        }
+
+        // Create solution discussion
+        const newSolution = new SolutionDiscussion({
+            problemid: submissionData.problemid,
+            userid,
+            title: title.trim(),
+            description: description || '',
+            code: submissionData.code,
+            language: submissionData.language,
+            timeComplexity: timeComplexity || '',
+            spaceComplexity: spaceComplexity || '',
+            tags: tags || [],
+            runtime: submissionData.runtime || 0,
+            memory: submissionData.memory || 0
+        });
+
+        await newSolution.save();
+
+        // Populate user and problem data
+        const populatedSolution = await SolutionDiscussion.findById(newSolution._id)
+            .populate('userid', 'firstname lastname email')
+            .populate('problemid', 'title difficulty')
+            .lean();
+
+        return res.status(201).json({
+            success: true,
+            message: "Solution posted successfully to discussion forum",
+            solution: populatedSolution
+        });
+
+    } catch (err) {
+        console.error("Post submission as solution error:", err);
+        return res.status(500).json({ 
+            success: false,
+            error: "Failed to post solution: " + err.message 
+        });
+    }
+};
 
 
-module.exports={submitcode, runcode, getAllSubmissions}
+
+module.exports={submitcode, runcode, getAllSubmissions, postSubmissionAsSolution}

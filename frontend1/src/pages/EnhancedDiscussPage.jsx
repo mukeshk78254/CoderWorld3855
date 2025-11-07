@@ -194,11 +194,13 @@ const FloatingParticles = () => {
 };
 
 
-const DiscussionPost = ({ post, index, onLike, onBookmark, onDelete, currentUser, onAddReply }) => {
+const DiscussionPost = ({ post, index, onLike, onBookmark, onDelete, currentUser }) => {
     const cardRef = useRef(null);
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [replyText, setReplyText] = useState('');
-    const [replies, setReplies] = useState(post.replies || []);
+    const [comments, setComments] = useState([]);
+    const [loadingComments, setLoadingComments] = useState(false);
+    const [showComments, setShowComments] = useState(false);
 
 
     const getDifficultyColor = (difficulty) => {
@@ -210,29 +212,61 @@ const DiscussionPost = ({ post, index, onLike, onBookmark, onDelete, currentUser
         }
     };
 
-    const handleSubmitReply = () => {
-        if (!replyText.trim()) return;
+    // Fetch comments from backend when showing comments
+    const fetchComments = async () => {
+        if (!post._id) return; // Skip if no backend ID
         
-        const currentTime = new Date();
-        const newReply = {
-            id: Date.now(),
-            author: currentUser?.firstname || 'Anonymous',
-            content: replyText.trim(),
-            timestamp: currentTime.getTime(),
-            createdAt: currentTime.toISOString(),
-            timeAgo: 'Just now'
-        };
-        
-        setReplies(prev => [newReply, ...prev]);
-        setReplyText('');
-        setShowReplyForm(false);
-        
-        if (onAddReply) {
-            onAddReply(post.id, newReply);
+        setLoadingComments(true);
+        try {
+            const response = await axiosClient.get(`/api/discuss/posts/${post._id}/comments`);
+            if (response.data.success) {
+                setComments(response.data.comments || []);
+            }
+        } catch (error) {
+            console.error('Error fetching comments:', error);
+        } finally {
+            setLoadingComments(false);
         }
     };
 
-    const canDeletePost = currentUser && (post.author === currentUser.firstname || currentUser.role === 'admin');
+    const handleToggleComments = () => {
+        setShowComments(!showComments);
+        if (!showComments && comments.length === 0) {
+            fetchComments();
+        }
+    };
+
+    const handleSubmitReply = async (parentCommentId = null) => {
+        if (!replyText.trim()) return;
+        
+        if (!post._id) {
+            alert('This post is not synced with the backend. Please refresh the page.');
+            return;
+        }
+
+        try {
+            const response = await axiosClient.post(`/api/discuss/posts/${post._id}/comments`, {
+                content: replyText.trim(),
+                parentCommentId: parentCommentId
+            });
+            
+            if (response.data.success) {
+                // Refresh comments to show the new reply
+                await fetchComments();
+                setReplyText('');
+                setShowReplyForm(false);
+            }
+        } catch (error) {
+            console.error('Error posting reply:', error);
+            alert('Failed to post reply. Please try again.');
+        }
+    };
+
+    const canDeletePost = currentUser && (
+        post.author === currentUser.firstname || 
+        post.author === currentUser.email ||
+        currentUser.role === 'admin'
+    );
 
     return (
         <div
@@ -286,8 +320,8 @@ const DiscussionPost = ({ post, index, onLike, onBookmark, onDelete, currentUser
                         {canDeletePost && (
                             <button
                                 onClick={() => onDelete(post.id)}
-                                className="p-2 rounded-lg bg-red-500/20 text-red-400"
-                                title="Delete your post"
+                                className="p-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors"
+                                title="Permanently delete this post and all its comments (cannot be undone)"
                             >
                                 <Trash2 size={18} />
                             </button>
@@ -358,15 +392,23 @@ const DiscussionPost = ({ post, index, onLike, onBookmark, onDelete, currentUser
                             }`}
                         >
                             <Heart size={18} fill={post.isLiked ? 'currentColor' : 'none'} />
-                            <span className="font-medium">{post.likes}</span>
+                            <span className="font-medium">{post.upvotes || post.likes || 0}</span>
+                        </button>
+                        
+                        <button
+                            onClick={handleToggleComments}
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 transition-colors"
+                        >
+                            <MessageSquare size={18} />
+                            <span className="font-medium">{post.commentCount || comments.length || 0} comments</span>
                         </button>
                         
                         <button
                             onClick={() => setShowReplyForm(!showReplyForm)}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 text-slate-400"
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 transition-colors"
                         >
                             <Reply size={18} />
-                            <span className="font-medium">{replies.length}</span>
+                            <span className="font-medium">Reply</span>
                         </button>
                         
                         <button
@@ -379,11 +421,12 @@ const DiscussionPost = ({ post, index, onLike, onBookmark, onDelete, currentUser
                     
                     <div className="flex items-center gap-2 text-slate-400 text-sm">
                         <Eye size={16} />
-                        <span>{post.views} views</span>
+                        <span>{post.views || 0} views</span>
                     </div>
                 </div>
             </div>
 
+            {/* Reply Form */}
             <AnimatePresence>
                 {showReplyForm && (
                     <motion.div
@@ -393,11 +436,11 @@ const DiscussionPost = ({ post, index, onLike, onBookmark, onDelete, currentUser
                         className="mt-6 pt-6 border-t border-slate-700"
                     >
                         <div className="space-y-4">
-                            <h4 className="text-lg font-semibold text-white">Add a Reply</h4>
+                            <h4 className="text-lg font-semibold text-white">Add a Comment</h4>
                             <textarea
                                 value={replyText}
                                 onChange={(e) => setReplyText(e.target.value)}
-                                placeholder="Write your reply..."
+                                placeholder="Write your comment... (All comments are public and visible to everyone)"
                                 className="w-full p-4 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 resize-none"
                                 rows={3}
                                 style={{
@@ -409,11 +452,11 @@ const DiscussionPost = ({ post, index, onLike, onBookmark, onDelete, currentUser
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    onClick={handleSubmitReply}
+                                    onClick={() => handleSubmitReply()}
                                     disabled={!replyText.trim()}
                                     className="px-6 py-2 bg-cyan-500 hover:bg-cyan-600 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
                                 >
-                                    Post Reply
+                                    Post Comment
                                 </motion.button>
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
@@ -429,42 +472,261 @@ const DiscussionPost = ({ post, index, onLike, onBookmark, onDelete, currentUser
                 )}
             </AnimatePresence>
 
-            {replies.length > 0 && (
-                <div className="mt-6 pt-6 border-t border-slate-700">
-                    <h4 className="text-lg font-semibold text-white mb-4">Replies ({replies.length})</h4>
-                    <div className="space-y-4">
-                        {replies.map((reply) => (
-                            <motion.div
-                                key={reply.id}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                className="bg-slate-800/50 rounded-lg p-4"
-                            >
-                                <div className="flex items-center gap-3 mb-2">
-                                    <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                                        {reply.author.charAt(0).toUpperCase()}
-                                    </div>
-                                    <div>
-                                        <span className="text-white font-medium">{reply.author}</span>
-                                        <span className="text-slate-400 text-sm ml-2">{reply.timeAgo}</span>
-                                    </div>
-                                </div>
-                                <p 
-                                    className="text-slate-300"
-                                    style={{
-                                        fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-                                        fontWeight: '400',
-                                        lineHeight: '1.6'
-                                    }}
-                                >
-                                    {reply.content}
-                                </p>
-                            </motion.div>
-                        ))}
+            {/* Comments Section */}
+            <AnimatePresence>
+                {showComments && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="mt-6 pt-6 border-t border-slate-700"
+                    >
+                        {loadingComments ? (
+                            <div className="text-center py-8">
+                                <div className="w-8 h-8 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                                <p className="text-slate-400 mt-3">Loading comments...</p>
+                            </div>
+                        ) : comments.length > 0 ? (
+                            <div className="space-y-6">
+                                <h4 className="text-lg font-semibold text-white flex items-center gap-2">
+                                    <MessageSquare size={20} className="text-cyan-400" />
+                                    All Comments ({comments.length}) - Public & Visible to Everyone ✅
+                                </h4>
+                                {comments.map((comment) => (
+                                    <CommentThread 
+                                        key={comment._id} 
+                                        comment={comment} 
+                                        postId={post._id}
+                                        onReplySubmit={handleSubmitReply}
+                                        currentUser={currentUser}
+                                        onRefreshComments={fetchComments}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-8">
+                                <MessageSquare size={48} className="mx-auto text-slate-600 mb-3" />
+                                <p className="text-slate-400">No comments yet. Be the first to comment!</p>
+                            </div>
+                        )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+        </div>
+    );
+};
+
+
+// New CommentThread component for nested replies
+const CommentThread = ({ comment, postId, onReplySubmit, currentUser, onRefreshComments }) => {
+    const [showReplyBox, setShowReplyBox] = useState(false);
+    const [replyText, setReplyText] = useState('');
+    const [isUpvoting, setIsUpvoting] = useState(false);
+
+    const handleUpvote = async () => {
+        if (!comment._id) return;
+        
+        setIsUpvoting(true);
+        try {
+            await axiosClient.post(`/api/discuss/comments/${comment._id}/upvote`);
+            await onRefreshComments(); // Refresh to show updated upvote count
+        } catch (error) {
+            console.error('Error upvoting comment:', error);
+        } finally {
+            setIsUpvoting(false);
+        }
+    };
+
+    const handleReplyToComment = async () => {
+        if (!replyText.trim()) return;
+        
+        try {
+            const response = await axiosClient.post(`/api/discuss/posts/${postId}/comments`, {
+                content: replyText.trim(),
+                parentCommentId: comment._id
+            });
+            
+            if (response.data.success) {
+                setReplyText('');
+                setShowReplyBox(false);
+                await onRefreshComments(); // Refresh to show new reply
+            }
+        } catch (error) {
+            console.error('Error posting reply:', error);
+            alert('Failed to post reply. Please try again.');
+        }
+    };
+
+    const canDelete = currentUser && (
+        comment.author?._id === currentUser._id || 
+        comment.author?.email === currentUser.email ||
+        currentUser.role === 'admin'
+    );
+
+    const handleDeleteComment = async () => {
+        if (!window.confirm('⚠️ Delete this comment permanently?\n\nThis comment and all its replies will be permanently removed from the database and will NEVER appear again for anyone.')) {
+            return;
+        }
+        
+        try {
+            const response = await axiosClient.delete(`/api/discuss/comments/${comment._id}`);
+            
+            if (response.data.success) {
+                // Show success message
+                alert('✅ Comment deleted permanently! It will never appear again.');
+                
+                // Refresh comments to remove deleted comment from UI
+                await onRefreshComments();
+            }
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+            
+            if (error.response?.status === 403) {
+                alert('❌ Permission denied! Only the author or admin can delete this comment.');
+            } else if (error.response?.status === 404) {
+                alert('❌ Comment not found. It may have already been deleted.');
+                await onRefreshComments(); // Refresh to sync UI
+            } else {
+                alert('❌ Failed to delete comment. Please try again.');
+            }
+        }
+    };
+
+    return (
+        <div className="comment-thread">
+            {/* Main Comment */}
+            <div className="bg-slate-800/50 rounded-lg p-4">
+                <div className="flex items-start gap-3 mb-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                        {(comment.author?.firstname || comment.author?.email || 'U').charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                            <span className="text-white font-medium">
+                                {comment.author?.firstname || comment.author?.email || 'Anonymous'}
+                            </span>
+                            <span className="text-slate-400 text-sm">
+                                {formatTimeAgo(new Date(comment.createdAt).getTime())}
+                            </span>
+                            {comment.isPublic && (
+                                <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded">
+                                    PUBLIC ✅
+                                </span>
+                            )}
+                        </div>
+                        <p className="text-slate-300 leading-relaxed">
+                            {comment.content}
+                        </p>
                     </div>
                 </div>
-            )}
+                
+                <div className="flex items-center gap-4 ml-13">
+                    <button
+                        onClick={handleUpvote}
+                        disabled={isUpvoting}
+                        className="flex items-center gap-1 text-slate-400 hover:text-cyan-400 transition-colors"
+                    >
+                        <ThumbsUp size={16} />
+                        <span className="text-sm font-medium">{comment.upvotes || 0}</span>
+                    </button>
+                    
+                    <button
+                        onClick={() => setShowReplyBox(!showReplyBox)}
+                        className="flex items-center gap-1 text-slate-400 hover:text-cyan-400 transition-colors"
+                    >
+                        <Reply size={16} />
+                        <span className="text-sm font-medium">
+                            {comment.replyCount || comment.replies?.length || 0} replies
+                        </span>
+                    </button>
+                    
+                    {canDelete && (
+                        <button
+                            onClick={handleDeleteComment}
+                            className="flex items-center gap-1 text-red-400 hover:text-red-300 transition-colors"
+                            title="Permanently delete this comment (cannot be undone)"
+                        >
+                            <Trash2 size={16} />
+                            <span className="text-sm font-medium">Delete Forever</span>
+                        </button>
+                    )}
+                </div>
+            </div>
 
+            {/* Reply Box */}
+            <AnimatePresence>
+                {showReplyBox && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="ml-13 mt-3"
+                    >
+                        <textarea
+                            value={replyText}
+                            onChange={(e) => setReplyText(e.target.value)}
+                            placeholder={`Reply to ${comment.author?.firstname || 'this comment'}... (public reply)`}
+                            className="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 resize-none"
+                            rows={2}
+                        />
+                        <div className="flex gap-2 mt-2">
+                            <button
+                                onClick={handleReplyToComment}
+                                disabled={!replyText.trim()}
+                                className="px-4 py-1.5 bg-cyan-500 hover:bg-cyan-600 disabled:bg-slate-600 text-white text-sm font-medium rounded transition-colors"
+                            >
+                                Post Reply
+                            </button>
+                            <button
+                                onClick={() => setShowReplyBox(false)}
+                                className="px-4 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium rounded transition-colors"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Nested Replies */}
+            {comment.replies && comment.replies.length > 0 && (
+                <div className="ml-13 mt-4 space-y-3 border-l-2 border-slate-700 pl-4">
+                    {comment.replies.map((reply) => (
+                        <div key={reply._id} className="bg-slate-800/30 rounded-lg p-3">
+                            <div className="flex items-start gap-2">
+                                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                                    {(reply.author?.firstname || reply.author?.email || 'U').charAt(0).toUpperCase()}
+                                </div>
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <span className="text-white font-medium text-sm">
+                                            {reply.author?.firstname || reply.author?.email || 'Anonymous'}
+                                        </span>
+                                        <span className="text-slate-400 text-xs">
+                                            {formatTimeAgo(new Date(reply.createdAt).getTime())}
+                                        </span>
+                                        {reply.isPublic && (
+                                            <span className="text-xs bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded">
+                                                PUBLIC ✅
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="text-slate-300 text-sm leading-relaxed">
+                                        {reply.content}
+                                    </p>
+                                    <div className="flex items-center gap-3 mt-2">
+                                        <button className="flex items-center gap-1 text-slate-400 hover:text-cyan-400 transition-colors text-xs">
+                                            <ThumbsUp size={14} />
+                                            <span>{reply.upvotes || 0}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
@@ -546,55 +808,42 @@ function EnhancedDiscussPage() {
     const headerRef = useRef(null);
     const titleRef = useRef(null);
 
-    const handleNewDiscussion = (newPost) => {
-        const currentTime = new Date();
+    const handleNewDiscussion = async (newPost) => {
+        // The newPost already comes from DiscussionForm with backend data
+        // Just add it to the local state
         const postWithTimestamp = {
             ...newPost,
-            id: Date.now(),
-            author: user?.firstname || 'Anonymous',
-            isVerified: !!user,
-            timeAgo: 'Just now',
-            timestamp: currentTime.getTime(),
-            createdAt: currentTime.toISOString(),
-            likes: 0,
-            replies: [],
-            views: 1,
-            isLiked: false,
-            isBookmarked: false,
+            timeAgo: formatTimeAgo(new Date(newPost.timestamp || newPost.createdAt).getTime()),
+            timestamp: new Date(newPost.timestamp || newPost.createdAt).getTime(),
         };
         
         setPosts(prev => [postWithTimestamp, ...prev]);
-        
-        const savedDiscussions = JSON.parse(localStorage.getItem('discussions') || '[]');
-        const updatedDiscussions = [postWithTimestamp, ...savedDiscussions];
-        localStorage.setItem('discussions', JSON.stringify(updatedDiscussions));
-        
         setShowDiscussionForm(false);
     };
 
-    const handleAddReply = (postId, newReply) => {
-        const updatedPosts = posts.map(post => 
-            post.id === postId 
-                ? { ...post, replies: [...(post.replies || []), newReply] }
-                : post
-        );
-        setPosts(updatedPosts);
-        
-        const savedDiscussions = JSON.parse(localStorage.getItem('discussions') || '[]');
-        const updatedDiscussions = savedDiscussions.map(post => 
-            post.id === postId 
-                ? { ...post, replies: [...(post.replies || []), newReply] }
-                : post
-        );
-        localStorage.setItem('discussions', JSON.stringify(updatedDiscussions));
-    };
-
-    const handleLike = (postId) => {
-        setPosts(prev => prev.map(post => 
-            post.id === postId 
-                ? { ...post, isLiked: !post.isLiked, likes: post.likes + (post.isLiked ? -1 : 1) }
-                : post
-        ));
+    const handleLike = async (postId) => {
+        try {
+            // Find the post to get its _id
+            const post = posts.find(p => p.id === postId || p._id === postId);
+            if (post && post._id) {
+                await axiosClient.post(`/api/discuss/posts/${post._id}/upvote`);
+            }
+            
+            // Update local state
+            setPosts(prev => prev.map(post => 
+                (post.id === postId || post._id === postId)
+                    ? { ...post, isLiked: !post.isLiked, likes: post.likes + (post.isLiked ? -1 : 1), upvotes: (post.upvotes || post.likes) + (post.isLiked ? -1 : 1) }
+                    : post
+            ));
+        } catch (error) {
+            console.error('Error liking post:', error);
+            // Still update UI even if backend fails
+            setPosts(prev => prev.map(post => 
+                (post.id === postId || post._id === postId)
+                    ? { ...post, isLiked: !post.isLiked, likes: post.likes + (post.isLiked ? -1 : 1) }
+                    : post
+            ));
+        }
     };
 
     const handleBookmark = (postId) => {
@@ -605,13 +854,33 @@ function EnhancedDiscussPage() {
         ));
     };
 
-    const handleDeletePost = (postId) => {
-        if (window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
-            setPosts(prev => prev.filter(post => post.id !== postId));
-            
-            const savedDiscussions = JSON.parse(localStorage.getItem('discussions') || '[]');
-            const updatedDiscussions = savedDiscussions.filter(post => post.id !== postId);
-            localStorage.setItem('discussions', JSON.stringify(updatedDiscussions));
+    const handleDeletePost = async (postId) => {
+        if (window.confirm('⚠️ DELETE POST PERMANENTLY?\n\nThis will permanently delete:\n✓ The post\n✓ ALL comments on this post\n✓ ALL replies to those comments\n\nThis CANNOT be undone and will NEVER appear again for anyone!')) {
+            try {
+                // Find the post to get its _id
+                const post = posts.find(p => p.id === postId || p._id === postId);
+                if (post && post._id) {
+                    const response = await axiosClient.delete(`/api/discuss/posts/${post._id}`);
+                    
+                    if (response.data.success) {
+                        alert('✅ Post deleted permanently! It will never appear again.');
+                    }
+                }
+                
+                // Remove from local state
+                setPosts(prev => prev.filter(post => post.id !== postId && post._id !== postId));
+            } catch (error) {
+                console.error('Error deleting post:', error);
+                
+                if (error.response?.status === 403) {
+                    alert('❌ Permission denied! Only the author or admin can delete this post.');
+                } else if (error.response?.status === 404) {
+                    alert('❌ Post not found. It may have already been deleted.');
+                    setPosts(prev => prev.filter(post => post.id !== postId && post._id !== postId));
+                } else {
+                    alert('❌ Failed to delete post. Please try again.');
+                }
+            }
         }
     };
 
@@ -632,36 +901,65 @@ function EnhancedDiscussPage() {
         return () => clearInterval(interval);
     }, []);
 
-   
     useEffect(() => {
-        const savedDiscussions = JSON.parse(localStorage.getItem('discussions') || '[]');
-        
-        const now = new Date().getTime();
-        const mockPosts = [
-            {
-                id: 1,
-                title: 'Best approach for Two Sum problem?',
-                content: 'I\'m struggling with the Two Sum problem. I\'ve tried brute force but it\'s too slow. What\'s the optimal approach using hash maps?',
-                author: 'Alex Chen',
-                isVerified: true,
-                timestamp: now - 2 * 60 * 60 * 1000, // 2 hours ago
-                timeAgo: formatTimeAgo(now - 2 * 60 * 60 * 1000),
-                difficulty: 'easy',
-                likes: 24,
-                replies: [
-                    {
-                        id: 1,
-                        author: 'Sarah Johnson',
-                        content: 'Great question! The hash map approach is indeed optimal. Here\'s why it works...',
-                        timestamp: now - 1.5 * 60 * 60 * 1000, // 1.5 hours ago
-                        timeAgo: formatTimeAgo(now - 1.5 * 60 * 60 * 1000)
-                    }
-                ],
-                views: 156,
-                isLiked: false,
-                isBookmarked: false,
-                tags: ['algorithms', 'hash-table', 'arrays'],
-                code: `function twoSum(nums, target) {
+        const fetchPosts = async () => {
+            setLoading(true);
+            try {
+                // Fetch from backend
+                const response = await axiosClient.get('/api/discuss/posts');
+                
+                if (response.data && Array.isArray(response.data)) {
+                    const backendPosts = response.data.map(post => ({
+                        ...post,
+                        id: post._id,
+                        author: post.author?.firstname || post.author?.email || 'Anonymous',
+                        isVerified: !!post.author,
+                        timeAgo: formatTimeAgo(new Date(post.createdAt).getTime()),
+                        timestamp: new Date(post.createdAt).getTime(),
+                        likes: post.upvotes || 0,
+                        replies: post.comments || [],
+                        views: post.views || 0,
+                        isLiked: false,
+                        isBookmarked: false,
+                    }));
+                    
+                    setPosts(backendPosts);
+                } else {
+                    // Fallback to mock data if backend fails
+                    loadMockData();
+                }
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+                // Fallback to mock data
+                loadMockData();
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        const loadMockData = () => {
+            const now = new Date().getTime();
+            const mockPosts = [
+                {
+                    id: 1,
+                    _id: '1',
+                    title: 'Best approach for Two Sum problem?',
+                    content: 'I\'m struggling with the Two Sum problem. I\'ve tried brute force but it\'s too slow. What\'s the optimal approach using hash maps?',
+                    author: 'Alex Chen',
+                    isVerified: true,
+                    timestamp: now - 2 * 60 * 60 * 1000,
+                    timeAgo: formatTimeAgo(now - 2 * 60 * 60 * 1000),
+                    difficulty: 'easy',
+                    likes: 24,
+                    upvotes: 24,
+                    replies: [],
+                    commentCount: 1,
+                    views: 156,
+                    isLiked: false,
+                    isBookmarked: false,
+                    tags: ['algorithms', 'hash-table', 'arrays'],
+                    category: 'algorithm',
+                    code: `function twoSum(nums, target) {
     const map = new Map();
     for (let i = 0; i < nums.length; i++) {
         const complement = target - nums[i];
@@ -672,46 +970,53 @@ function EnhancedDiscussPage() {
     }
     return [];
 }`
-            },
-            {
-                id: 2,
-                title: 'Dynamic Programming: Memoization vs Tabulation',
-                content: 'When should I use memoization vs tabulation in DP problems? Both seem to work but I want to understand the trade-offs.',
-                author: 'Alice Smith',
-                isVerified: true,
-                timestamp: now - 4 * 60 * 60 * 1000, // 4 hours ago
-                timeAgo: formatTimeAgo(now - 4 * 60 * 60 * 1000),
-                difficulty: 'medium',
-                likes: 18,
-                replies: [],
-                views: 203,
-                isLiked: true,
-                isBookmarked: true,
-                tags: ['dynamic-programming', 'algorithms', 'optimization']
-            },
-            {
-                id: 3,
-                title: 'System Design: Designing a URL Shortener',
-                content: 'I have an interview next week for a senior position. They might ask about designing a URL shortener like bit.ly. Any tips on the key components?',
-                author: 'Bob Johnson',
-                isVerified: false,
-                timestamp: now - 6 * 60 * 60 * 1000, // 6 hours ago
-                timeAgo: formatTimeAgo(now - 6 * 60 * 60 * 1000),
-                difficulty: 'hard',
-                likes: 31,
-                replies: [],
-                views: 287,
-                isLiked: false,
-                isBookmarked: false,
-                tags: ['system-design', 'interview', 'distributed-systems']
-            }
-        ];
+                },
+                {
+                    id: 2,
+                    _id: '2',
+                    title: 'Dynamic Programming: Memoization vs Tabulation',
+                    content: 'When should I use memoization vs tabulation in DP problems? Both seem to work but I want to understand the trade-offs.',
+                    author: 'Alice Smith',
+                    isVerified: true,
+                    timestamp: now - 4 * 60 * 60 * 1000,
+                    timeAgo: formatTimeAgo(now - 4 * 60 * 60 * 1000),
+                    difficulty: 'medium',
+                    likes: 18,
+                    upvotes: 18,
+                    replies: [],
+                    commentCount: 0,
+                    views: 203,
+                    isLiked: true,
+                    isBookmarked: true,
+                    tags: ['dynamic-programming', 'algorithms', 'optimization'],
+                    category: 'algorithm'
+                },
+                {
+                    id: 3,
+                    _id: '3',
+                    title: 'System Design: Designing a URL Shortener',
+                    content: 'I have an interview next week for a senior position. They might ask about designing a URL shortener like bit.ly. Any tips on the key components?',
+                    author: 'Bob Johnson',
+                    isVerified: false,
+                    timestamp: now - 6 * 60 * 60 * 1000,
+                    timeAgo: formatTimeAgo(now - 6 * 60 * 60 * 1000),
+                    difficulty: 'hard',
+                    likes: 31,
+                    upvotes: 31,
+                    replies: [],
+                    commentCount: 0,
+                    views: 287,
+                    isLiked: false,
+                    isBookmarked: false,
+                    tags: ['system-design', 'interview', 'distributed-systems'],
+                    category: 'interview'
+                }
+            ];
+            
+            setPosts(mockPosts);
+        };
 
-        const allPosts = [...savedDiscussions, ...mockPosts];
-        allPosts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-        
-        setPosts(allPosts);
-        setLoading(false);
+        fetchPosts();
     }, []);
 
 
@@ -897,14 +1202,13 @@ function EnhancedDiscussPage() {
                     <AnimatePresence>
                         {filteredPosts.map((post, index) => (
                             <DiscussionPost
-                                key={post.id}
+                                key={post._id || post.id}
                                 post={post}
                                 index={index}
                                 onLike={handleLike}
                                 onBookmark={handleBookmark}
                                 onDelete={handleDeletePost}
                                 currentUser={user}
-                                onAddReply={handleAddReply}
                             />
                         ))}
                     </AnimatePresence>

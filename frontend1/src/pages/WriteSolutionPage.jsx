@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { gsap } from "gsap";
 import { motion, AnimatePresence } from "framer-motion";
+import axiosClient from "../utils/axiosClient";
 import { 
     ArrowLeft, 
     Lightbulb, 
@@ -98,44 +99,36 @@ function WriteSolutionPage() {
 
     const handleSubmit = async () => {
         if (!description.trim() || !tags.trim() || !code.trim()) {
-            alert("Please fill in all fields before submitting.");
+            alert("⚠️ Please fill in all fields before submitting.");
             return;
         }
 
         setIsSubmitting(true);
         
         try {
-            // Create solution data
-            const solutionData = {
-                id: Date.now(),
-                problemId: problemid,
-                code,
+            // Post to backend API (use 'problemid' not 'problemId' - backend expects lowercase)
+            const response = await axiosClient.post('/api/solutions', {
+                problemid: problemid,  // Backend expects 'problemid' (lowercase 'd')
+                title: `Solution: ${description.trim().substring(0, 50)}${description.trim().length > 50 ? '...' : ''}`,
+                description: description.trim(),
+                code: code.trim(),
                 language: selectedLanguage,
-                description,
-                tags: tags.split(',').map(tag => tag.trim()),
-                timestamp: new Date().toISOString(),
-                author: "You", // In real app, this would be the logged-in user
-                isPermanent: true // Solutions are permanent
-            };
-            
-            // Here you would typically send to backend
+                tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag)
+            });
 
-            
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            // Store in localStorage for demo (in real app, this would be in database)
-            const existingSolutions = JSON.parse(localStorage.getItem('sharedSolutions') || '[]');
-            existingSolutions.push(solutionData);
-            localStorage.setItem('sharedSolutions', JSON.stringify(existingSolutions));
-            
-            alert("Solution posted successfully! Redirecting to solution panel...");
-            
-            // Navigate back to solution panel
-            navigate(`/problem/${problemid}?tab=solution`);
+            if (response.data.success) {
+                alert("✅ Solution posted successfully! Everyone can see it now.\n\nRedirecting to solution panel...");
+                
+                // Navigate back to solution panel with tab parameter
+                navigate(`/problem/${problemid}?tab=solution`);
+            } else {
+                throw new Error('Failed to post solution');
+            }
             
         } catch (error) {
-            alert("Failed to post solution. Please try again.");
+            console.error('Failed to post solution:', error);
+            const errorMsg = error.response?.data?.message || error.message || 'Failed to post solution';
+            alert(`❌ ${errorMsg}\n\nPlease try again.`);
         } finally {
             setIsSubmitting(false);
         }
