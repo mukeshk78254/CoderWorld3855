@@ -53,27 +53,30 @@ const profileRouter = require('./routes/profileRoutes'); //
 const notificationRoutes = require('./routes/notificationRoutes');
 const migrationRoutes = require('./routes/migrationRoutes'); 
 const paymentRoutes = require('./routes/payment'); 
+const webhookRoutes = require('./routes/webhookRoutes'); // Razorpay webhook handler
 
+// CORS Configuration - supports both environment variable and hardcoded origins
 app.use(cors({
     origin: function(origin, callback) {
         const allowedOrigins = [
             'http://localhost:5173',
             'http://localhost:5174',
             'http://localhost:3000',
-            'https://coder-world3855.vercel.app'
-        ];
+            process.env.FRONTEND_URL || 'https://coder-world3855.vercel.app',
+            process.env.CORS_ORIGIN || 'https://coder-world3855.vercel.app'
+        ].filter(Boolean); // Remove any undefined values
         
-    
+        // Allow requests with no origin (like mobile apps or Postman)
         if (!origin) {
             return callback(null, true);
         }
         
-      
+        // Allow all Vercel preview deployments
         if (origin.endsWith('.vercel.app')) {
             return callback(null, true);
         }
         
-        
+        // Check if origin is in allowed list
         if (allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
@@ -86,6 +89,11 @@ app.use(cors({
     exposedHeaders: ['set-cookie']
 }));
 
+// ⚠️ IMPORTANT: Webhook route MUST be registered BEFORE express.json()
+// Razorpay webhook needs raw request body for signature verification
+app.use('/webhook', webhookRoutes);
+
+// Now add body parser middleware
 app.use(express.json());
 app.use(cookieparser());
 
