@@ -44,16 +44,7 @@ function Login() {
     formState: { errors }
   } = useForm({ resolver: zodResolver(loginSchema) });
 
-  
-  useEffect(() => {
-    if (isAuthenticated) {
-     
-      const from = location.state?.from || '/home';
-      navigate(from, { replace: true });
-    }
-  }, [isAuthenticated, navigate, location.state]);
-
-  
+  // GSAP animations effect
   useEffect(() => {
     if (!gsap) return;
     

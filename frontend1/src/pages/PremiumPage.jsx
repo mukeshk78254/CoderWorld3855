@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import axiosClient from '../utils/axiosClient';
 import { loginSuccess } from '../authSlice';
+import { RAZORPAY_CONFIG, APP_CONFIG } from '../config/app.config';
 import { 
     Crown, Check, Zap, Loader2, Sparkles, Brain,
     Code, Video, BarChart3, MessageSquare, Star
@@ -115,20 +116,18 @@ const PremiumPage = () => {
 
         
             const options = {
-                key: key,
+                key: key || RAZORPAY_CONFIG.keyId,
                 amount: order.amount,
                 currency: order.currency,
                 name: 'CoderWorld Premium',
                 description: `${plan.name} Subscription`,
-                image: '/logo.png',
+                image: `${APP_CONFIG.frontendUrl}/src/pages/2896418.png`,
                 order_id: order.id,
                 prefill: {
                     name: user?.firstname || '',
                     email: user?.emailId || '',
                 },
-                theme: {
-                    color: '#6366f1'
-                },
+                theme: RAZORPAY_CONFIG.theme,
                 handler: async function (response) {
                     try {
 

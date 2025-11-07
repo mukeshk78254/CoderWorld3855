@@ -125,7 +125,7 @@ const AppContent = () => {
               <Routes>
         <Route path="/" element={<LandingPage />} />
        
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={isAuthenticated ? <Navigate to="/home" replace /> : <Login />} />
         <Route path="/signup" element={isAuthenticated ? <Navigate to="/home" /> : <Signup />} />
         <Route path="/verify-otp" element={isAuthenticated ? <Navigate to="/home" /> : <OTPVerification />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
