@@ -13,14 +13,14 @@ const ProfileImageTest = () => {
         <div className="text-gray-300">
           <strong>Redux User Profile Image:</strong> 
           <span className="ml-2 text-cyan-400">
-            {user?.profileImage ? '✅ Has Image' : '❌ No Image'}
+            {user?.profileImage ? ' Has Image' : ' No Image'}
           </span>
         </div>
         
         <div className="text-gray-300">
           <strong>localStorage Profile Image:</strong> 
           <span className="ml-2 text-cyan-400">
-            {savedImage ? '✅ Has Image' : '❌ No Image'}
+            {savedImage ? ' Has Image' : ' No Image'}
           </span>
         </div>
         

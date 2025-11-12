@@ -9,7 +9,7 @@ const cardVariants = {
     visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 80, damping: 15 } }
 };
 
-// A helper function to format time in a "time ago" format
+
 const TimeAgo = ({ date }) => {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
     let interval = seconds / 31536000;
@@ -63,7 +63,7 @@ function RecentActivity({ activities, solvedStats = {} }) {
                                 </div>
                                 
                                 <div className="flex-1">
-                                    {/* Problem Title and Description */}
+                                
                                     <div className="mb-2">
                                         <div className="flex items-center gap-3">
                                             <NavLink 
@@ -89,7 +89,7 @@ function RecentActivity({ activities, solvedStats = {} }) {
                                         </div>
                                     </div>
 
-                                    {/* Timing and Status */}
+                              
                                     <div className="flex items-center gap-4 mb-3">
                                         <div className="flex items-center gap-1 text-xs text-gray-400">
                                             <Clock size={14} />
@@ -111,7 +111,7 @@ function RecentActivity({ activities, solvedStats = {} }) {
                                         )}
                                     </div>
 
-                                    {/* Solved Skills Progress */}
+                                   
                                     {activity.status === 'accepted' && (
                                         <div className="bg-gray-700/30 rounded-lg p-3 mt-3">
                                             <div className="flex items-center gap-2 mb-2">
@@ -162,7 +162,7 @@ function RecentActivity({ activities, solvedStats = {} }) {
                 )}
             </div>
             
-            {/* Problem Stats Modal */}
+           
             {selectedProblem && (
                 <ProblemStats 
                     selectedProblem={selectedProblem}

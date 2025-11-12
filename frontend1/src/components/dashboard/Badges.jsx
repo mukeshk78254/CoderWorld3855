@@ -147,7 +147,7 @@ const badgeDefinitions = [
 ];
 
 function Badges({ stats = {} }) {
-  // Calculate earned badges based on stats
+ 
   const calculateEarnedBadges = () => {
     const badges = [];
     const { 
@@ -177,8 +177,8 @@ function Badges({ stats = {} }) {
           isEarned = solvedStats.hard >= badge.requirement;
           break;
         case 'daily_problems':
-          // Mock data - in real app, this would come from daily submission data
-          isEarned = false; // Would check if user solved 5+ problems in a single day
+         
+          isEarned = false; 
           break;
         default:
           isEarned = false;
@@ -192,7 +192,7 @@ function Badges({ stats = {} }) {
           progress: 100
         });
       } else {
-        // Calculate progress for unearned badges
+       
         let progress = 0;
         switch (badge.type) {
           case 'problems_solved':
@@ -266,7 +266,7 @@ function Badges({ stats = {} }) {
         </div>
       </div>
 
-      {/* Progress Overview */}
+      
       <div className="mb-6 p-4 bg-slate-800/30 rounded-xl border border-slate-700/30">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium text-white">Overall Progress</span>
@@ -284,7 +284,7 @@ function Badges({ stats = {} }) {
         </div>
       </div>
 
-      {/* Earned Badges */}
+     
       {earnedBadges.length > 0 && (
         <div className="mb-6">
           <h4 className="font-bold text-white mb-4 flex items-center gap-2">
@@ -322,7 +322,7 @@ function Badges({ stats = {} }) {
         </div>
       )}
 
-      {/* Unearned Badges */}
+     
       {unearnedBadges.length > 0 && (
         <div>
           <h4 className="font-bold text-white mb-4 flex items-center gap-2">

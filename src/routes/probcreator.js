@@ -4,9 +4,6 @@
     const {createproblem,updateproblem,deleteproblem,getproblembyid,getallproblem,solvedallproblembyuser,submittedproblem,getSuggestedProblems} = require("../controllers/userproblem");
     const usermiddleware=require("../middleware/middle")
     
-    
-    
-    
   
     problemrouter.post("/create",adminmiddleware,createproblem);
     problemrouter.put("/update/:id",adminmiddleware,updateproblem); 

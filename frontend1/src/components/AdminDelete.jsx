@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import axiosClient from '../utils/axiosClient' 
 import { Loader2, AlertCircle, CheckCircle, Trash2, RefreshCw } from 'lucide-react';
-//                                                        
+                                                       
 const AdminDelete = () => {
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);

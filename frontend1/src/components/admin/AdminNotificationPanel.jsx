@@ -1,4 +1,4 @@
-// AdminNotificationPanel.js (React Frontend) - FIX
+
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,7 +12,7 @@ import axiosClient from '../../utils/axiosClient';
 
 gsap.registerPlugin();
 
-// --- Helper Functions (Kept for visual consistency) ---
+
 const getNotificationTypeIcon = (type) => {
     switch (type) {
         case 'message': return MessageSquare; case 'system': return AlertCircle;
@@ -47,10 +47,10 @@ const AdminNotificationPanel = () => {
         targetUserId: '', targetRole: 'member', priority: 'normal',
     });
 
-    // Stats now rely entirely on the API endpoint
+   
     const [stats, setStats] = useState({
         totalSent: 0, 
-        totalReadsLogged: 0, // Reflects the data we can actually fetch easily
+        totalReadsLogged: 0, 
         todaySent: 0
     });
 
@@ -71,7 +71,7 @@ const AdminNotificationPanel = () => {
     const fetchNotifications = useCallback(async () => {
         setIsLoading(true);
         try {
-            // Fetch all general/role notifications for admin display
+            
             const response = await axiosClient.get('/api/notifications/admin/all');
             setNotifications(response.data.notifications || []);
         } catch (error) {
@@ -117,24 +117,24 @@ const AdminNotificationPanel = () => {
                  payload.targetRole = 'all'; 
             }
 
-            // Send notification via API
+            
             await axiosClient.post('/api/notifications/send', payload);
             
-            // Success animation
+           
             if (formRef.current) {
                 gsap.fromTo(formRef.current, { backgroundColor: '#16a34a' }, { backgroundColor: '#1e293b', duration: 1, ease: 'power2.out' });
             }
             
             alert('Notification sent successfully!');
             
-            // Reset form
+         
             setFormData({
                 title: '', message: '', type: 'admin', targetUsers: 'all', 
                 targetUserId: '', targetRole: 'member', priority: 'normal',
             });
             setShowForm(false);
-            fetchNotifications(); // Refresh list
-            fetchStats(); // Update stats
+            fetchNotifications(); 
+            fetchStats(); 
         } catch (error) {
             console.error('Error sending notification:', error.response?.data?.msg || error.message);
             alert('Failed to send notification: ' + (error.response?.data?.msg || 'Server Error'));
@@ -143,15 +143,15 @@ const AdminNotificationPanel = () => {
         }
     };
 
-    // FIX: Function calls the new global delete endpoint
+    
     const adminDeleteNotification = async (notificationId) => {
         if (!confirm('⚠️ ADMIN DELETE: This will permanently delete this notification from the database for ALL users. Continue?')) return;
         
         try {
             await axiosClient.delete(`/api/notifications/admin/${notificationId}`);
             alert('✅ Notification permanently deleted.');
-            fetchNotifications(); // Refresh list
-            fetchStats(); // Update stats
+            fetchNotifications(); 
+            fetchStats(); 
         } catch (error) {
             console.error('Error admin deleting notification:', error.response?.data?.msg || error.message);
             alert('❌ Failed to delete notification. Please try again.');
@@ -164,7 +164,7 @@ const AdminNotificationPanel = () => {
 
     return (
         <div className="relative">
-            {/* Admin Panel Toggle */}
+            
             <motion.button
                 onClick={() => setIsOpen(!isOpen)}
                 className="relative p-2 text-gray-300 hover:text-white transition-colors"
@@ -184,7 +184,7 @@ const AdminNotificationPanel = () => {
                 )}
             </motion.button>
 
-            {/* Admin Panel */}
+            
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -195,7 +195,7 @@ const AdminNotificationPanel = () => {
                         transition={{ duration: 0.2 }}
                         className="absolute right-0 top-full mt-2 w-[500px] bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50"
                     >
-                        {/* Header */}
+                       
                         <div className="p-4 border-b border-slate-700">
                             <div className="flex items-center justify-between">
                                 <h3 className="text-white font-semibold flex items-center gap-2">
@@ -226,7 +226,7 @@ const AdminNotificationPanel = () => {
                                 </div>
                             </div>
                             
-                            {/* Stats (Now relying on API aggregation) */}
+                            
                             <div className="grid grid-cols-4 gap-2 mt-3 text-center">
                                 <div className="p-2 bg-slate-700/50 rounded-lg">
                                     <div className="text-lg font-bold text-cyan-400">{stats.totalSent}</div>
@@ -234,7 +234,7 @@ const AdminNotificationPanel = () => {
                                 </div>
                                 <div className="p-2 bg-slate-700/50 rounded-lg">
                                     <div className="text-lg font-bold text-green-400">
-                                        {/* Display the size of the largest 'readBy' array for a rough estimate */}
+                                        
                                         {stats.totalReadsLogged}
                                     </div>
                                     <div className="text-xs text-gray-400">Total Reads (Interactions)</div>
@@ -250,7 +250,7 @@ const AdminNotificationPanel = () => {
                             </div>
                         </div>
 
-                        {/* Send Notification Form (Minimized for brevity, only controls shown) */}
+                      
                         <AnimatePresence>
                             {showForm && (
                                 <motion.div
@@ -260,16 +260,16 @@ const AdminNotificationPanel = () => {
                                     exit={{ opacity: 0, height: 0 }}
                                     className="p-4 border-b border-slate-700 bg-slate-700/30 overflow-hidden"
                                 >
-                                    {/* ... (Form inputs as provided in the previous response) ... */}
+                                   
                                     <h4 className="text-white font-medium mb-3">Send New Notification</h4>
                                     <div className="space-y-3">
-                                        {/* Title, Type, Message */}
+                                        
                                         <div className="grid grid-cols-2 gap-3">
                                             <div><label className="block text-sm text-gray-300 mb-1">Title</label><input type="text" value={formData.title} onChange={(e) => handleInputChange('title', e.target.value)} className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white text-sm focus:border-cyan-400" placeholder="Notification title"/></div>
                                             <div><label className="block text-sm text-gray-300 mb-1">Type</label><select value={formData.type} onChange={(e) => handleInputChange('type', e.target.value)} className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white text-sm focus:border-cyan-400"><option value="admin">Admin Message</option><option value="info">Info</option><option value="system">System</option><option value="achievement">Achievement</option></select></div>
                                         </div>
                                         <div><label className="block text-sm text-gray-300 mb-1">Message</label><textarea value={formData.message} onChange={(e) => handleInputChange('message', e.target.value)} className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white text-sm focus:border-cyan-400" rows="3" placeholder="Notification message"/></div>
-                                        {/* Target, Priority, Role */}
+                                      
                                         <div className="grid grid-cols-2 gap-3">
                                             <div><label className="block text-sm text-gray-300 mb-1">Target</label><select value={formData.targetUsers} onChange={(e) => handleInputChange('targetUsers', e.target.value)} className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white text-sm focus:border-cyan-400"><option value="all">All Users</option><option value="role">By Role</option><option value="specific">Specific User ID</option></select></div>
                                             <div><label className="block text-sm text-gray-300 mb-1">Priority</label><select value={formData.priority} onChange={(e) => handleInputChange('priority', e.target.value)} className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white text-sm focus:border-cyan-400"><option value="low">Low</option><option value="normal">Normal</option><option value="high">High</option><option value="urgent">Urgent</option></select></div>
@@ -288,7 +288,7 @@ const AdminNotificationPanel = () => {
                             )}
                         </AnimatePresence>
 
-                        {/* Notifications List (Admin List View) */}
+                       
                         <div className="max-h-96 overflow-y-auto custom-scrollbar">
                             {isLoading ? (
                                 <div className="p-8 text-center"><div className="w-6 h-6 border-2 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-2" /><p className="text-gray-400 text-sm">Loading notifications...</p></div>
@@ -322,13 +322,13 @@ const AdminNotificationPanel = () => {
                                                                 <div className="flex items-center gap-4 text-xs text-gray-500">
                                                                     <span>Sent: {formatDate(notification.createdAt)}</span>
                                                                     <span>Target: {notification.targetRole || (notification.targetUserId ? 'Specific User' : 'All')}</span>
-                                                                    {/* Display Actual Read Count */}
+                                                                   
                                                                     <span>Read Count: **{totalReads}**</span> 
                                                                 </div>
                                                             </div>
                                                             
                                                             <div className="flex items-center gap-1 ml-2">
-                                                                {/* DELETE FROM ALL USERS */}
+                                                                
                                                                 <button
                                                                     onClick={() => adminDeleteNotification(notification._id)}
                                                                     className="p-1 text-gray-400 hover:text-red-400 transition-colors"

@@ -16,16 +16,16 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
 
-  // Get the current user (prefer Redux user over prop user)
+ 
   const currentUser = reduxUser || user;
 
-  // Load profile image from localStorage on component mount
+
   useEffect(() => {
     const savedImage = localStorage.getItem('profileImage');
     if (savedImage) {
       setCurrentImage(savedImage);
       if (currentUser && !currentUser.profileImage) {
-        // If we have a saved image but the user object doesn't have it, update Redux
+       
         dispatch(updateProfileImage(savedImage));
       }
     } else if (currentUser?.profileImage) {
@@ -33,7 +33,6 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
     }
   }, [currentUser, dispatch]);
 
-  // Handle click outside to close modal
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (showUploadOptions && !event.target.closest('.upload-modal') && !event.target.closest('[title="Manage Profile Photo"]')) {
@@ -43,7 +42,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
 
     if (showUploadOptions) {
       document.addEventListener('mousedown', handleClickOutside);
-      // Prevent body scroll when modal is open
+    
       document.body.style.overflow = 'hidden';
     }
 
@@ -58,7 +57,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
     if (file) {
       handleImageUpload(file);
     }
-    // Clear the input so the same file can be selected again
+    
     event.target.value = '';
   };
 
@@ -72,7 +71,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
     setIsUploading(true);
     setUploadSuccess(false);
     
-    // Create preview
+   
     const reader = new FileReader();
     reader.onload = (e) => {
       const imageData = e.target.result;
@@ -80,26 +79,26 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
       setPreviewImage(imageData);
       setCurrentImage(imageData);
       
-      // Update Redux state with the new image
+      
       dispatch(updateProfileImage(imageData));
 
       
-      // Also update localStorage for persistence
+   
       localStorage.setItem('profileImage', imageData);
 
       
       setIsUploading(false);
       setUploadSuccess(true);
       
-      // Call the onImageUpdate callback if provided
+     
       if (onImageUpdate) {
         onImageUpdate(file);
       }
       
-      // Auto-close the modal after successful upload
+   
       setShowUploadOptions(false);
       
-      // Hide success message after 2 seconds
+      
       setTimeout(() => {
         setUploadSuccess(false);
       }, 2000);
@@ -108,7 +107,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
   };
 
   const handleProfileClick = () => {
-    // Show upload options modal when profile is clicked
+   
 
     setShowUploadOptions(true);
   };
@@ -122,8 +121,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
   };
 
   const confirmUpload = () => {
-    // The image is already saved in handleImageUpload
-    // Just close the modal and clear preview
+   
     setShowUploadOptions(false);
     setPreviewImage(null);
   };
@@ -134,20 +132,20 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
   };
 
   const handleRemoveImage = () => {
-    // Remove from Redux state
+    
     dispatch(removeProfileImage());
     
-    // Remove from localStorage
+    
     localStorage.removeItem('profileImage');
     
-    // Clear all image states
+  
     setPreviewImage(null);
     setCurrentImage(null);
     
-    // Hide remove option
+ 
     setShowRemoveOption(false);
     
-    // Call the onImageUpdate callback if provided
+   
     if (onImageUpdate) {
       onImageUpdate(null);
     }
@@ -162,14 +160,14 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
 
   return (
     <div className="relative">
-      {/* Profile Circle */}
+      
       <motion.div
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className="relative w-32 h-32 mx-auto cursor-pointer group"
         onClick={handleProfileClick}
       >
-        {/* Main Profile Circle */}
+       
         <div className="w-full h-full rounded-full bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 p-1 shadow-2xl">
           <div className="w-full h-full rounded-full bg-gray-800 flex items-center justify-center overflow-hidden">
             {previewImage ? (
@@ -192,7 +190,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
           </div>
         </div>
 
-        {/* Camera Icon Overlay */}
+    
         <motion.div
           initial={{ opacity: 0 }}
           whileHover={{ opacity: 1 }}
@@ -202,7 +200,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
           <span className="text-xs text-white font-medium">Click to upload</span>
         </motion.div>
 
-        {/* Upload Status Indicator */}
+        
         {isUploading && (
           <motion.div
             initial={{ scale: 0 }}
@@ -218,7 +216,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
           </motion.div>
         )}
 
-        {/* Success Indicator */}
+        
         {uploadSuccess && (
           <motion.div
             initial={{ scale: 0 }}
@@ -231,7 +229,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
         )}
       </motion.div>
 
-      {/* Small Image Management Button */}
+     
       <motion.button
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -244,16 +242,15 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
         <Camera className="w-4 h-4 text-white" />
       </motion.button>
 
-      {/* Upload Options Modal */}
+      
       {showUploadOptions && (
         <>
-          {/* Backdrop */}
+    
           <div 
             className="fixed inset-0 z-[99998] bg-black/20"
             onClick={() => setShowUploadOptions(false)}
           />
-          
-          {/* Modal */}
+       
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -266,7 +263,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
           </div>
 
           <div className="space-y-3">
-            {/* Camera Option */}
+          
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -282,7 +279,6 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
               </div>
             </motion.button>
 
-            {/* File Upload Option */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -298,7 +294,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
               </div>
             </motion.button>
 
-            {/* Remove Image Option - Only show if there's an existing image */}
+            
             {currentImage && (
               <motion.button
                 whileHover={{ scale: 1.02 }}
@@ -317,7 +313,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
             )}
           </div>
 
-          {/* Preview and Actions */}
+         
           {previewImage && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -358,7 +354,6 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
             </motion.div>
           )}
 
-          {/* Close Button */}
           <button
             onClick={() => setShowUploadOptions(false)}
             className="absolute top-2 right-2 text-gray-400 hover:text-white transition-colors"
@@ -369,7 +364,7 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
         </>
       )}
 
-      {/* Hidden File Inputs */}
+    
       <input
         ref={fileInputRef}
         type="file"
@@ -386,7 +381,6 @@ const ProfileCircle = ({ user, onImageUpdate }) => {
         className="hidden"
       />
 
-      {/* User Info */}
       <div className="text-center mt-4">
         <h3 className="text-white font-semibold text-lg">
           {currentUser?.firstname || currentUser?.name || 'User'}

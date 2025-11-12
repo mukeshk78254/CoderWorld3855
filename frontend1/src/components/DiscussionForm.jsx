@@ -31,7 +31,7 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
 
         setLoading(true);
         try {
-            // Try to post to backend first
+            
             const response = await axiosClient.post('/api/discuss/posts', {
                 title: formData.title,
                 content: formData.content,
@@ -41,7 +41,7 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
             
 
             
-            // Create frontend-compatible discussion object
+        
             const newDiscussion = {
                 id: response.data._id || Date.now(),
                 title: response.data.title,
@@ -62,7 +62,7 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
             
             onPostSuccess?.(newDiscussion);
             
-            // Reset form
+          
             setFormData({
                 title: '',
                 content: '',
@@ -73,7 +73,7 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
         } catch (error) {
             console.error('Error posting discussion:', error);
             
-            // Fallback to mock data if backend fails
+          
             const newDiscussion = {
                 id: Date.now(),
                 title: formData.title,
@@ -95,7 +95,7 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
 
             onPostSuccess?.(newDiscussion);
             
-            // Reset form
+         
             setFormData({
                 title: '',
                 content: '',
@@ -135,7 +135,7 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
                     className="bg-slate-900/95 border border-slate-700 rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    {/* Header */}
+                    
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-cyan-500 rounded-xl flex items-center justify-center">
@@ -154,9 +154,9 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
                         </button>
                     </div>
 
-                    {/* Form */}
+                  
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Title */}
+                      
                         <div>
                             <label className="block text-white font-medium mb-2">
                                 <FileText size={16} className="inline mr-2" />
@@ -173,7 +173,7 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
                             />
                         </div>
 
-                        {/* Category */}
+                       
                         <div>
                             <label className="block text-white font-medium mb-2">
                                 <Tag size={16} className="inline mr-2" />
@@ -193,7 +193,7 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
                             </select>
                         </div>
 
-                        {/* Tags */}
+                       
                         <div>
                             <label className="block text-white font-medium mb-2">
                                 <Tag size={16} className="inline mr-2" />
@@ -209,7 +209,7 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
                             />
                         </div>
 
-                        {/* Content */}
+                        
                         <div>
                             <label className="block text-white font-medium mb-2">
                                 <MessageSquare size={16} className="inline mr-2" />
@@ -226,7 +226,7 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
                             />
                         </div>
 
-                        {/* Guidelines */}
+                      
                         <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4">
                             <h4 className="text-white font-medium mb-2">Discussion Guidelines</h4>
                             <ul className="text-slate-400 text-sm space-y-1">
@@ -238,7 +238,7 @@ const DiscussionForm = ({ isOpen, onClose, onPostSuccess }) => {
                             </ul>
                         </div>
 
-                        {/* Submit Buttons */}
+                     
                         <div className="flex justify-end gap-3 pt-4">
                             <button
                                 type="button"

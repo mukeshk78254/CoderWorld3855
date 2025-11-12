@@ -26,27 +26,24 @@ const cardVariants = {
     visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 80, damping: 15 } }
 };
 
-// Generate skill growth data based on actual user skills
 const generateSkillData = (solvedTags = [], solvedStats = {}) => {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-  
-  // Use actual user skills if available, otherwise use common skills
+
   const skills = solvedTags.length > 0 ? solvedTags.slice(0, 6) : ['Arrays', 'Dynamic Programming', 'Graphs', 'Trees', 'Strings', 'Math'];
   
   return months.map((month, monthIndex) => {
     const data = { month };
     skills.forEach(skill => {
-      // Generate realistic progression data based on actual solved count
+   
       const baseCount = solvedStats[skill.toLowerCase()] || 0;
-      const progressionFactor = (monthIndex + 1) / months.length; // 0.17, 0.33, 0.5, 0.67, 0.83, 1.0
-      const randomVariation = Math.random() * 2 - 1; // -1 to 1
+      const progressionFactor = (monthIndex + 1) / months.length;
+      const randomVariation = Math.random() * 2 - 1; 
       data[skill] = Math.max(0, Math.round(baseCount * progressionFactor + randomVariation));
     });
     return data;
   });
 };
 
-// Custom tooltip for the chart
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
@@ -70,27 +67,24 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 function SkillGrowth({ solvedTags = [], solvedStats = {} }) {
   const [timeRange, setTimeRange] = useState('6months');
-  const [viewMode, setViewMode] = useState('line'); // 'line' or 'area'
+  const [viewMode, setViewMode] = useState('line'); 
   
-  // Ensure solvedStats is an object
+ 
   const safeSolvedStats = solvedStats || {};
-  
-  // Generate chart data based on actual user skills
+
   const skillData = generateSkillData(solvedTags, safeSolvedStats);
-  
-  // Get the skills that will be displayed in the chart
+
   const chartSkills = skillData.length > 0 ? Object.keys(skillData[0]).filter(key => key !== 'month') : [];
   
   const colors = [
-    '#22d3ee', // cyan
-    '#a78bfa', // purple
-    '#34d399', // green
-    '#fbbf24', // yellow
-    '#f472b6', // pink
-    '#60a5fa'  // blue
+    '#22d3ee', 
+    '#a78bfa',
+    '#34d399', 
+    '#fbbf24',
+    '#f472b6', 
+    '#60a5fa' 
   ];
 
-  // Calculate skill levels based on solved problems
   const calculateSkillLevels = () => {
     const skillLevels = {};
     Object.entries(safeSolvedStats).forEach(([skill, count]) => {
@@ -106,13 +100,12 @@ function SkillGrowth({ solvedTags = [], solvedStats = {} }) {
   const skillLevels = calculateSkillLevels();
 
 
-  // Only show component if there's real data
   const hasRealData = solvedTags.length > 0 || Object.keys(safeSolvedStats).length > 0;
   if (!hasRealData) {
-    return null; // Don't render anything if no real data
+    return null; 
   }
 
-  // Show fallback if no data
+  
   if (chartSkills.length === 0) {
     return (
       <motion.div
@@ -147,7 +140,7 @@ function SkillGrowth({ solvedTags = [], solvedStats = {} }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Background decorative elements */}
+
       <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-pink-500/10 to-transparent rounded-full blur-2xl"></div>
       
@@ -158,9 +151,9 @@ function SkillGrowth({ solvedTags = [], solvedStats = {} }) {
           <h3 className="font-black text-white text-lg">📈 Skill Growth Over Time</h3>
         </div>
         
-        {/* Controls */}
+       
         <div className="flex items-center gap-3">
-          {/* Time Range Selector */}
+     
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
@@ -171,7 +164,7 @@ function SkillGrowth({ solvedTags = [], solvedStats = {} }) {
             <option value="1year">1 Year</option>
           </select>
           
-          {/* View Mode Toggle */}
+
           <div className="flex bg-slate-700/50 rounded-lg p-1">
             <button
               onClick={() => setViewMode('line')}
@@ -197,7 +190,7 @@ function SkillGrowth({ solvedTags = [], solvedStats = {} }) {
         </div>
       </div>
 
-      {/* Chart */}
+  
       <div className="mb-6" style={{ width: '100%', height: 300 }}>
         <ResponsiveContainer>
           {viewMode === 'line' ? (
@@ -271,7 +264,7 @@ function SkillGrowth({ solvedTags = [], solvedStats = {} }) {
         </ResponsiveContainer>
       </div>
 
-      {/* Skill Level Overview */}
+     
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {Object.entries(skillLevels).map(([skill, levelInfo], index) => (
           <motion.div
@@ -293,7 +286,7 @@ function SkillGrowth({ solvedTags = [], solvedStats = {} }) {
             </div>
             <div className="text-xs text-gray-400">problems solved</div>
             
-            {/* Progress bar */}
+        
             <div className="mt-3 w-full bg-slate-700/50 rounded-full h-1.5">
               <motion.div
                 initial={{ width: 0 }}
@@ -306,7 +299,6 @@ function SkillGrowth({ solvedTags = [], solvedStats = {} }) {
         ))}
       </div>
 
-      {/* Insights */}
       <div className="mt-6 p-4 bg-slate-800/30 rounded-xl border border-slate-700/30">
         <h4 className="font-bold text-white mb-3 flex items-center gap-2">
           <Brain className="text-purple-400" size={18} />

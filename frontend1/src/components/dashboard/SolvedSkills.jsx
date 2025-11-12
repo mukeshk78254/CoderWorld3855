@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const SolvedSkills = ({ solvedTags = [], solvedStats = {} }) => {
-  // Helper function to get tag color
+
   const getTagColor = (tag, index) => {
     const colors = [
       'bg-blue-500/20 text-blue-400 border-blue-500/30',
@@ -19,7 +19,7 @@ const SolvedSkills = ({ solvedTags = [], solvedStats = {} }) => {
     return colors[index % colors.length];
   };
 
-  // Helper function to get bubble size based on count
+ 
   const getBubbleSize = (count) => {
     if (count <= 1) return 'w-8 h-8 text-xs';
     if (count <= 3) return 'w-12 h-12 text-sm';
@@ -28,7 +28,7 @@ const SolvedSkills = ({ solvedTags = [], solvedStats = {} }) => {
     return 'w-24 h-24 text-xl';
   };
 
-  // Calculate total solved problems
+ 
   const totalSolved = Object.values(solvedStats).reduce((sum, count) => sum + count, 0);
 
   return (
@@ -53,7 +53,7 @@ const SolvedSkills = ({ solvedTags = [], solvedStats = {} }) => {
 
       {solvedTags.length > 0 ? (
         <div className="space-y-6">
-          {/* Bubble Visualization */}
+      
           <div className="flex flex-wrap gap-4 justify-center items-center min-h-[200px] p-4">
             {solvedTags.map((tag, index) => {
               const count = solvedStats[tag.toLowerCase()] || 0;
@@ -97,7 +97,7 @@ const SolvedSkills = ({ solvedTags = [], solvedStats = {} }) => {
                   `}>
                     <span className="font-bold">{count}</span>
                     
-                    {/* Tag name on hover */}
+                
                     <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                       <div className="bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                         {tag}
@@ -109,7 +109,6 @@ const SolvedSkills = ({ solvedTags = [], solvedStats = {} }) => {
             })}
           </div>
 
-          {/* Detailed Tag List */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {solvedTags.map((tag, index) => {
               const count = solvedStats[tag.toLowerCase()] || 0;
@@ -135,7 +134,7 @@ const SolvedSkills = ({ solvedTags = [], solvedStats = {} }) => {
                     </div>
                   </div>
                   
-                  {/* Progress bar */}
+                 
                   <div className="mt-2 w-full bg-gray-700/50 rounded-full h-1.5">
                     <motion.div
                       initial={{ width: 0 }}

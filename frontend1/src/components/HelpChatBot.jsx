@@ -152,7 +152,7 @@ const HelpChatBot = () => {
                         transition={{ duration: 0.3, ease: "backOut" }}
                         className="fixed bottom-24 right-6 w-96 h-[500px] bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl z-40 flex flex-col overflow-hidden"
                     >
-                        {/* Chat Header */}
+                    
                         <div className="bg-slate-800 px-4 py-3 border-b border-slate-700 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center">
@@ -238,7 +238,7 @@ const HelpChatBot = () => {
                             <div ref={messagesEndRef} />
                         </div>
 
-                        {/* Input */}
+                      
                         <div className="p-4 border-t border-slate-700">
                             <div className="flex items-center gap-2">
                                 <input

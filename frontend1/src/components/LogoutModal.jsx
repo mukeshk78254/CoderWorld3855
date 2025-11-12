@@ -23,7 +23,6 @@ const LogoutModal = ({ isOpen, onCancel, onConfirm, user }) => {
                         justifyContent: 'center'
                     }}
                 >
-                    {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -41,7 +40,7 @@ const LogoutModal = ({ isOpen, onCancel, onConfirm, user }) => {
                         }}
                     />
                     
-                    {/* Modal */}
+                  
                     <motion.div
                         initial={{ scale: 0.8, opacity: 0, y: 30 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -51,13 +50,13 @@ const LogoutModal = ({ isOpen, onCancel, onConfirm, user }) => {
                         style={{ 
                             position: 'relative',
                             zIndex: 10000,
-                            transform: 'translateZ(0)', // Force hardware acceleration
+                            transform: 'translateZ(0)', 
                             margin: '0 auto',
                             maxWidth: '28rem',
                             width: '100%'
                         }}
                     >
-                        {/* Header */}
+                   
                         <div className="flex items-center justify-between p-6 border-b border-slate-700">
                             <div className="flex items-center gap-3">
                                 <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
@@ -76,14 +75,13 @@ const LogoutModal = ({ isOpen, onCancel, onConfirm, user }) => {
                             </button>
                         </div>
 
-                        {/* Content */}
+                      
                         <div className="p-6">
                             <p className="text-slate-300 mb-6 text-center">
                                 You will be signed out of your account and redirected to the login page. 
                                 Any unsaved changes may be lost.
                             </p>
                             
-                            {/* User Info */}
                             <div className="bg-slate-800/50 rounded-lg p-4 mb-6">
                                 <div className="flex items-center gap-3">
                                     <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center">
@@ -98,7 +96,7 @@ const LogoutModal = ({ isOpen, onCancel, onConfirm, user }) => {
                                 </div>
                             </div>
 
-                            {/* Action Buttons */}
+                        
                             <div className="flex gap-3">
                                 <button
                                     onClick={onCancel}

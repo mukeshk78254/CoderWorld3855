@@ -3,7 +3,7 @@ import CodingActivity from './CodingActivity';
 function Overview({ stats }) {
   return (
     <div>
-      {/* Stats Cards */}
+    
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-gray-900/50 p-6 rounded-lg border border-gray-700 backdrop-blur-sm">
           <p className="text-sm text-green-400 font-semibold">Problems Solved</p>
@@ -22,7 +22,7 @@ function Overview({ stats }) {
         </div>
       </div>
 
-      {/* Coding Activity */}
+    
       <div className="bg-gray-900/50 p-6 rounded-lg border border-gray-700 backdrop-blur-sm">
         <h3 className="font-bold text-white mb-4">Coding Activity</h3>
         <CodingActivity submissionActivity={stats.submissionActivity} />

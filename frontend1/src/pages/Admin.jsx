@@ -1,113 +1,4 @@
-// import React, { useState } from 'react';
-// import { Plus, Edit, Trash2, Home, RefreshCw, Zap,Video } from 'lucide-react';
 
-// import { NavLink } from 'react-router';
-
-// function Admin() {
-//   const [selectedOption, setSelectedOption] = useState(null);
-
-//   const adminOptions = [
-//     {
-//       id: 'create',
-//       title: 'Create Problem',
-//       description: 'Add a new coding problem to the platform',
-//       icon: Plus,
-//       color: 'btn-success',
-//       bgColor: 'bg-success/10',
-//       route: '/admin/create'
-//     },
-//     {
-//       id: 'update',
-//       title: 'Update Problem',
-//       description: 'Edit existing problems and their details',
-//       icon: Edit,
-//       color: 'btn-warning',
-//       bgColor: 'bg-warning/10',
-//       route: '/admin/update'
-//     },
-//     {
-//       id: 'delete',
-//       title: 'Delete Problem',
-//       description: 'Remove problems from the platform',
-//       icon: Trash2,
-//       color: 'btn-error',
-//       bgColor: 'bg-error/10',
-//       route: '/admin/delete'
-//     },
- 
-//         {
-//           id: 'video',
-//           title: 'Video Problem',
-//           description: 'Upload And Delete Videos',
-//           icon: Video,
-//           color: 'btn-success',
-//           bgColor: 'bg-success/10',
-//           route: '/admin/video'
-//         }
-//   ];
-
-//   return (
-//     <div className="min-h-screen bg-base-200">
-//       <div className="container mx-auto px-4 py-8">
-//         {/* Header */}
-//         <div className="text-center mb-12">
-//           <h1 className="text-4xl font-bold text-base-content mb-4">
-//             Admin Panel
-//           </h1>
-//           <p className="text-base-content/70 text-lg">
-//             Manage coding problems on your platform
-//           </p>
-//         </div>
-
-//         {/* Admin Options Grid */}
-//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-//           {adminOptions.map((option) => {
-//             const IconComponent = option.icon;
-//             return (
-//               <div
-//                 key={option.id}
-//                 className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer"
-//               >
-//                 <div className="card-body items-center text-center p-8">
-//                   {/* Icon */}
-//                   <div className={`${option.bgColor} p-4 rounded-full mb-4`}>
-//                     <IconComponent size={32} className="text-base-content" />
-//                   </div>
-                  
-//                   {/* Title */}
-//                   <h2 className="card-title text-xl mb-2">
-//                     {option.title}
-//                   </h2>
-                  
-//                   {/* Description */}
-//                   <p className="text-base-content/70 mb-6">
-//                     {option.description}
-//                   </p>
-                  
-//                   {/* Action Button */}
-//                   <div className="card-actions">
-//                     <div className="card-actions">
-//                     <NavLink 
-//                     to={option.route}
-//                    className={`btn ${option.color} btn-wide`}
-//                    >
-//                    {option.title}
-//                    </NavLink>
-//                    </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             );
-//           })}
-//         </div>
-
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default Admin;
-// Enhanced Admin Panel with GSAP Animations
 import React, { useEffect, useRef } from 'react';
 import { Plus, Edit, Trash2, Video, Home, Settings, Zap, Crown, Shield, Sparkles, Database, Users, BarChart3, FileText, ArrowLeft } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -117,10 +8,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { TextPlugin } from 'gsap/TextPlugin';
 import Header from '../components/dashboard/Header';
 
-// Register GSAP plugins
+
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 
-// Floating Particles Component
+
 const FloatingParticles = () => {
     const containerRef = useRef(null);
 
@@ -169,7 +60,7 @@ const FloatingParticles = () => {
     return <div ref={containerRef} className="absolute inset-0 overflow-hidden pointer-events-none" />;
 };
 
-// Enhanced Admin Option Card
+
 const UltraAdminCard = ({ option, index }) => {
     const cardRef = useRef(null);
 
@@ -236,7 +127,7 @@ const UltraAdminCard = ({ option, index }) => {
                     <IconComponent size={40} className="text-white" />
                 </motion.div>
                 
-                {/* Title with typing effect */}
+               
                 <motion.h2 
                     className="text-2xl font-black text-white mb-4 group-hover:text-cyan-400 transition-colors duration-500"
                     initial={{ opacity: 0, y: 20 }}
@@ -246,7 +137,7 @@ const UltraAdminCard = ({ option, index }) => {
                     {option.title}
                 </motion.h2>
                 
-                {/* Description */}
+             
                 <motion.p 
                     className="text-slate-400 mb-8 text-lg leading-relaxed group-hover:text-slate-300 transition-colors duration-500"
                     initial={{ opacity: 0, y: 20 }}
@@ -256,7 +147,7 @@ const UltraAdminCard = ({ option, index }) => {
                     {option.description}
                 </motion.p>
                 
-                {/* Action Button */}
+             
                 <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -272,7 +163,7 @@ const UltraAdminCard = ({ option, index }) => {
                 </motion.div>
             </div>
 
-            {/* Floating particles around card */}
+         
             <div className="absolute inset-0 pointer-events-none">
                 {[...Array(6)].map((_, i) => (
                     <motion.div
@@ -298,7 +189,7 @@ const UltraAdminCard = ({ option, index }) => {
     );
 };
 
-// Enhanced Stats Overview
+
 const AdminStatsOverview = () => {
     const statsRef = useRef(null);
 
@@ -354,13 +245,13 @@ function Admin() {
     const subtitleRef = useRef(null);
 
     useEffect(() => {
-        // Header animations
+       
         gsap.fromTo(headerRef.current,
             { y: -100, opacity: 0 },
             { y: 0, opacity: 1, duration: 1.5, ease: "power3.out" }
         );
 
-        // Title typing effect
+       
         gsap.to(titleRef.current, {
             text: "CodeFlow Admin Panel",
             duration: 2,
@@ -411,7 +302,7 @@ function Admin() {
             <FloatingParticles />
             
             <main className="container mx-auto px-4 py-12 relative z-10">
-                {/* Back Button */}
+               
                 <motion.div 
                     className="mb-8"
                     initial={{ opacity: 0, x: -50 }}
@@ -427,7 +318,7 @@ function Admin() {
                     </button>
                 </motion.div>
 
-                {/* Enhanced Header */}
+          
                 <motion.div 
                     ref={headerRef}
                     className="text-center mb-16"
@@ -440,7 +331,7 @@ function Admin() {
                             animation: 'gradientShift 3s ease-in-out infinite'
                         }}
                     >
-                        {/* Text will be filled by GSAP */}
+                       
                     </motion.h1>
                     
                     <motion.p 
@@ -451,10 +342,10 @@ function Admin() {
                     </motion.p>
                 </motion.div>
 
-                {/* Stats Overview */}
+             
                 <AdminStatsOverview />
 
-        {/* Admin Options Grid */}
+       
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
                     {adminOptions.map((option, index) => (
                         <UltraAdminCard
@@ -465,7 +356,7 @@ function Admin() {
                     ))}
                 </div>
 
-                {/* Enhanced Footer */}
+          
                 <motion.footer 
                     className="text-center text-slate-500 mt-20"
                     initial={{ opacity: 0, y: 50 }}

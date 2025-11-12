@@ -48,7 +48,7 @@ const submitbatch=async(submissions)=>{
             console.error('Judge0 submitbatch error:', error.message);
             
             if (error.response?.status === 403 || error.response?.data?.message?.includes('not subscribed')) {
-                console.log('❌ Judge0 API subscription expired. Please check your API key.');
+                console.log(' Judge0 API subscription expired. Please check your API key.');
                 throw new Error('Judge0 API subscription expired. Please contact administrator.');
             }
             
@@ -68,7 +68,7 @@ const waiting=async(timer)=>{
 
 const submittoken=async(restokens)=>{
 
-    // No mock tokens - only real Judge0 results
+
 
 const options = {
   method: 'GET',
@@ -113,7 +113,7 @@ async function fetchData() {
             await waiting(1000);
         } catch (error) {
            
-            console.log('❌ Judge0 API failed during polling. No mock results will be returned.');
+            console.log(' Judge0 API failed during polling. No mock results will be returned.');
             throw new Error('Judge0 API failed during execution. Please try again later.');
         }
     }

@@ -20,15 +20,15 @@ const cardVariants = {
     visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 80, damping: 15 } }
 };
 
-// Function to generate your problem URL
+
 const getProblemUrl = (problemId) => {
   if (!problemId) return "#";
   return `/problem/${problemId}`;
 };
 
-// Function to get problem stats from backend data
+
 const getProblemStats = (problemId, recentActivity = []) => {
-  // Find the problem in recent activity
+ 
   const problem = recentActivity.find(activity => 
     activity.problemId === problemId && activity.status === 'accepted'
   );
@@ -79,13 +79,13 @@ function ProblemStats({ selectedProblem, onClose, recentActivity = [] }) {
   
   if (!selectedProblem) return null;
 
-  // Add error handling
+
   if (typeof selectedProblem !== 'string' && typeof selectedProblem !== 'number') {
     console.error('ProblemStats: selectedProblem should be a string or number');
     return null;
   }
 
-  // Get real problem stats from backend data
+ 
   const stats = getProblemStats(selectedProblem, recentActivity);
 
   const getDifficultyColor = (difficulty) => {
@@ -120,7 +120,7 @@ function ProblemStats({ selectedProblem, onClose, recentActivity = [] }) {
           className="bg-slate-900/95 border border-slate-700 rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
+         
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-black text-white mb-2">{stats.title}</h2>
@@ -142,7 +142,7 @@ function ProblemStats({ selectedProblem, onClose, recentActivity = [] }) {
             </button>
           </div>
 
-          {/* Tabs */}
+        
           <div className="flex gap-2 mb-6">
             {[
               { id: 'performance', label: 'Performance', icon: TrendingUp },
@@ -163,7 +163,7 @@ function ProblemStats({ selectedProblem, onClose, recentActivity = [] }) {
             ))}
           </div>
 
-          {/* Tab Content */}
+         
           <AnimatePresence mode="wait">
 
             {activeTab === 'performance' && (
@@ -175,7 +175,7 @@ function ProblemStats({ selectedProblem, onClose, recentActivity = [] }) {
                 className="space-y-6"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Runtime Performance */}
+                
                   <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700/50">
                     <div className="flex items-center gap-3 mb-4">
                       <Clock className="text-cyan-400" size={20} />
@@ -192,7 +192,7 @@ function ProblemStats({ selectedProblem, onClose, recentActivity = [] }) {
                     </div>
                   </div>
 
-                  {/* Memory Usage */}
+                
                   <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700/50">
                     <div className="flex items-center gap-3 mb-4">
                       <Database className="text-purple-400" size={20} />
@@ -210,7 +210,7 @@ function ProblemStats({ selectedProblem, onClose, recentActivity = [] }) {
                   </div>
                 </div>
 
-                {/* Performance Comparison */}
+                
                 <div className="bg-slate-800/30 p-6 rounded-xl border border-slate-700/30">
                   <h4 className="font-bold text-white mb-4 flex items-center gap-2">
                     <Users className="text-orange-400" size={18} />
@@ -242,7 +242,7 @@ function ProblemStats({ selectedProblem, onClose, recentActivity = [] }) {
                 className="space-y-6"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Problem Tags */}
+               
                   <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700/50">
                     <h3 className="font-bold text-white mb-4">Problem Tags</h3>
                     <div className="flex flex-wrap gap-2">
@@ -257,7 +257,7 @@ function ProblemStats({ selectedProblem, onClose, recentActivity = [] }) {
                     </div>
                   </div>
 
-                  {/* Solution Info */}
+                
                   <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700/50">
                     <h3 className="font-bold text-white mb-4">Solution Info</h3>
                     <div className="space-y-3 text-sm">
@@ -277,7 +277,7 @@ function ProblemStats({ selectedProblem, onClose, recentActivity = [] }) {
                   </div>
                 </div>
 
-                {/* Problem Link */}
+                
                 <div className="bg-slate-800/30 p-6 rounded-xl border border-slate-700/30">
                   <h4 className="font-bold text-white mb-3 flex items-center gap-2">
                     <ExternalLink className="text-blue-400" size={18} />

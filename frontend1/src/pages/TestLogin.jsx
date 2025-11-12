@@ -53,10 +53,10 @@ function TestLogin() {
         
         <div className="mt-6 space-y-2">
           <div className="text-sm">
-            <strong>Status:</strong> {isAuthenticated ? '✅ Authenticated' : '❌ Not Authenticated'}
+            <strong>Status:</strong> {isAuthenticated ? ' Authenticated' : ' Not Authenticated'}
           </div>
           <div className="text-sm">
-            <strong>Loading:</strong> {loading ? '⏳ Yes' : '✅ No'}
+            <strong>Loading:</strong> {loading ? ' Yes' : ' No'}
           </div>
           <div className="text-sm">
             <strong>User:</strong> {user ? JSON.stringify(user, null, 2) : 'None'}
