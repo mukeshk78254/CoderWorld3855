@@ -1,3 +1,4 @@
+
 <div align="center">
 
 # 🚀 CoderWorld - Modern Coding Platform
@@ -405,3 +406,13 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 
 </div>
+
+Here are the attachment :
+
+<img width="1331" height="625" alt="Screenshot 2025-11-07 164816" src="https://github.com/user-attachments/assets/cd5eb9b6-54af-42be-a7ae-de2cbcd2e98d" />
+<img width="1210" height="615" alt="Screenshot 2025-11-07 164921" src="https://github.com/user-attachments/assets/76ca9342-5c34-4c83-80a4-d31f976fdb31" />
+<img width="1336" height="617" alt="Screenshot 2025-11-07 164958" src="https://github.com/user-attachments/assets/44eebf68-93a1-4c14-88bf-39bb128e93c2" />
+<img width="1346" height="618" alt="Screenshot 2025-11-07 165031" src="https://github.com/user-attachments/assets/d3677772-ff7d-437a-9ad1-8074cdf0defa" />
+<img width="1312" height="627" alt="Screenshot 2025-11-07 165103" src="https://github.com/user-attachments/assets/f8960575-7a7e-405d-b1e5-c94cac78f280" />
+<img width="1348" height="615" alt="Screenshot 2025-11-07 164837" src="https://github.com/user-attachments/assets/c01c7606-abda-48ad-a144-f0a75d67de45" />
+
