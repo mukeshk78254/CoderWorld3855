@@ -9,7 +9,7 @@ const solveDoubt = async(req , res)=>{
         const {messages,title,description,testcases,startcode} = req.body;
         const ai = new GoogleGenerativeAI(process.env.GEMINI_KEY);
         const model = ai.getGenerativeModel({ 
-             model: "gemini-2.5-flash",
+              model: "gemini-2.5-flash",
             systemInstruction: `
 You are an expert Data Structures and Algorithms (DSA) tutor specializing in helping users solve coding problems. Your role is strictly limited to DSA-related assistance only.
 
